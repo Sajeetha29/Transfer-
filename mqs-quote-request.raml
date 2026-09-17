@@ -1,0 +1,1227 @@
+#%RAML 1.0 Library
+types:
+
+  MQSMotorRequest:
+    type: object
+    properties:
+      control:
+        description: control
+        required: true
+        properties:
+          brandIdentifier:
+            description: brandIdentifier
+            type: string
+            required: false
+          businessSourceCode:
+            description: businessSourceCode
+            type: string
+            required: false
+          cacheID:
+            description: cacheID, applicable during requotes and mid term adjustments. Originally returned in quote response
+            type: string
+            required: false
+          channel:
+            description: channel
+            type: string
+            required: false
+          currentTime:
+            description: currentTime
+            type: time-only
+            required: false
+          externalID:
+            description: externalID
+            type: string
+            required: false
+          productIdentifier:
+            description: productIdentifier
+            type: string
+            required: false
+          todaysDate:
+            description: todaysDate
+            type: date-only
+            required: false
+          transactionType:
+            description: transactionType Id
+            type: string
+            required: true
+          transactionTypeCount:
+            description: transactionTypeCount
+            type: integer
+            required: false
+          AddressChangeCount:
+            description: AddressChangeCount
+            type: integer
+            required: false
+          VRNChangeCount:
+            description: VRNChangeCount
+            type: integer
+            required: false
+      coreRisk:
+        description: coreRisk
+        required: true
+        properties:
+          cover:
+            type: array
+            items:
+              type: object
+              properties:
+                cover_AllDriversResideAtSameAddressInd:
+                  description: cover_AllDriversResideAtSameAddressInd
+                  type: boolean
+                  required: false
+                cover_Code:
+                  description: cover_Code
+                  type: string
+                  required: false
+                cover_ExpiryDate:
+                  description: cover_ExpiryDate
+                  type: date-only
+                  required: false
+                cover_Period:
+                  description: cover_Period
+                  type: number
+                  required: false
+                cover_PeriodUnits:
+                  description: cover_PeriodUnits
+                  type: string
+                  required: false
+                cover_RequiredDrivers:
+                  description: cover_RequiredDrivers
+                  type: string
+                  required: false
+                cover_StartDate:
+                  description: cover_StartDate
+                  type: date-only
+                  required: false
+                cover_TempCoverInd:
+                  description: cover_TempCoverInd
+                  type: boolean
+                  required: false
+                cover_TotalNoOfAddlVehicles:
+                  description: cover_TotalNoOfAddlVehicles
+                  type: number
+                  required: false
+                cover_TotalNoOfSubstituteVehicles:
+                  description: cover_TotalNoOfSubstituteVehicles
+                  type: number
+                  required: false
+                cover_VolXsAmt:
+                  description: cover_VolXsAmt
+                  type: number
+                  required: false
+                cover_VehiclePRN:
+                  description: cover_VehiclePRN
+                  type: string
+                  required: false
+                optionalExtras:
+                  description: optionalExtras
+                  required: false
+                  properties:
+                    enhancedCourtesyCar:
+                      description: enhancedCourtesyCar
+                      type: boolean
+                      required: false
+                    windscreen:
+                      description: windscreen
+                      type: boolean
+                      required: false
+                    windscreenCost:
+                      description: windscreenCost
+                      type: number
+                      required: false
+                    motorLegalExpenses:
+                      description: motorLegalExpenses
+                      type: boolean
+                      required: false
+                    courtesyCar:
+                      description: courtesyCar
+                      type: boolean
+                      required: false
+                    breakdownCover:
+                      description: breakdownCover
+                      type: boolean
+                      required: false
+                    breakdownCoverLevel:
+                      description: breakdownCoverLevel
+                      type: string
+                      required: false
+                    breakdownCoverLocalCost:
+                      description: breakdownCoverLocalCost
+                      type: number
+                      required: false
+                    breakdownCoverLocalMonthlyCost:
+                      description: breakdownCoverLocalMonthlyCost
+                      type: number
+                      required: false
+                    breakdownCoverLocalDeposit:
+                      description: breakdownCoverLocalDeposit
+                      type: number
+                      required: false
+                    breakdownCoverUkCost:
+                      description: breakdownCoverUkCost
+                      type: number
+                      required: false
+                    breakdownCoverUkMonthlyCost:
+                      description: breakdownCoverUkMonthlyCost
+                      type: number
+                      required: false
+                    breakdownCoverUkDeposit:
+                      description: breakdownCoverUkDeposit
+                      type: number
+                      required: false
+                    breakdownCoverEuCost:
+                      description: breakdownCoverEuCost
+                      type: number
+                      required: false
+                    breakdownCoverEuMonthlyCost:
+                      description: breakdownCoverEuMonthlyCost
+                      type: number
+                      required: false
+                    breakdownCoverEuDeposit:
+                      description: breakdownCoverEuDeposit
+                      type: number
+                      required: false
+                    courtesyCarTotalLoss:
+                      description: courtesyCarTotalLoss
+                      type: boolean
+                      required: false
+                    protectedNcdCost:
+                      description: protectedNcdCost
+                      type: number
+                      required: false
+                    protectedNcd:
+                      description: protectedNcd
+                      type: boolean
+                      required: false
+                    personalAccident5k:
+                      description: personalAccident5k
+                      type: number
+                      required: false
+                    courtesyCarTotalRepair:
+                      description: personalAccident5k
+                      type: number
+                      required: false
+          drivers:
+            type: array
+            items:
+              type: object
+              properties:
+                customerInsight_PhCancellationReasonWorstScore:
+                  description: customerInsight_PhCancellationReasonWorstScore
+                  type: number
+                  required: false
+                driver_CurrentDvlaDataNotUsedReason:
+                  description: driver_CurrentDvlaDataNotUsedReason
+                  type: string
+                  required: false
+                driver_DateOfBirth:
+                  description: driver_DateOfBirth
+                  type: date-only
+                  required: false
+                driver_DrivesVehicle1Ind:
+                  description: driver_DrivesVehicle1Ind
+                  type: string
+                  required: false
+                driver_DvlaDataInd:
+                  description: driver_DvlaDataInd
+                  type: string
+                  required: false
+                driver_EverHadPolicyCancelledInd:
+                  description: driver_EverHadPolicyCancelledInd
+                  type: boolean
+                  required: false
+                driver_Forename:
+                  description: driver_Forename
+                  type: string
+                  required: false
+                driver_HomeownerInd:
+                  description: driver_HomeownerInd
+                  type: string
+                  required: false
+                driver_LicenceCountryofIssue:
+                  description: driver_LicenceCountryofIssue
+                  type: string
+                  required: false
+                driver_LicenceDate:
+                  description: driver_LicenceDate
+                  type: date-only
+                  required: false
+                driver_LicenceType:
+                  description: driver_LicenceType
+                  type: string
+                  required: false
+                driver_LicenceValidatedInd:
+                  description: driver_LicenceValidatedInd
+                  type: string
+                  required: false
+                driver_MaritalStatus:
+                  description: driver_MaritalStatus
+                  type: string
+                  required: false
+                driver_MedicalConditionInd:
+                  description: driver_MedicalConditionInd
+                  type: string
+                  required: false
+                driver_NonMotoringConvictionInd:
+                  description: driver_NonMotoringConvictionInd
+                  type: string
+                  required: false
+                driver_NoOfYearsUkResidency:
+                  description: driver_NoOfYearsUkResidency
+                  type: number
+                  required: false
+                driver_Prn:
+                  description: driver_Prn
+                  type: string
+                  required: false
+                driver_ProsecutionPendingInd:
+                  description: driver_ProsecutionPendingInd
+                  type: string
+                  required: false
+                driver_RefusedCoverInd:
+                  description: driver_RefusedCoverInd
+                  type: string
+                  required: false
+                driver_RegdDisabledInd:
+                  description: driver_RegdDisabledInd
+                  type: string
+                  required: false
+                driver_RelationshipToProposer:
+                  description: driver_RelationshipToProposer
+                  type: string
+                  required: false
+                driver_Surname:
+                  description: driver_Surname
+                  type: string
+                  required: false
+                driver_TempAddlInd:
+                  description: driver_TempAddlInd
+                  type: boolean
+                  required: false
+                driver_Title:
+                  description: driver_Title
+                  type: string
+                  required: false
+                driver_UkResidencyDate:
+                  description: driver_UkResidencyDate
+                  type: date-only
+                  required: false
+                drivesVehicle:
+                  description: drivesVehicle
+                  type: array
+                  required: false
+                  items:
+                    type: object
+                    properties:
+                      driverUsesIncluded_Code:
+                        description: driverUsesIncluded_Code
+                        type: string
+                        required: false
+                      drivesVehicle_DrivingFrequency:
+                        description: drivesVehicle_DrivingFrequency
+                        type: string
+                        required: false
+                      drivesVehicle_StartDate:
+                        description: drivesVehicle_StartDate
+                        type: date-only
+                        required: false
+                      drivesVehicle_VehiclePrn:
+                        description: drivesVehicle_VehiclePrn
+                        type: string
+                        required: false
+                incidents:
+                  description: incidents
+                  required: false
+                  properties:
+                    claims:
+                      description: claims
+                      type: array
+                      required: false
+                      items:
+                        type: object
+                        properties:
+                          claim_ClaimType:
+                            description: claim_ClaimType
+                            type: string
+                            required: false
+                          claim_Date:
+                            description: claim_Date
+                            type: date-only
+                            required: false
+                          claim_DriverAtFaultInd:
+                            description: claim_DriverAtFaultInd
+                            type: string
+                            required: false
+                          claim_NcdLostInd:
+                            description: claim_NcdLostInd
+                            type: string
+                            required: false
+                          claim_PRN:
+                            description: claim_PRN
+                            type: number
+                            multipleOf: 0.01
+                            required: false
+                    convictions:
+                      description: convictions
+                      type: array
+                      required: false
+                      items:
+                        type: object
+                        properties:
+                          conviction_Code:
+                            description: conviction_Code
+                            type: string
+                            required: false
+                          conviction_Date:
+                            description: conviction_Date
+                            type: date-only
+                            required: false
+                          conviction_DisqualifiedEndDate:
+                            description: conviction_DisqualifiedEndDate
+                            type: date-only
+                            required: false
+                          conviction_DisqualifiedInd:
+                            description: conviction_DisqualifiedInd
+                            type: string
+                            required: false
+                          conviction_Prn:
+                            description: conviction_Prn
+                            type: number
+                            multipleOf: 0.01
+                            required: false
+                          conviction_SuspensionPeriod:
+                            description: conviction_SuspensionPeriod
+                            type: number
+                            required: false
+                driver_MedicalCondition_DvlaAdvisedInd:
+                  description: MedicalCondition_DvlaAdvisedInd
+                  type: string
+                  required: false
+                MedicalCondition_DvlaAdvisedInd:
+                  description: MedicalCondition_DvlaAdvisedInd
+                  type: string
+                  required: false
+                occupations:
+                  description: occupations
+                  type: array
+                  required: false
+                  items:
+                    type: object
+                    properties:
+                      occupation_EmployersBusiness:
+                        description: occupation_EmployersBusiness
+                        type: string
+                        required: false
+                      occupation_EmploymentType:
+                        description: occupation_EmploymentType
+                        type: string
+                        required: false
+                      occupation_FullTimeEmploymentInd:
+                        description: occupation_FullTimeEmploymentInd
+                        type: string
+                        required: false
+                      occupation_Occupation_Code:
+                        description: occupations_Occupation_Code
+                        type: string
+                        required: false
+                driver_DriverAddedCount:
+                  description: driver_DriverAddedCount
+                  type: integer
+                  required: false
+          policy:
+            description: policy details
+            type: object
+            required: false
+            properties:
+              policy_EffectiveEndDate:
+                description: policy_EffectiveEndDate
+                type: date-only
+                required: false
+              policy_EffectiveEndTime:
+                description: policy_EffectiveEndTime
+                type: time-only
+                required: false
+              policy_EffectiveStartDate:
+                description: policy_EffectiveStartDate
+                type: date-only
+                required: false
+              policy_EffectiveStartTime:
+                description: policy_EffectiveStartTime
+                type: time-only
+                required: false
+              policy_Event_Date:
+                description: policy_Event_Date
+                type: date-only
+                required: false
+              policy_ExpiryDate:
+                description: policy_ExpiryDate
+                type: date-only
+                required: false
+              policy_ExpiryTime:
+                description: policy_ExpiryTime
+                type: time-only
+                required: false
+              policy_GenerationCode:
+                description: policy_GenerationCode
+                type: string
+                required: false
+              policy_InceptionDate:
+                description: policy_InceptionDate
+                type: date-only
+                required: false
+              policy_InitialRateDate:
+                description: policy_InitialRateDate
+                type: date-only
+                required: false
+              policy_IptRateMtaAddPremium:
+                description: policy_IptRateMtaAddPremium
+                type: string
+                required: false
+              policy_IptRateMtaReturnPremium:
+                description: policy_IptRateMtaReturnPremium
+                type: string
+                required: false
+              policy_IptRateNewBusinessRenewal:
+                description: policy_IptRateNewBusinessRenewal
+                type: string
+                required: false
+              policy_LyPaymentMethod:
+                description: policy_LyPaymentMethod
+                type: string
+                required: false
+              policy_MultiCarNumberOfVehicles:
+                description: policy_MultiCarNumberOfVehicles
+                type: number
+                required: false
+              policy_PolicyNo:
+                description: policy_PolicyNo
+                type: string
+                required: false
+              policy_productTier:
+                description: policy_productTier
+                type: string
+                required: false
+              policy_SchemeName:
+                description: policy_SchemeName
+                type: string
+                required: false
+              policy_SchemeVariant:
+                description: policy_SchemeVariant
+                type: number
+                required: false
+              policy_FlowEmailInsured:
+                description: policy_FlowEmailInsured
+                type: string
+                required: false
+              policy_FlowPhInsured:
+                description: policy_FlowPhInsured
+                type: string
+                required: false
+              policy_FlowEmailLoa:
+                description: policy_FlowEmailLoa
+                type: number
+                required: false
+              policy_FlowPhLoa:
+                description: policy_FlowPhLoa
+                type: number
+                required: false
+              policy_PremiumType:
+                description: policy_PremiumType
+                type: string
+                required: false
+              policy_InceptionPurchaseLag:
+                description: policy_InceptionPurchaseLag
+                type: number
+                required: false
+              policy_InceptionQuoteLag:
+                description: policy_InceptionQuoteLag
+                type: number
+                required: false
+              policy_Event_Time:
+                description: policy_Event_Time
+                type: time-only
+                required: false
+              policy_BreakdownLoa:
+                type: integer
+                required: false
+              policy_BreakdownMembership:
+                type: string
+                required: false
+              policy_BreakdownNoOfCallouts:
+                type: string
+                required: false
+              policy_SourceCode:
+                type: string
+                required: false
+              policy_CancellationReason:
+                type: string
+                required: false
+              policy_LVMember:
+                type: boolean
+                required: false
+              policy_MultiProductDiscountInd:
+                type: boolean
+                required: false
+              policy_MarketingDiscountAmt:
+                type: number
+                format: double
+                required: false
+              policy_MarketingDiscountPct:
+                type: number
+                format: double
+                required: false
+              policy_IptRateInitial:
+                type: number
+                format: double
+                required: false
+              policy_LVStaffDiscount:
+                type: string
+                required: false
+              intermediary_QuoteArea:
+                type: string
+                required: false
+              policy_RecapturedInd:
+                type: string
+                required: false
+              policy_NumberOfAZOActivePolicies:
+                description: policy_NumberOfAZOActivePolicies
+                type: integer
+                required: false
+          proposerPolicyHolder:
+            description: proposerPolicyHolder details
+            type: object
+            required: false
+            properties:
+              address:
+                description: address
+                type: object
+                required: false
+                properties:
+                  BuildingName:
+                    description: buildingName
+                    type: string
+                    required: false
+                  BuildingNumber:
+                    description: buildingNumber
+                    type: string
+                    required: false
+                  DependentLocality:
+                    description: dependentLocality
+                    type: string
+                    required: false
+                  DependentThoroughfareName:
+                    description: DependentThoroughfareName
+                    type: string
+                    required: false
+                  DoubleDependentLocality:
+                    description: doubleDependentLocality
+                    type: string
+                    required: false
+                  DPS:
+                    description: DPS
+                    type: string
+                    required: false
+                  OrganisationName:
+                    description: organisationName
+                    type: string
+                    required: false
+                  PostTown:
+                    description: postTown
+                    type: string
+                    required: false
+                  proposerPolicyholder_PostCodeFull:
+                    description: proposerPolicyholder_PostCodeFull
+                    type: string
+                    required: false
+                  SubBuildingName:
+                    description: SubBuildingName
+                    type: string
+                    required: false
+                  ThoroughfareName:
+                    description: ThoroughfareName
+                    type: string
+                    required: false
+                  DependentThoroughfareDescriptor:
+                    description: DependentThoroughfareDescriptor
+                    type: string
+                    required: false
+                  ThoroughfareDescriptor:
+                    description: ThoroughfareDescriptor
+                    type: string
+                    required: false
+                  UDPRN:
+                    description: UDPRN
+                    type: string
+                    required: false
+                  UMRRN:
+                    description: UMRRN
+                    type: string
+                    required: false
+                  Outcode:
+                    description: Outcode
+                    type: string
+                    required: false
+                  Incode:
+                    description: Incode
+                    type: string
+                    required: false
+                  POBox:
+                    description: POBox
+                    type: string
+                    required: false
+                  Longitude:
+                    description: Longitude
+                    type: string
+                    required: false
+                  Lattitude:
+                    description: Lattitude
+                    type: string
+                    required: false
+                  Eastings:
+                    description: Eastings
+                    type: string
+                    required: false
+                  Northings:
+                    description: Northings
+                    type: string
+                    required: false
+                  ISBFPO:
+                    description: ISBFPO
+                    type: string
+                    required: false
+                  Multiresidency:
+                    description: Multiresidency
+                    type: string
+                    required: false
+                  IsnotyetBuilt:
+                    description: IsnotyetBuilt
+                    type: string
+                    required: false
+              occupations:
+                description: occupations
+                type: array
+                required: false
+                items:
+                  type: object
+                  properties:
+                    occupation_EmployersBusiness:
+                      description: occupation_EmployersBusiness
+                      type: string
+                      required: false
+                    occupation_EmploymentType:
+                      description: occupation_EmploymentType
+                      type: string
+                      required: false
+                    occupation_FullTimeEmploymentInd:
+                      description: occupation_FullTimeEmploymentInd
+                      type: string
+                      required: false
+                    occupation_Occupation_Code:
+                      description: occupations_Occupation_Code
+                      type: string
+                      required: false
+              otherInsurances:
+                description: otherInsurances
+                type: array
+                required: false
+                items:
+                  type: object
+                  properties:
+                    otherInsurances_Insurer:
+                      description: otherInsurances_Insurer
+                      type: string
+                      required: false
+                    otherInsurances_Insurer_Type:
+                      description: otherInsurances_Insurer_Type
+                      type: string
+                      required: false
+              proposer_Email:
+                description: proposer_Email
+                type: string
+                required: false
+              proposerPolicyholder_DateOfBirth:
+                description: proposerPolicyholder_DateOfBirth
+                type: date-only
+                required: false
+              proposerPolicyholder_Forename:
+                description: proposerPolicyholder_Forename
+                type: string
+                required: false
+              proposerPolicyholder_ForenameInitial1:
+                description: proposerPolicyholder_ForenameInitial1
+                type: string
+                required: false
+              proposerPolicyholder_HomeownerInd:
+                description: proposerPolicyholder_HomeownerInd
+                type: string
+                required: false
+              proposerPolicyholder_MaritalStatus:
+                description: proposerPolicyholder_MaritalStatus
+                type: string
+                required: false
+              proposerPolicyholder_NoOfVehiclesAvailableToFamily:
+                description: proposerPolicyholder_NoOfVehiclesAvailableToFamily
+                type: number
+                required: false
+              proposerPolicyholder_PostCodeSector:
+                description: proposerPolicyholder_PostCodeSector
+                type: string
+                required: false
+              proposerPolicyholder_Prn:
+                description: proposerPolicyholder_Prn
+                type: string
+                required: false
+              proposerPolicyholder_Sex:
+                description: proposerPolicyholder_Sex
+                type: string
+                required: false
+              proposerPolicyholder_Surname:
+                description: proposerPolicyholder_Surname
+                type: string
+                required: false
+              proposerPolicyholder_TitleCode:
+                description: proposerPolicyholder_TitleCode
+                type: string
+                required: false
+              proposerPolicyholder_Type:
+                description: proposerPolicyholder_Type
+                type: string
+                required: false              
+          renewalDetails:
+            description: renewalDetails
+            required: false
+            properties:
+              lyPremiumPreIptAndAddOns:
+                description: lyPremiumPreIptAndAddOns
+                type: number
+                required: false
+              lyPremiumPreIptAndAddOnsEssentials: 
+                description: lyPremiumPreIptAndAddOnsEssentials
+                type: number
+                required: false
+              policyAgeYears:
+                description: policyAgeYears
+                type: integer
+                required: false
+              policy_GenerationCode:
+                description: policy_GenerationCode
+                type: string
+                required: false
+              policy_InceptionQuoteLagOriginal:
+                description: policy_InceptionQuoteLagOriginal
+                type: integer
+                required: false
+              PriceMatchAmt:
+                description: PriceMatchAmt
+                type: string
+                required: false
+              FullCAISDataUsed:
+                description: FullCAISDataUsed
+                type: string
+                required: false
+              policy_RecapturedInd:
+                description: policy_RecapturedInd
+                type: string
+                required: false
+              MPDiscountAppliedManually:
+                description: MPDiscountAppliedManually
+                type: string
+                required: false
+              vehicle:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    RVS_QuoteManipulationScore:
+                      description: RVS_QuoteManipulationScore
+                      type: integer
+                      required: false
+                    RVS_TotalScoreInception:
+                      description: RVS_TotalScoreInception
+                      type: integer
+                      required: false
+                    Ncd_GrantedYears:
+                      description: Ncd_GrantedYears
+                      type: integer
+                      required: false 
+                    RVS_CueMotorScore:
+                      description: RVS_CueMotorScore
+                      type: integer
+                      required: false
+                    RVS_CuePiScore:
+                      description: RVS_CuePiScore
+                      type: integer
+                      required: false
+                    RVS_ProfileScore:
+                      description: RVS_ProfileScore
+                      type: integer
+                      required: false
+                    RVS_ExceptionFileScore:
+                      description: RVS_ExceptionFileScore
+                      type: integer
+                      required: false
+                    RVS_WorstCancellationScore:
+                      description: RVS_WorstCancellationScore
+                      type: integer
+                      required: false
+                    RVS_ScorecardIdScore:
+                      description: RVS_ScorecardIdScore
+                      type: integer
+                      required: false
+                    RVS_NCDValidationScore:
+                      description: RVS_NCDValidationScore
+                      type: integer
+                      required: false
+                    VehiclePRN:
+                      description: VehiclePRN
+                      type: string
+                      required: false
+                    MultiCarDiscountRate:
+                      description: MultiCarDiscountRate
+                      type: string
+                      required: false
+                    RVS_PolicyRiskScore:
+                      description: RVS_PolicyRiskScore
+                      type: string
+                      required: false
+                    RVS_PolicyRiskOutcome:
+                      description: RVS_PolicyRiskOutcome
+                      type: string
+                      required: false
+                    RVS_ScorecardIdOutcome:
+                      description: RVS_ScorecardIdOutcome
+                      type: string
+                      required: false
+                    RVS_CUEMotorOutcome:
+                      description: RVS_CUEMotorOutcome
+                      type: string
+                      required: false
+                    RVS_CUEPIOutcome:
+                      description: RVS_CUEPIOutcome
+                      type: string
+                      required: false
+                    RVS_NCDValidationOutcome:
+                      description: RVS_NCDValidationOutcome
+                      type: string
+                      required: false
+                    RVS_MPPCancellationScore:
+                      description: RVS_MPPCancellationScore
+                      type: string
+                      required: false
+                    RVS_MPPCancellationOutcome:
+                      description: RVS_MPPCancellationOutcome
+                      type: string
+                      required: false
+                    RVS_ContradictionScore:
+                      description: RVS_ContradictionScore
+                      type: string
+                      required: false
+                    RVS_ContradictionOutcome:
+                      description: RVS_ContradictionOutcome
+                      type: string
+                      required: false
+                    RVS_ProfileOutcome:
+                      description: RVS_ProfileOutcome
+                      type: string
+                      required: false
+                    RVS_RiskSegmentScore:
+                      description: RVS_RiskSegmentScore
+                      type: string
+                      required: false
+                    RVS_RiskSegmentOutcome:
+                      description: RVS_RiskSegmentOutcome
+                      type: string
+                      required: false
+                    RVS_ValidationScorecardTotal:
+                      description: RVS_ValidationScorecardTotal
+                      type: string
+                      required: false
+                    RVS_ValidationScorecardOutcome:
+                      description: RVS_ValidationScorecardOutcome
+                      type: string
+                      required: false
+                    RVS_ExceptionFileOutcome:
+                      description: RVS_ExceptionFileOutcome
+                      type: string
+                      required: false
+                    RVS_QuoteManipulationOutcome:
+                      description: RVS_QuoteManipulationOutcome
+                      type: string
+                      required: false
+                    RVS_TotalOutcomeInception:
+                      description: RVS_TotalOutcomeInception
+                      type: string
+                      required: false
+                    RVS_WorstCancellationOutcome:
+                      description: RVS_WorstCancellationOutcome
+                      type: string
+                      required: false
+              periodStartDate:
+                description: periodStartDate
+                type: date-only
+                required: false
+              monthlyPayerInitialPaymentDate: 
+                description: monthlyPayerInitialPaymentDate
+                type: date-only
+                required: false
+              annualPayerInitialPaymentDate:
+                description: annualPayerInitialPaymentDate
+                type: date-only
+                required: false 
+              annualPayerProposedPaymentDay: 
+                description: annualPayerProposedPaymentDay
+                type: integer
+                required: false
+              annualPayerProposedSecondPaymentDate: 
+                description: annualPayerProposedSecondPaymentDate
+                type: date-only
+                required: false
+              lastYearsCoverStartDate: 
+                description: lastYearsCoverStartDate
+                type: date-only
+                required: false
+              lastYearsCoverEndDate: 
+                description: lastYearsCoverEndDate
+                type: date-only
+                required: false
+              lastYearsPremium: 
+                description: lastYearsPremium
+                type: number
+                required: false
+              lastYearsMonthlyPremium: 
+                description: lastYearsMonthlyPremium
+                type: number
+                required: false
+              lyPremiumType: 
+                description: lyPremiumType
+                type: string
+                required: false
+              lastYearsMonthlyTotalPremium: 
+                description: lastYearsMonthlyTotalPremium
+                type: number
+                required: false
+              lyCoverLevel:
+                description: lyCoverLevel
+                type: string
+                required: false
+          vehicles:
+            description: vehicles details
+            type: array
+            required: false
+            items:
+              type: object
+              properties:
+                drivenBy:
+                  description: drivenBy
+                  type: array
+                  required: false
+                  items:
+                    type: object
+                    properties:
+                      drivenBy_DrivingFrequency:
+                        description: drivenBy_DrivingFrequency
+                        type: string
+                        required: false
+                      drivenBy_DriverPrn:
+                        description: drivenBy_DriverPrn
+                        type: string
+                        required: false
+                modifications:
+                  description: modifications
+                  type: array
+                  required: false
+                  items:
+                    type: object
+                    properties:
+                      modifications_Code:
+                        description: modifications_Code
+                        type: string
+                        required: false
+                ncd:
+                  description: ncd
+                  required: false
+                  properties:
+                    ncd_ClaimedCountryEarned:
+                      description: ncd_ClaimedCountryEarned
+                      type: string
+                      required: false
+                    ncd_ClaimedEntitlementReason:
+                      description: ncd_ClaimedEntitlementReason
+                      type: string
+                      required: false
+                    ncd_ClaimedProtectedInd:
+                      description: ncd_ClaimedProtectedInd
+                      type: string
+                      required: false
+                    ncd_ClaimedProtectionReqdInd:
+                      description: ncd_ClaimedProtectionReqdInd
+                      type: string
+                      required: false
+                    ncd_ClaimedYears:
+                      description: ncd_ClaimedYears
+                      type: number
+                      required: false
+                    ncd_NcdHolderPrn:
+                      description: ncd_NcdHolderPrn
+                      type: string
+                      required: false
+                uses_AbiCode:
+                  description: uses_AbiCode
+                  type: string
+                  required: false
+                vehicle_AnnualMileage:
+                  description: vehicle_AnnualMileage
+                  type: number
+                  required: false
+                vehicle_DateFirstRegd:
+                  description: vehicle_DateFirstRegd
+                  type: date-only
+                  required: false
+                vehicle_DateManufactured:
+                  description: vehicle_DateManufactured
+                  type: date-only
+                  required: false
+                vehicle_Keeper:
+                  description: vehicle_Keeper
+                  type: string
+                  required: false
+                vehicle_LeftOrRightHandDrive:
+                  description: vehicle_LeftOrRightHandDrive
+                  type: string
+                  required: false
+                vehicle_LocationKeptOvernight:
+                  description: vehicle_LocationKeptOvernight
+                  type: string
+                  required: false
+                vehicle_Model:
+                  description: vehicle_Model
+                  type: string
+                  required: false
+                vehicle_ModifiedInd:
+                  description: vehicle_ModifiedInd
+                  type: string
+                  required: false
+                vehicle_Ownership:
+                  description: vehicle_Ownership
+                  type: string
+                  required: false
+                vehicle_PostCodeFull:
+                  description: vehicle_PostCodeFull
+                  type: string
+                  required: false
+                vehicle_PurchaseDate:
+                  description: vehicle_PurchaseDate
+                  type: date-only
+                  required: false
+                vehicle_QPlateInd:
+                  description: vehicle_QPlateInd
+                  type: string
+                  required: false
+                vehicle_RegNo:
+                  description: vehicle_RegNo
+                  type: string
+                  required: false
+                vehicle_StartDate:
+                  description: vehicle_StartDate
+                  type: date-only
+                  required: false
+                vehicle_TransmissionType:
+                  description: vehicle_TransmissionType
+                  type: string
+                  required: false
+                vehicle_Value:
+                  description: vehicle_Value
+                  type: number
+                  required: false
+                vehicle_VehiclePrn:
+                  description: vehicle_VehiclePrn
+                  type: string
+                  required: false
+                vehicle_RiskScoreInceptionIn:
+                  description: vehicle_RiskScoreInceptionIn
+                  type: number
+                  required: false
+                vehicle_QuoteManipulationScoreIn:
+                  description: vehicle_QuoteManipulationScoreIn
+                  type: number
+                  required: false
+                vehicle_PremiumPreIptAndAddOns:
+                  description: vehicle_PremiumPreIptAndAddOns
+                  type: number
+                  required: false
+                vehicle_FlowVRNInsured:
+                  description: vehicle_FlowVRNInsured
+                  type: string
+                  required: false
+                vehicle_Vehicle_PersonalImportInd:
+                  type: string
+                  required: false
+                vehicle_ChoiceAddOns:
+                  type: string
+                  required: false
+                vehicle_MultiCarDiscountRateIn:
+                  type: string
+                  required: false
+                
+      rawEnrichments:
+        description: rawEnrichments
+        type: array
+        required: true
+        items:
+          type: object
+          properties:
+            compression:
+              description: compression
+              type: string
+              required: false
+            data:
+              description: data
+              type: string
+              required: false
+            dataset:
+              description: dataset
+              type: string
+              required: false
+            driverPRN:
+              description: driverPRN
+              type: string
+              required: false
+            driverPRNMap:
+              description: driverPRNMap
+              type: array
+              required: false
+              items:
+                type: object
+                properties:
+                  driverPRN:
+                    description: driverPRN
+                    type: string
+                    required: false
+                  LexisNexisPRN:
+                    description: LexisNexisPRN
+                    type: string
+                    required: false 
+            outputformat:
+              description: outputformat
+              type: string
+              required: false
+            outputschema:
+              description: outputschema
+              type: string
+              required: false
+            provider:
+              description: provider
+              type: string
+              required: false
+            vehiclePRN:
+              description: vehiclePRN
+              type: string
+              required: false
+            errorMessage:
+              description: errorMessage
+              type: string
+              required: false
+            errorCode:
+              description: errorCode
+              type: string
+              required: false
