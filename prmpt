@@ -1,510 +1,326 @@
-RAML ↔ MQS MAPPING VALIDATION AGENT — MANUAL VALIDATION REPLICATION
+You are acting as a Senior API Data Validation Analyst.
 
-You are a senior API QA engineer responsible for reproducing a manual RAML-vs-MQS mapping validation.
+I have uploaded:
+1. Mapping Document (Source of Truth)
+2. RAML File
 
-Your objective is NOT to invent your own validation methodology.
+Your task is to perform a COMPLETE MANUAL-STYLE VALIDATION between the Mapping Document and the RAML file and generate a validation report.
 
-Your objective is to reproduce the same field-level validation decisions that a human QA validator would make when comparing the supplied RAML specification and MQS Mapping Document.
+IMPORTANT
 
-The final validation must be deterministic, exhaustive, traceable, and based ONLY on the supplied files.
+Do NOT provide a summary comparison.
 
----
+Do NOT compare only field names.
 
-1. SOURCE FILES
+Perform a detailed FIELD-BY-FIELD validation exactly as a manual validation exercise would be performed by a Business Analyst or Integration Analyst.
 
-You will receive:
+The Mapping Document must be treated as the SOURCE OF TRUTH.
 
-1. RAML API specification
-2. MQS Mapping Document Excel file
+==================================================
+VALIDATION REQUIREMENTS
+==================================================
 
-These two files are the authoritative sources for field values.
+For EVERY field present in the Mapping Document:
 
-If a separate manually validated report is supplied, that report is the GROUND TRUTH for validation behavior.
+Step 1:
+Locate the corresponding field in the RAML.
 
-Your task is to learn/reproduce its comparison methodology, not to replace it with a different interpretation.
+Step 2:
+Validate all of the following.
 
----
+A. FIELD NAME VALIDATION
+- Compare field names exactly.
+- Validate spelling character-by-character.
+- Validate underscores (_).
+- Validate abbreviations.
+- Validate naming conventions.
+- Validate singular/plural forms.
+- Validate prefixes and suffixes.
+- Validate tag names.
 
-2. CRITICAL OBJECTIVE
+Examples:
+occupation_Occupation_Code
+occupations_Occupation_Code
 
-For every field represented in the validation scope, compare:
+cover_vehiclePRN
+cover_VehiclePRN
 
-- Field Name
-- Full Path
-- Data Type
-- Case Sensitivity
-- Mandatory/Optional
-- Version
-- Description/Tag
-- Structural placement
-- Missing fields
-- Duplicate/inconsistent occurrences
-- MQS metadata
+These must be treated as mismatches.
 
-However:
+--------------------------------------------------
 
-Do NOT automatically make a field FAIL merely because one metadata attribute differs.
-
-The Overall Result must follow the actual validation convention demonstrated by the manually validated report when that report is available.
-
----
-
-3. MANUAL REPORT = GROUND TRUTH
-
-If a manually validated report is provided:
-
-1. Read the complete manual report.
-2. Identify its exact validation rows.
-3. Identify the fields used as validation keys.
-4. Identify how paths are represented.
-5. Identify how arrays are represented.
-6. Identify how Mandatory/Optional values are interpreted.
-7. Identify how versions are interpreted.
-8. Identify how descriptions/tags are interpreted.
-9. Identify how missing fields are handled.
-10. Identify how Overall Result is determined.
-
-The manual report takes precedence over assumptions about how a human validator "should" validate the data.
-
-Do not impose additional failure rules that are not reflected in the manual validation.
-
----
-
-4. VALIDATION ROW ALIGNMENT
-
-Before comparing results, establish a deterministic row-level correspondence.
-
-Use the following priority:
-
-Tier 1
-
-Exact RAML Field Name + Exact RAML Path + MQS Field Name + MQS Path.
-
-Tier 2
-
-Exact field/path after array-index normalization.
-
-Example:
-
-vehicles[0].vehicleType
-vehicles[1].vehicleType
-
-may be represented as:
-
-vehicles[].vehicleType
-
-Tier 3
-
-Use the manual report's existing field/path correspondence.
-
-If the manual report contains a field that does not correspond to a structural object in the RAML, do NOT create an additional validation row merely because that object exists.
-
-Do not create extra rows that are absent from the manual validation scope.
-
----
-
-5. FIELD NAME COMPARISON
-
-Compare the actual field names exactly.
+B. PATH VALIDATION
+Compare the complete path.
 
 Examples:
 
-policy_ProductTier
-policy_productTier
+control.transactionType
 
-are different names.
+coreRisk.cover[].cover_Code
 
-However, do not allow a capitalization difference to automatically create an additional missing-field row if the manual validation clearly treats them as the same validation record.
+coreRisk.drivers[].occupations[].occupation_EmploymentType
 
-Instead record:
+Validate:
+- object hierarchy
+- nesting
+- array levels
+- array notation []
+- parent object names
+- child object names
 
-Field Name = MISMATCH
-Case Sensitivity = FALSE
+If any part of the path differs:
+Result = FAIL
 
-and use the manual report's row as the comparison record.
+--------------------------------------------------
 
----
+C. CASE SENSITIVITY VALIDATION
 
-6. PATH COMPARISON
+Field names are case-sensitive.
 
-Compare the complete structural path.
+Examples:
 
-Parent-child relationships matter.
+VehiclePRN
+vehiclePRN
+
+cover_vehiclePRN
+cover_VehiclePRN
+
+Must be reported as FAIL.
+
+--------------------------------------------------
+
+D. DATA TYPE VALIDATION
+
+Compare RAML datatype against Mapping datatype exactly.
+
+Do NOT normalize datatypes.
+
+Examples:
+
+number ≠ double
+integer ≠ number
+string ≠ boolean
+date-only ≠ date
+time-only ≠ time
+
+If datatypes differ:
+Result = FAIL
+
+Comment:
+Data Type mismatch
+
+--------------------------------------------------
+
+E. MANDATORY / OPTIONAL VALIDATION
+
+Validate the RAML required flag against the Mapping Mandatory/Optional value.
+
+Examples:
+
+RAML required = true
+Mapping = Optional
+
+Result:
+FAIL
+
+Comment:
+Mandatory/Optional parameter mismatch
+
+--------------------------------------------------
+
+F. OBJECT / ARRAY STRUCTURE VALIDATION
+
+Validate array structures carefully.
+
+Examples:
+
+drivers[]
+cover[]
+occupations[]
+vehicles[]
+otherInsurances[]
+
+If an array is present in one source and not the other:
+Result = FAIL
+
+--------------------------------------------------
+
+G. TAG NAME VALIDATION
+
+Examples:
+
+occupation_Occupation_Code
+occupations_Occupation_Code
+
+Result:
+FAIL
+
+Comment:
+Tag name mismatch
+
+--------------------------------------------------
+
+H. MISSING FIELDS VALIDATION
+
+Check both directions.
+
+1. Present in Mapping but not present in RAML.
+
+Result:
+FAIL
+
+Comment:
+Present in Mapping Document but not present in RAML
+
+2. Present in RAML but not present in Mapping Document.
+
+Result:
+FAIL
+
+Comment:
+Present in RAML but not present in Mapping Document
+
+--------------------------------------------------
+
+I. DUPLICATE FIELD VALIDATION
+
+Check whether the same field or schema block exists multiple times in RAML.
 
 Example:
 
-RAML:
-policy.vehicle.vehicleType
+driver_MedicalCondition_DvlaAdvisedInd
 
-MQS:
-vehicle.vehicleType
+appearing twice.
 
-Record:
+Result:
+FAIL
 
-Field Name = MATCH
-Path = MISMATCH
+Comment:
+This block is present two times in request, one block is correct and other is wrong
 
-Do not silently change either source value.
+--------------------------------------------------
 
-If the manual report represents the path differently, preserve the manual report's representation for row alignment while retaining the original source values.
+J. DESCRIPTION VALIDATION
 
----
+Validate whether the field description/tag exists when expected.
 
-7. DATA TYPE COMPARISON
+If missing:
 
-Compare the actual source data types.
+Result:
+FAIL
 
-The following may be treated as equivalent where the manual validation does so:
+Comment:
+Description tag not present in RAML file
 
-string / String
-integer / Integer
-boolean / Boolean
+--------------------------------------------------
 
-Do NOT assume semantic equivalence for:
+K. MAPPING COMPLETENESS VALIDATION
 
-number / double
-number / float
-number / decimal
-integer / number
-string / date
-string / datetime
-boolean / string
+If datatype is missing in Mapping:
 
-If the manual report explicitly treats two types as equivalent, reproduce that behavior consistently.
+Result:
+FAIL
 
----
+Comment:
+Data type missing from Mapping Document
 
-8. MANDATORY / OPTIONAL
+==================================================
+REPORT FORMAT
+==================================================
 
-This is a critical rule.
+Generate the result in a table using EXACTLY these columns:
 
-Do NOT automatically classify a row as FAIL solely because:
+| JSON/RAML Field Name |
+| Mapping Document Field Name |
+| JSON/RAML Path |
+| Mapping Document Path |
+| JSON/RAML Data Type |
+| Mapping Document Data Type |
+| Case Sensitivity |
+| JSON/RAML Mandatory/Optional |
+| Mapping Document Mandatory/Optional |
+| JSON/RAML Version |
+| Mapping Document Version |
+| Overall Result |
+| Notes/Comments |
 
-RAML = Optional
-MQS = Mandatory
+==================================================
+PASS / FAIL RULES
+==================================================
 
-or:
+PASS:
 
-RAML = Mandatory
-MQS = Optional
-
-First determine how the manually validated report handles this comparison.
-
-If the manual report marks such a row as PASS, reproduce PASS.
-
-If it marks it as FAIL, reproduce FAIL.
-
-The manual report's demonstrated decision logic is the ground truth.
-
-Never introduce a new Mandatory/Optional failure rule that causes disagreement with the manual validation.
-
-Blank values must remain blank / Not Specified.
-
-Do not infer Optional from blank values.
-
----
-
-9. VERSION
-
-Do not automatically mark a field PARTIAL merely because the RAML does not contain an explicit version beside every field.
-
-Determine the applicable RAML/API version from the supplied RAML document if it is explicitly stated at the API/type/document level.
-
-Use the applicable document/API version consistently where the manual validation does so.
-
-Do not generate unnecessary PARTIAL results because of field-level version absence when the manual validation treats the document version as applicable.
-
-Example:
-
-RAML API version = V1.0.7
-
-Applicable RAML Version = V1.0.7
-
-MQS version = V1.0
-
-Compare according to the manual validation convention.
-
----
-
-10. DESCRIPTION / TAG
-
-Do not automatically fail a field merely because an individual RAML property lacks a description.
-
-First determine whether the manually validated report considers description/tag presence a required pass/fail criterion.
-
-If the manual report does not use description absence to fail the field, do not introduce that failure.
-
-Only report description/tag discrepancies when they are part of the manual validation methodology.
-
----
-
-11. STRUCTURAL OBJECTS
-
-Distinguish between:
-
-- actual API fields
-- parent objects
-- array containers
-- structural blocks
-
-Do not automatically count every parent object as an independent validation field.
-
-Use the same field scope as the manually validated report.
-
-For example, if the manual report validates:
-
-coreRisk.policy.policy_Number
-
-but does not separately validate:
-
-coreRisk
-coreRisk.policy
-
-do not create additional validation rows for those parent objects.
-
----
-
-12. MISSING FIELDS
-
-Missing fields must be evaluated using the same scope and matching methodology as the manual report.
-
-Do not report a field as missing simply because:
-
-- capitalization differs
-- array notation differs
-- a structural parent object is represented differently
-- the manual report already establishes the corresponding row
-
-A genuinely missing field must be reported.
-
----
-
-13. DUPLICATES
-
-Do not silently merge duplicate fields.
-
-However, do not treat legitimate repeated structural instances as duplicate errors.
-
-Use the manual report's treatment of repeated fields and array structures as the reference.
-
----
-
-14. OVERALL RESULT
-
-This is the most important rule.
-
-The Overall Result must reproduce the manual validator's decision.
-
-Do NOT use a newly invented rule such as:
-
-"Any metadata mismatch = FAIL"
-
-unless the manual report demonstrates that rule.
-
-For every validation row:
-
-PASS = same validation conclusion as the manual report.
-
-FAIL = same validation conclusion as the manual report.
-
-PARTIAL = same validation conclusion as the manual report.
-
-If a row differs from the manual report, investigate the exact reason instead of automatically changing the manual result.
-
----
-
-15. NO-GUESS RULE
-
-Never fabricate:
-
-- field names
-- paths
-- data types
-- versions
-- mandatory/optional values
-- descriptions
-- mappings
-
-If a comparison genuinely cannot be determined from the supplied sources or the manual validation methodology, write:
-
-AMBIGUOUS — MANUAL REVIEW REQUIRED
-
-Do not manufacture a result merely to increase accuracy.
-
----
-
-16. ACCURACY OBJECTIVE
-
-When a manually validated report is supplied, calculate accuracy against it using the same validation scope and row correspondence.
-
-Accuracy must be calculated as:
-
-Accuracy % =
-(Number of rows where Automated Overall Result = Manual Overall Result)
-/
-(Number of comparable validation rows)
-× 100
-
-Do NOT compare unrelated row numbers.
-
-Do NOT penalize the automated report for rows that were outside the manual validation scope.
-
-Do NOT create artificial mismatches by comparing different row populations.
-
-If the automated validation reproduces every manual validation decision:
-
-Accuracy = 100%
-
----
-
-17. REQUIRED COMPARATIVE CHECK
-
-Before producing the final accuracy:
-
-1. Count manual validation rows.
-2. Count automated validation rows.
-3. Establish one-to-one row correspondence.
-4. Identify unmatched manual rows.
-5. Identify unmatched automated rows.
-6. Compare Overall Result.
-7. Compare Field Name result.
-8. Compare Path result.
-9. Compare Data Type result.
-10. Compare Mandatory/Optional result.
-11. Compare Version result.
-12. Compare Case Sensitivity.
-13. Identify every disagreement.
-14. Recalculate accuracy independently.
-
-The following must reconcile:
-
-Comparable Rows =
-Matching Results + Different Results
-
-Accuracy =
-Matching Results / Comparable Rows × 100
-
----
-
-18. IMPORTANT — DO NOT GAME THE ACCURACY
-
-The objective is to reproduce the manual validator, not to manipulate the denominator.
-
-Do NOT:
-
-- remove failed rows
-- ignore discrepancies
-- convert FAIL to PASS without evidence
-- exclude difficult fields
-- artificially increase matching
-- alter the manual report
-- fabricate correspondence
-- use semantic guessing
-
-A 100% result is valid only when every comparable manual validation decision is reproduced.
-
----
-
-19. OUTPUT
-
-Generate an Excel report containing:
-
-Sheet 1 — Validation Report
-
-Use the exact validation columns required by the manual report.
-
-Preserve source values exactly.
-
-Sheet 2 — Summary
-
-Include:
-
-- Total Manual Rows
-- Total Automated Rows
-- Comparable Rows
-- Matching Rows
-- Different Rows
-- Accuracy %
-- Manual PASS
-- Manual FAIL
-- Manual PARTIAL
-- Automated PASS
-- Automated FAIL
-- Automated PARTIAL
-
-Sheet 3 — Discrepancy Analysis
-
-Include every disagreement:
-
-- Field Name
+When ALL of the following match:
+- Field name
 - Path
-- Manual Result
-- Automated Result
-- Difference
-- Manual Value
-- Automated Value
-- Reason
+- Datatype
+- Case
+- Mandatory/Optional
+- Structure
 
-Sheet 4 — Row Mapping
+FAIL:
 
-Include:
+When ANY validation fails.
 
-- Manual Row
-- Automated Row
-- Matching Key
-- Match Confidence
-- Status
+==================================================
+NOTES/COMMENTS VALUES
+==================================================
 
----
+Use only comments such as:
 
-20. FINAL REPORT
+- Field name mismatch
+- Path mismatch
+- Data Type mismatch
+- Mandatory/Optional parameter mismatch
+- Tag name mismatch
+- Case sensitivity mismatch
+- Present in Mapping Document but not present in RAML
+- Present in RAML but not present in Mapping Document
+- Description tag not present in RAML file
+- Data type missing from Mapping Document
+- Duplicate block present in RAML
+- Multiple validation issues found
 
-The final response must state:
+If multiple issues exist for one field, list all issues.
 
-Accuracy
+Example:
 
-XX.XX%
+Field name mismatch and Mandatory/Optional parameter mismatch
 
-Comparison
+==================================================
+FINAL DELIVERABLE
+==================================================
 
-Manual validation rows: X
+After validating ALL fields, provide:
 
-Automated validation rows: X
+1. Detailed Validation Report Table
 
-Comparable rows: X
+2. Validation Summary
 
-Matching decisions: X
+Total Fields Compared:
+Total PASS:
+Total FAIL:
 
-Different decisions: X
+3. Failure Summary grouped by category:
 
-Result
+- Field Name Mismatches
+- Path Mismatches
+- Data Type Mismatches
+- Mandatory/Optional Mismatches
+- Case Sensitivity Issues
+- Tag Name Mismatches
+- Missing Fields in RAML
+- Missing Fields in Mapping
+- Duplicate Fields
+- Description Issues
+- Mapping Document Issues
 
-If every comparable validation decision matches:
+IMPORTANT:
 
-100% ACCURACY — AUTOMATED VALIDATION MATCHES MANUAL VALIDATION
+Do not stop after finding the first few mismatches.
 
-Otherwise:
+Scan the COMPLETE Mapping Document and the COMPLETE RAML.
 
-Accuracy = XX.XX%
+Validate every field, every path, every datatype, every mandatory flag, and every array structure.
 
-and list every disagreement.
-
----
-
-21. FINAL PRINCIPLE
-
-The manually validated report is the reference standard.
-
-Your job is to reproduce the manual validator's actual behavior as faithfully as possible.
-
-Do not create stricter rules.
-
-Do not create additional validation rows.
-
-Do not reinterpret the manual validator's decisions.
-
-Do not guess.
-
-Do not manipulate the accuracy calculation.
-
-The target is genuine 100% agreement with the manual validation, achieved by faithfully reproducing its methodology.
+The output must resemble a manually validated API validation report and not a high-level summary.
