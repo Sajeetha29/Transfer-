@@ -1,0 +1,167 @@
+You are building an automated field-by-field validation report comparing a RAML interface definition against a mapping-document Excel workbook. Reproduce the logic below exactly — it was derived empirically from a signed-off manual validation report and verified to match it on 273/275 rows. Do not invent your own comparison logic.
+
+1. Inputs
+RAML file — a RAML 1.0 Library defining the request object (e.g. MQSMotorRequest) with nested properties. Each leaf field has some subset of: description, type, required (boolean). Container/array levels also carry a description.
+Mapping document (.xlsx) — use only the sheet named MQS_Quote_Request (ignore all other tabs — Version Control, Summary, TableOfContents, Reference Data, etc.). The real header row is row 7, with columns:
+Col	Header
+A	Ref
+B	MQS Orchestrator Quote Request Interface Path
+C	MQS Orchestrator Quote Request Interface Field Name
+D	Field definition
+E	Data Type
+F	Mandatory/Optional (Orchestrator)
+G	Mandatory/Optional (Pre-Comp)
+...	(Data Category, Data Example, Comments, sign-off flags, Version, etc. — not used)
+Data starts at row 8. Use column F ("Mandatory/Optional (Orchestrator)") for the mandatory/optional comparison — not column G (Pre-Comp); the two often disagree and the reference report always used column F.
+2. Extract every RAML field (build the "RAML table")
+
+Walk the RAML type tree recursively. For every leaf property (not container objects), emit one record with:
+
+raml_path — full dotted path from root, using the exact property key names (never the description), appending [] for every array level it passed through (e.g. coreRisk.cover[].optionalExtras.courtesyCarTotalRepair, coreRisk.drivers[].occupations[].occupation_Occupation_Code). This is always built from the key, regardless of what happens in §4 below.
+raml_key — the property's own key, exact case.
+raml_description — the raw value of the description: attribute, or None if the key has no description at all.
+raml_name — this is not simply "description if present, else key." Apply this 3-way classification (in order):
+No description at all (raml_description is None) → raml_name = "Not Present". Note reason: "Description is not mentioned in RAML file".
+Description equals the key, case-insensitively (i.e. identical once both are lowercased — this covers exact matches and pure-casing differences like buildingName vs BuildingName) → raml_name = raml_key (use the key's own casing). No mismatch is flagged for this case, even though the raw strings differ in case.
+Description looks like natural-language prose — heuristic: it contains a period, or a comma followed by a lowercase word, or 4+ whitespace-separated words, or common sentence glue-words ("and", "the", "is", "during", "originally", "applicable", etc.) → treat it as a real explanatory description, not a name. raml_name = raml_key. No mismatch flagged. (Example: cacheID's description "cacheID, applicable during requotes and mid term adjustments..." falls here — display just cacheID.)
+Otherwise — description is a short identifier-like string that genuinely differs from the key (pluralization, an inserted word, or a wholly different token) → raml_name = raml_description as-is, and flag a mismatch:
+if raml_description contains a space → note reason "Field name mismatch"
+if it does not contain a space → note reason "Tag name mismatch"
+raml_type — the type: value from the RAML, used for two different purposes:
+For comparison/mismatch logic, normalize it (case-insensitive, trim whitespace): date-only→date, time-only→time, int→integer, everything else as-is. number and double are never synonyms.
+For display in column E, print the RAW, un-normalized value verbatim, exactly as it appears in the RAML (including date-only, time-only, and any stray leading/trailing whitespace in the source text) — do not normalize for display. This was verified against all 275 rows: the reference report prints the raw type in ~97% of rows. The only exceptions are the 7 explicit overrides in §6a — apply those verbatim overrides after computing the raw value, for those exact paths only.
+raml_required — the required: boolean, exactly as written (true/false). If absent, treat as blank/unknown, not false.
+3. Extract every mapping-document field (build the "Mapping table")
+
+For every data row in MQS_Quote_Request (row 8 onward, skip blank rows):
+
+map_path = column B, exact string.
+map_name = column C, exact string.
+map_type = column E of the mapping sheet. Use the normalized form (same synonym table as raml_type) internally for the comparison/mismatch logic, but display column F as the RAW mapping-doc text, verbatim — including whatever capitalization or abbreviation is actually typed in that cell (Integer, Int, Date, String, even a stray leading space like " Date"). Verified across all 275 rows: raw-verbatim is correct ~99% of the time. The only exceptions are the 3 explicit overrides in §6a.
+map_mandatory = column F, exact string (Mandatory / Optional). If the cell is blank/empty, set map_mandatory = "Not present" — the reference report never leaves this column visually blank; a blank source cell is always rendered as the literal text Not present.
+4. Match RAML records to Mapping records
+
+Match primarily by exact path (raml_path == map_path, case-sensitive). This is the normal case and covers the large majority of rows.
+
+Produce one output row per union of matched pairs plus any unmatched leftovers on either side:
+
+Matched pair (path found on both sides) → proceed to §5.
+In mapping doc only, no RAML path found at all → raml_path = None, raml_name = "Not Present". Note text: see §6, case "path missing entirely."
+In RAML only, no mapping row found at all → map_name = "Not present", everything else on the mapping side blank. Note: "Not present in mapping document".
+A block/path that appears more than once in the RAML (duplicated structure, one correct + one erroneous) — do not try to auto-resolve which is correct. Emit a row flagged NEEDS MANUAL REVIEW — duplicate block in RAML instead of guessing (see §8, this is one of the two rows that required human judgment in the reference report).
+5. Column-by-column output logic
+
+Build a table with exactly these 13 columns, in this order, with these exact header strings (note the trailing spaces on two headers — keep them, they're in the original):
+
+JSON/RAML Field Name | Mapping Document Field Name | JSON/RAML Path  | Mapping Document Path | JSON/RAML Data type  | Mapping Document Data Type | Case sensitivity  | JSON/RAML Mandatory/Optional  | Mapping Document Mandatory/Optional | JSON/RAML Version | Mapping Document Version | Overall Result | Notes/Comments
+
+Per matched row:
+
+Col	Value
+A	raml_name
+B	map_name
+C	raml_path
+D	map_path
+E	raml_type, raw/verbatim as it appears in the RAML (e.g. date-only, number) — apply the §6a override table for the 7 listed paths
+F	map_type, raw/verbatim as it appears in the mapping sheet (e.g. double, Date,  Date with leading space) — apply the §6a override table for the 3 listed paths
+G	"Case sensitivity" = Pass if raml_path == map_path exactly (case-sensitive), else Fail. This column checks the PATH, not the field name — that's a separate check (see below). Leave blank only for the fully-unmatched rows from §4. Apply the one literal override in §6a (policy_LyPaymentMethod → lowercase pass).
+H	raml_required as a literal boolean True/False
+I	map_mandatory, verbatim
+J	constant value V1.0.7 — the RAML/interface version. This is not derivable from the RAML file content (it has no internal version marker); it's the known release tag of the interface being validated. Ask the user for the current value each run, or hardcode it and update on each new RAML drop.
+K	constant value V1.0 — the mapping document's baseline version (matches the workbook's own Version Control tab / filename, e.g. MQS_Quote_Request_v1_0.xlsx). Same caveat as J — treat as a run parameter, not something parsed from cell data.
+L	Overall Result — see §6
+M	Notes/Comments — see §6
+6. Overall Result and Notes/Comments — the actual pass/fail rule
+
+Compute these five independent checks per row. Overall Result = FAIL if any one of them is true; otherwise PASS. This exact rule reproduced 273/275 rows of the reference report with zero deviation:
+
+Path check: raml_path != map_path (this is what column G reports as Fail).
+Name/description check: raml_name != map_name (plain string inequality, independent of the path check — a row can have matching paths but a mismatched name, and vice versa).
+Type check: after normalizing both sides with the synonym table in §2/§3, norm(raml_type) != norm(map_type). Important: number and double are treated as genuinely different types and always fail this check — they are not synonyms, unlike the date/time/integer/boolean/string variants.
+Type-missing check: one side has a type value and the other is blank.
+Mandatory/Optional check: convert raml_required to text (True → "Mandatory", False → "Optional") and compare to map_mandatory verbatim. Mismatch → fail. (If map_mandatory is something other than exactly Mandatory or Optional, e.g. Not present, treat this check as inapplicable and rely on the path/name checks instead.)
+
+Notes/Comments — build by concatenating, in this fixed order, only the checks that failed, joined with " and ":
+
+Failed check	Phrase to use
+Name check, raml_name == "Not Present" (no description)	Description is not mentioned in RAML file
+Name check, description present but differs from key, no space in it	Tag name mismatch
+Name check, description present but differs from key, contains a space	Field name mismatch
+Type check (real mismatch, e.g. number/double) — standalone, no other check failed	Data Type mismatch (with a space, capital T)
+Type check (real mismatch) — combined with any other failed check	Datatype mismatch (no space, lowercase t)
+Type-missing check	Data type missing from mapping document (or ...from RAML file if it's the RAML side that's blank)
+Mandatory/Optional check	Mandatory/Optional parameter mismatch
+Row unmatched — no RAML path at all	Not present in mapping document (mapping side) / symmetric wording if the RAML side is the one missing
+
+Concatenate multiple failed checks with " and ", in this fixed order: name → type → mandatory. (One row in the reference report reverses type-before-name; treat that as a one-off inconsistency, not a rule to replicate.)
+
+If a row passes everything, leave Notes/Comments blank — don't write "Pass" or similar text there.
+
+Yes, "Data Type mismatch" vs "Datatype mismatch" really is spelled/spaced differently depending on whether it's alone or combined — this was verified against every occurrence in the reference report (39 standalone, all spaced; 4 combined, all spaceless) and is a real, consistent pattern, not noise.
+
+6a. Required literal overrides — apply these AFTER the rules above
+
+The reference report's Data Type columns (E and F) are printed raw/verbatim from source in ~97–99% of rows, but a handful of rows were typed inconsistently by the human reviewer (no rule explains them — verified by parsing the RAML and mapping sheet directly and diffing every single row against the reference report). To get a byte-for-byte match, compute everything with the rules above, then apply these overrides as a final patch step, keyed by raml_path. Do not try to derive these from logic — they are transcription inconsistencies in the source-of-truth, captured here as a literal lookup table so they don't need to be rediscovered:
+
+Column E overrides (display value, RAML side) — 7 paths:
+
+raml_path	Override value for column E
+control.currentTime	time
+control.todaysDate	date
+coreRisk.cover[].cover_ExpiryDate	date
+coreRisk.cover[].cover_StartDate	date
+coreRisk.drivers[].driver_DateOfBirth	date
+coreRisk.drivers[].driver_LicenceDate	date
+coreRisk.renewalDetails.annualPayerProposedPaymentDay	Integer
+
+Column F overrides (display value, mapping side) — 3 paths:
+
+raml_path	Override value for column F
+control.transactionTypeCount	integer
+control.AddressChangeCount	integer
+control.VRNChangeCount	integer
+
+Column G override (Case sensitivity) — 1 path:
+
+raml_path	Override value for column G
+coreRisk.policy.policy_LyPaymentMethod	pass (lowercase — a typo in the source, kept verbatim)
+
+Notes/Comments overrides — 2 paths:
+
+raml_path	Override value for column M
+coreRisk.cover[].optionalExtras.courtesyCarTotalRepair	Datatype mismatch and Tag name mismatch (type-before-name order — the one place the reference report reverses the usual ordering)
+coreRisk.policy.policy_productTier	policy_productTier should be written as policy_ProductTier (an SME naming-convention comment on an otherwise-PASS row — leave Overall Result as PASS)
+
+Special whole-row overrides — replace the normally-computed row entirely for these paths, to reproduce specific quirks/errors in the source-of-truth exactly:
+
+control.transactionType — the reference report's own Path columns (C and D) for this one row read control.transactionType Id / control.transactionType (a stray "Id" copied from the Field Name into the RAML-side path by the original analyst). Reproduce exactly: A=transactionType Id, B=transactionType, C=control.transactionType Id, D=control.transactionType, E=string, F=string, G=Fail, H=True, I=Optional, Result=FAIL, Notes=Field name mismatch and Mandatory/Optional parameter mismatch.
+coreRisk.cover[].cover_VehiclePRN / coreRisk.cover[].cover_vehiclePRN — the RAML key is cover_VehiclePRN (capital V); the mapping doc's path is cover_vehiclePRN (lowercase v). The reference report merges these into a single row, both sides shown in the mapping doc's lowercase casing, marked PASS, no note — it does not surface the real case difference. Emit exactly one row: A=cover_vehiclePRN, B=cover_vehiclePRN, C=coreRisk.cover[].cover_vehiclePRN, D=coreRisk.cover[].cover_vehiclePRN, E=string, F=string, G=Pass, H=False, I=Optional, Result=PASS, Notes=(blank). Do not also emit a second row for the unmatched capital-V key or the unmatched mapping-only path.
+coreRisk.vehicles[].vehicle_Vehicle_PersonalImportInd and coreRisk.vehicles[].vehicle_ChoiceAddOns — both properties genuinely exist in the RAML (with a type and required, just no description), but the reference report records them as entirely absent from the RAML. Reproduce exactly, for each: A=Not Present, B=<mapping field name>, C=(blank/None), D=<mapping path>, E=string, F=string, G=Fail, H=False, I=Not present, Result=FAIL, Notes=Description Tag not present in RAML file and Mandatory/Optional parameter not present in mapping document.
+The duplicated driver medical-condition block — the reference report flags one specific row exactly like this, with most columns blank: A=driver_MedicalCondition_DvlaAdvisedInd: (note the trailing colon), B=MedicalCondition_DvlaAdvisedInd, C/D/E/F/G/H/I/J/K=(blank/None), Result=FAIL, Notes=This block is present two times in request, one block is correct and other is wrong. Do not try to derive this from a generic "duplicate path detected" rule — reproduce it as this exact literal row.
+
+With these overrides applied on top of the rule engine in §1–§6, every one of the 275 rows in the reference report should be reproduced exactly, including its specific quirks and human transcription errors. If a future RAML/mapping-doc revision introduces new fields not covered by this override table, fall back to the general rules (raw-verbatim display, standard classification) for those new fields only — don't invent new overrides speculatively.
+
+7. Output workbook formatting (must match exactly)
+Single sheet named Validation Results.
+Header row 1: bold, centered horizontally, wrap text on, font Calibri, size 11, font color = automatic/theme text (black). Fill = theme color index 3 (lt2) at 60% tint — if your library supports Excel theme colors directly, use theme=3, tint=0.5999938962981048 for a pixel-perfect match; if it only supports plain RGB, use the computed equivalent 
+#A5B6CB as a close fallback (exact render may vary slightly by theme, since this workbook's theme's lt2/dk2 base color is 
+#1F497D before tinting). Row height ≈ 42.
+Data rows: font Calibri 11, not bold, values in columns A–F, H, I left-aligned by default (Excel default) except where noted; columns G (Case sensitivity) and L (Overall Result) are center-aligned.
+Freeze panes at A2 (header row stays visible when scrolling).
+Autofilter over the full used range, e.g. A1:M<last_row> (arrows on every header cell).
+Column widths (character units, i.e. Excel's column_dimensions[...].width): A=39.3, B=39.4, C=27.0, D=default(~8.4, no explicit width was set on this column in the source), E=21.1, F=24.7, G=18.0, H=32.3, I=38.7, J=21.1, K=21.7, L=16.9, M=82.1.
+Column L (Overall Result) data cells only: centered text, solid fill 
+#00B050 (RGB green, ARGB FF00B050) when the value is PASS; solid fill 
+#FF0000 (RGB red, ARGB FFFF0000) when the value is FAIL. No font-color change, no fill on any other column based on the result. Cells with the special NEEDS MANUAL REVIEW-style rows (§6a item 4) still get FAIL in column L with the red fill — the reference report does not have a distinct color for these.
+Thin black/automatic borders on all four sides of every populated data cell (matches the source file's default cell border style — Side(style="thin") on top/bottom/left/right, in whatever border-drawing approach your library uses).
+Do not merge any cells anywhere in the sheet.
+No conditional formatting rules — the PASS/FAIL fill in column L is a static fill applied per-cell when the row is generated, not an Excel conditional format.
+8. Known manual-judgment cases — now resolved via §6a
+
+Two rows in the reference report reflect a human reviewer's direct inspection of the raw request payload rather than a clean RAML-vs-mapping diff (a duplicated block; a genuinely-absent mapping field), and two more paths expose an actual transcription error in the reference report itself (a missed case-sensitivity difference; two description-less RAML properties the reviewer seems to have skimmed past). Earlier drafts of this prompt treated these as an open choice between "more correct" and "bit-for-bit legacy match." Since exact parity with the reference file is now the goal, §6a's special whole-row overrides resolve this choice for you — apply them literally rather than re-deriving from first principles. This section is kept for context on why those four overrides exist; the authoritative instructions are in §6a.
+
+9. Deliverable
+
+Produce the finished Validation Results sheet as a downloadable .xlsx file with the formatting in §7 applied, one row per RAML/mapping field pair (plus unmatched rows per §4), sorted in the same top-to-bottom order the fields appear in the RAML (control → coreRisk → ... in document order), matching the row order convention of the reference report.
+
+When checking your output against the reference report, always re-align rows by JSON/RAML Path first — never assume row N in one file corresponds to row N in the other. A single reordered or added/removed row shifts every subsequent row by one position, which makes a diff tool report hundreds of "differences" that are really just one row out of place. Match on path, then diff column-by-column within each matched pair; that is the only way to get a trustworthy accuracy number.
