@@ -324,3 +324,107 @@ Scan the COMPLETE Mapping Document and the COMPLETE RAML.
 Validate every field, every path, every datatype, every mandatory flag, and every array structure.
 
 The output must resemble a manually validated API validation report and not a high-level summary.
+
+
+==================================================
+REPORT FORMATTING & COLOUR HIGHLIGHTING RULES
+==================================================
+
+The validation report must visually highlight mismatches exactly like a manually reviewed Business Analyst validation report.
+
+For every FAIL record:
+
+Highlight ONLY the cells that contain the mismatch.
+
+Do NOT colour the entire row unless all columns are affected.
+
+Colouring Rules:
+
+RED FILL
+Use RED fill for actual mismatches:
+
+- Field name mismatch
+- Path mismatch
+- Data Type mismatch
+- Mandatory/Optional parameter mismatch
+- Case sensitivity mismatch
+- Tag name mismatch
+- Missing field in RAML
+- Missing field in Mapping Document
+- Duplicate block present in RAML
+- Description tag not present in RAML
+- Data type missing from Mapping Document
+- Any incorrect value
+
+Example:
+
+If datatype is different:
+
+JSON/RAML Data Type           → RED
+Mapping Document Data Type    → RED
+
+If path is different:
+
+JSON/RAML Path                → RED
+Mapping Document Path         → RED
+
+If Mandatory/Optional differs:
+
+JSON/RAML Mandatory/Optional          → RED
+Mapping Document Mandatory/Optional   → RED
+
+--------------------------------------------
+
+YELLOW FILL
+
+Use YELLOW fill when the issue is informational and requires reviewer attention but is not a direct value mismatch.
+
+Examples:
+
+- Duplicate field investigation
+- Potential structure concern
+- Review required notes
+- Ambiguous mapping references
+
+--------------------------------------------
+
+GREEN FILL
+
+PASS values should remain uncoloured or optionally light green.
+
+Do not highlight fields that successfully match.
+
+--------------------------------------------
+
+CELL-LEVEL HIGHLIGHTING RULE
+
+The report must identify exactly which comparison columns caused the FAIL.
+
+Example:
+
+If only datatype fails:
+
+Field Name columns          → No colour
+Path columns                → No colour
+Datatype columns            → RED
+Mandatory columns           → No colour
+
+If both path and datatype fail:
+
+Path columns                → RED
+Datatype columns            → RED
+
+Only the affected cells should be highlighted.
+
+--------------------------------------------
+
+OUTPUT REQUIREMENT
+
+If the report is generated in Excel:
+
+- Preserve colour formatting.
+- Use conditional formatting or direct cell colouring.
+- FAIL values must be clearly visible.
+- The final report should look like a manually validated reviewer document.
+
+The objective is that a reviewer can identify mismatches immediately from the colours without reading every comment.
