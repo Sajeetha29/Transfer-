@@ -1,0 +1,679 @@
+RAML ↔ MQS AUTOMATED VALIDATION — FINAL PROMPT
+
+ROLE AND OBJECTIVE
+
+Act as a Senior API Validation Analyst and Excel Automation Specialist.
+
+Compare the supplied RAML 1.0 specification against the MQS Mapping Document and generate an Excel validation report reproducing the established manual validation report's field-level logic, row structure, formatting, and special-case conventions.
+
+Inputs:
+
+1. RAML 1.0 file.
+2. MQS Mapping Document (.xlsx).
+
+The manual report is NOT required as an input. Apply the complete specification below.
+
+Perform structural, field-by-field validation. Never substitute a superficial text comparison.
+
+PRIORITY: Correct field extraction → correct row alignment → correct source values → correct validation results → correct formatting.
+
+Do not invent, omit, duplicate, or silently correct fields.
+
+---
+
+1. SOURCE EXTRACTION
+
+Mapping Document
+
+Use only worksheet "MQS_Quote_Request".
+
+Header: row 7. Data: row 8 onward.
+
+Column| Source
+B| MQS Orchestrator Quote Request Interface Path
+C| MQS Orchestrator Quote Request Interface Field Name
+E| Data Type
+F| Mandatory/Optional (Orchestrator)
+
+Ignore other worksheets and use column F, NOT the Pre-Comp mandatory/optional column.
+
+Preserve original values, including capitalization, whitespace, and datatype spelling.
+
+If the mandatory/optional cell is blank, display "Not present".
+
+RAML
+
+Parse the RAML structurally, recursively traversing nested "properties", objects, and arrays.
+
+Extract each leaf property:
+
+- Original property key.
+- Complete hierarchical path.
+- Description, if explicitly declared.
+- Raw datatype.
+- Raw "required" boolean.
+- Original document order.
+- Parent and array context.
+
+Construct paths from actual property keys, never descriptions.
+
+Represent arrays using "[]".
+
+Example:
+
+"coreRisk.drivers[].occupations[].occupation_Occupation_Code"
+
+Do not flatten arrays, rename properties, or confuse parent objects with leaf fields.
+
+Missing "required" is unknown/blank, not automatically "False".
+
+---
+
+2. RAML FIELD-NAME CLASSIFICATION
+
+Determine Column A using these rules in order.
+
+Rule A — Description absent
+
+If "description" is missing entirely:
+
+"RAML Field Name = Not Present"
+
+Note:
+
+"Description is not mentioned in RAML file"
+
+This rule is mandatory for EVERY description-less property, including properties whose keys otherwise match the mapping document.
+
+Do not fall back to the RAML property key.
+
+Rule B — Description equals property key
+
+If description and key are identical, ignoring capitalization, display the original RAML key.
+
+No naming mismatch.
+
+Rule C — Natural-language description
+
+If the description is explanatory prose, display the RAML key.
+
+Recognize prose using periods, comma-separated explanations, four or more words, or sentence terms such as "and", "the", "is", "during", "originally", and "applicable".
+
+Do not treat explanatory prose as a field name.
+
+Rule D — Different identifier-like description
+
+Otherwise, display the description exactly.
+
+If the differing description contains spaces:
+
+"Field name mismatch"
+
+Otherwise:
+
+"Tag name mismatch"
+
+Examples:
+
+"transactionType Id" → Field name mismatch.
+
+A differing single identifier → Tag name mismatch.
+
+Always construct Column C from the original RAML key, regardless of the name displayed in Column A.
+
+---
+
+3. DATATYPE COMPARISON
+
+Use two separate representations:
+
+1. RAW datatype for Excel display.
+2. NORMALIZED datatype for comparison.
+
+Never overwrite raw display values with normalized values, except for the explicit legacy overrides in Section 7.
+
+Apply these comparison equivalences:
+
+RAML| Mapping| Comparison
+date-only| date| MATCH
+time-only| time| MATCH
+int| integer| MATCH
+number| double| MATCH
+string| String| MATCH
+boolean| Boolean| MATCH
+
+Trim whitespace and ignore datatype capitalization for comparison only.
+
+CRITICAL: "number" and "double" are equivalent.
+
+A field must NOT fail solely because one source specifies "number" and the other specifies "double".
+
+Likewise, equivalent date/time/integer representations must not produce datatype failures.
+
+Other genuinely different types must fail.
+
+If one source lacks a datatype, report the missing datatype explicitly.
+
+Excel Columns E and F must preserve raw source spelling, capitalization, and leading/trailing spaces, except for Section 7 overrides.
+
+---
+
+4. FIELD MATCHING AND ROW GENERATION
+
+Match RAML and mapping records primarily by exact, case-sensitive hierarchical path.
+
+For unmatched paths, check for an unambiguous case-only difference before classifying them as missing fields.
+
+If a case-only match is established, create ONE comparison row and report the case/path discrepancy rather than generating two unrelated missing-field rows.
+
+Preserve both original paths unless a special override explicitly says otherwise.
+
+Generate one row per matched pair and additional rows for genuinely unmatched fields.
+
+Mandatory row-integrity rules:
+
+- Do not create two rows for the same matched field.
+- Do not drop a normal field when generating a special row.
+- Do not classify a case-only mismatch as two missing fields.
+- Do not generate a RAML-only row for a field already paired through an explicit override.
+- Do not replace an ordinary field row with a duplicate-block diagnostic row.
+- Preserve original RAML traversal order.
+- Place special rows according to the manual convention.
+
+The final report must reproduce the established manual validation scope, subject to the explicit updated datatype rule.
+
+For the known MQS baseline, the manual reference contains 275 validation data rows. Use this as a reconciliation check, not as permission to invent or discard rows.
+
+If the actual input revision differs, report the genuine structural difference rather than forcing an artificial row count.
+
+---
+
+5. OUTPUT COLUMNS
+
+Create exactly 13 columns in this order:
+
+Col| Header
+A| JSON/RAML Field Name
+B| Mapping Document Field Name
+C| JSON/RAML Path
+D| Mapping Document Path
+E| JSON/RAML Data type
+F| Mapping Document Data Type
+G| Case sensitivity
+H| JSON/RAML Mandatory/Optional
+I| Mapping Document Mandatory/Optional
+J| JSON/RAML Version
+K| Mapping Document Version
+L| Overall Result
+M| Notes/Comments
+
+Preserve the exact header strings, including trailing spaces in C, E, G, and H.
+
+Column values
+
+A: Classified RAML name from Section 2.
+
+B: Original mapping field name.
+
+C: Complete RAML path constructed from property keys.
+
+D: Original mapping path.
+
+E: Raw RAML datatype, subject to Section 7.
+
+F: Raw mapping datatype, subject to Section 7.
+
+G: "Pass" when the paths match exactly; otherwise "Fail". Blank for fully unmatched rows.
+
+H: Original RAML "required" boolean.
+
+I: Original mapping Mandatory/Optional value, or "Not present" if blank.
+
+J: "V1.0.7"
+
+K: "V1.0"
+
+L: "PASS" or "FAIL".
+
+M: Exact applicable discrepancy notes.
+
+CRITICAL COLUMN H RULE
+
+Column H must contain an actual Excel boolean:
+
+"True" or "False"
+
+NEVER display "Mandatory" or "Optional" in Column H.
+
+Only internally convert:
+
+"True → Mandatory"
+
+"False → Optional"
+
+for comparison with Column I.
+
+Do not write the converted value into Column H.
+
+If "required" is absent, preserve the unknown/blank value.
+
+This rule applies to every ordinary validation row. Only explicitly specified special rows may override it.
+
+---
+
+6. VALIDATION LOGIC
+
+Evaluate these independent checks:
+
+1. Path equality.
+2. Field-name/description equality.
+3. Normalized datatype equality.
+4. Missing datatype.
+5. Mandatory/Optional equality.
+
+Overall Result:
+
+"FAIL" if any applicable check fails.
+
+Otherwise:
+
+"PASS".
+
+For mandatory comparison, internally convert RAML boolean to Mandatory/Optional.
+
+If mapping mandatory status is "Not present", do not invent a mandatory mismatch. Apply the relevant missing-metadata or special-case rule.
+
+Do not fail a row solely because its two datatype labels are equivalent under Section 3.
+
+Notes
+
+Generate only applicable discrepancy descriptions.
+
+Use these exact phrases:
+
+Condition| Note
+Missing RAML description| Description is not mentioned in RAML file
+Different identifier-like description| Tag name mismatch
+Different name containing spaces| Field name mismatch
+Standalone datatype mismatch| Data Type mismatch
+Datatype mismatch combined with another issue| Datatype mismatch
+Mandatory mismatch| Mandatory/Optional parameter mismatch
+Missing mapping datatype| Data type missing from mapping document
+Missing RAML datatype| Data type missing from RAML file
+Missing mapping counterpart| Not present in mapping document
+Missing RAML counterpart| Not present in RAML file
+
+For combined issues, join descriptions with "and".
+
+Default ordering:
+
+Name → Datatype → Mandatory/Optional.
+
+Apply the explicit courtesy-car exception in Section 7.
+
+A fully passing row has blank Notes/Comments unless an explicit SME comment is required.
+
+Do not produce datatype mismatch notes for "number" versus "double".
+
+---
+
+7. MANUAL-REFERENCE OVERRIDES
+
+Apply these exact baseline exceptions after normal validation.
+
+These overrides take precedence over general extraction, matching, and display rules.
+
+7.1 Column E overrides
+
+RAML path| Display E
+control.currentTime| time
+control.todaysDate| date
+coreRisk.cover[].cover_ExpiryDate| date
+coreRisk.cover[].cover_StartDate| date
+coreRisk.drivers[].driver_DateOfBirth| date
+coreRisk.drivers[].driver_LicenceDate| date
+coreRisk.renewalDetails.annualPayerProposedPaymentDay| Integer
+
+7.2 Column F overrides
+
+RAML path| Display F
+control.transactionTypeCount| integer
+control.AddressChangeCount| integer
+control.VRNChangeCount| integer
+
+7.3 Column G override
+
+For:
+
+"coreRisk.policy.policy_LyPaymentMethod"
+
+Display lowercase "pass".
+
+7.4 Notes overrides
+
+For:
+
+"coreRisk.cover[].optionalExtras.courtesyCarTotalRepair"
+
+Use type-before-name ordering.
+
+When both the datatype and tag-name checks fail, display:
+
+"Datatype mismatch and Tag name mismatch"
+
+If the datatype comparison passes under Section 3, do not manufacture a datatype mismatch. Retain only the applicable name/tag issue.
+
+For:
+
+"coreRisk.policy.policy_productTier"
+
+Display:
+
+"policy_productTier should be written as policy_ProductTier"
+
+Keep Overall Result "PASS" when all validation checks pass.
+
+7.5 Transaction-type special row
+
+For "control.transactionType", use:
+
+- A: "transactionType Id"
+- B: "transactionType"
+- C: "control.transactionType Id"
+- D: "control.transactionType"
+- E: "string"
+- F: "string"
+- G: "Fail"
+- H: Boolean "True"
+- I: "Optional"
+- J: "V1.0.7"
+- K: "V1.0"
+- L: "FAIL"
+- M: "Field name mismatch and Mandatory/Optional parameter mismatch"
+
+Preserve this manual-reference transcription convention.
+
+7.6 Cover Vehicle PRN
+
+Treat:
+
+"coreRisk.cover[].cover_VehiclePRN"
+
+and:
+
+"coreRisk.cover[].cover_vehiclePRN"
+
+as ONE matched record.
+
+Display:
+
+- A/B: "cover_vehiclePRN"
+- C/D: "coreRisk.cover[].cover_vehiclePRN"
+- E/F: "string"
+- G: "Pass"
+- H: Boolean "False"
+- I: "Optional"
+- J/K: baseline versions
+- L: "PASS"
+- M: blank
+
+Do not generate an additional RAML-only or mapping-only record for this case difference.
+
+7.7 Description-less vehicle exceptions
+
+For:
+
+"coreRisk.vehicles[].vehicle_Vehicle_PersonalImportInd"
+
+and:
+
+"coreRisk.vehicles[].vehicle_ChoiceAddOns"
+
+apply the manual convention:
+
+- A: "Not Present"
+- B: original mapping field name
+- C: blank
+- D: original mapping path
+- E/F: "string"
+- G: "Fail"
+- H: Boolean "False"
+- I: "Not present"
+- J/K: baseline versions
+- L: "FAIL"
+- M: "Description Tag not present in RAML file and Mandatory/Optional parameter not present in mapping document"
+
+Do not also create separate RAML-only rows for these properties.
+
+7.8 Duplicate medical-condition block
+
+Preserve the normal medical-condition validation row AND the separate special diagnostic row where the manual reference contains both.
+
+Never allow the diagnostic row to replace the normal field.
+
+Special diagnostic row:
+
+- A: "driver_MedicalCondition_DvlaAdvisedInd:"
+- B: "MedicalCondition_DvlaAdvisedInd"
+- C–K: blank
+- L: "FAIL"
+- M: "This block is present two times in request, one block is correct and other is wrong"
+
+The trailing colon in A is mandatory.
+
+This is a separate diagnostic record, not an ordinary RAML field extraction.
+
+Do not automatically create further duplicate rows merely because the diagnostic record exists.
+
+7.9 Additional-field scope
+
+Do not create an additional RAML-only row for "vehicle_MultiCarDiscountRateIn" when it is already represented through the manual-reference field correspondence.
+
+Use the existing matched validation record.
+
+Do not count the same underlying property twice.
+
+For future input revisions, only generate a new unmatched row if the field genuinely has no corresponding mapping record and no applicable override.
+
+---
+
+8. EXCEL FORMATTING
+
+Generate one worksheet named:
+
+"Validation Results"
+
+No additional sheets.
+
+Header
+
+- Row 1.
+- Calibri 11, bold.
+- Horizontally centered.
+- Wrapped text.
+- Height approximately 42.
+- Fill: Excel theme 3, tint "0.5999938962981048".
+- RGB fallback: "#A5B6CB".
+
+Data
+
+- Calibri 11.
+- Normal weight.
+- Thin borders on all populated cells.
+- G and L centered.
+- Other columns use the reference alignment.
+- Freeze panes: "A2".
+- Autofilter: entire used range.
+- No merged cells.
+- No conditional-formatting rules.
+
+Column widths:
+
+Column| Width
+A| 39.3
+B| 39.4
+C| 27.0
+D| Excel default
+E| 21.1
+F| 24.7
+G| 18.0
+H| 32.3
+I| 38.7
+J| 21.1
+K| 21.7
+L| 16.9
+M| 82.1
+
+Overall Result colors
+
+Column L only:
+
+"PASS → #00B050"
+
+"FAIL → #FF0000"
+
+Use static cell fills.
+
+Yellow discrepancy highlighting
+
+Color: "#FFC000".
+
+Highlight only relevant cells:
+
+Discrepancy| Highlight
+Field name, tag, description, SME naming issue| A, B
+RAML path entirely absent| A, B, C
+Datatype mismatch/missing datatype| E, F
+Mandatory/Optional mismatch| H, I
+Mapping mandatory parameter not present| I only
+Missing mapping counterpart| A, B
+Duplicate medical-condition diagnostic| A, B
+
+For multiple discrepancies, highlight the union of applicable cells.
+
+Do not highlight an entire row.
+
+Do not highlight datatype cells for normalized-equivalent types.
+
+Column L retains its PASS/FAIL fill regardless of yellow highlights elsewhere.
+
+Preserve the manual report's highlighting of the passing "policy_productTier" SME-comment row.
+
+---
+
+9. FINAL RECONCILIATION — MANDATORY
+
+Before saving, independently validate the generated workbook.
+
+Structural checks
+
+Confirm:
+
+- Exactly 13 columns.
+- Exact header text, including trailing spaces.
+- Correct source worksheet and header row.
+- Every intended field accounted for.
+- No accidental duplicate rows.
+- No normal row removed by a special override.
+- No false RAML-only or mapping-only rows.
+- Correct array paths and original field order.
+
+Column H verification
+
+Inspect EVERY ordinary data row.
+
+Assert:
+
+"H ∈ {True, False, blank}"
+
+Never allow strings "Mandatory" or "Optional" in H.
+
+Check actual Excel value types, not merely their visual appearance.
+
+Description verification
+
+For every RAML property without a description, verify Column A equals "Not Present", except where a documented special override explicitly applies.
+
+Datatype verification
+
+Recalculate datatype results independently.
+
+Assert:
+
+"number == double"
+
+"date-only == date"
+
+"time-only == time"
+
+"int == integer"
+
+No row may contain a datatype mismatch note solely because of these equivalent types.
+
+Special-row verification
+
+Verify all Section 7 overrides.
+
+Specifically confirm:
+
+1. Transaction-type special row is correct.
+2. Cover Vehicle PRN is represented once.
+3. Description-less vehicle exceptions are correct.
+4. The medical-condition diagnostic row exists separately from the normal row.
+5. No unintended additional "vehicle_MultiCarDiscountRateIn" row exists.
+6. Courtesy-car notes respect the updated datatype rule.
+7. All raw datatype display values and header strings are preserved.
+
+Row-count verification
+
+For the known baseline, compare the generated validation scope against the manual reference's 275 data rows.
+
+Do not count the header as a validation row.
+
+Investigate missing, extra, or duplicated rows before completion.
+
+For changed source revisions, use the actual reconciled field count rather than forcing 275.
+
+Result verification
+
+Recalculate every Overall Result from its underlying applicable checks.
+
+Confirm:
+
+"PASS + FAIL = total validation rows"
+
+Every FAIL must have an explanatory note.
+
+Every passing row must have no discrepancy note, except the documented SME-comment exception.
+
+Confirm yellow highlighting corresponds to actual discrepancy categories.
+
+Do not finish if any of these checks fails. Correct the workbook and rerun reconciliation.
+
+---
+
+10. OUTPUT
+
+Save the completed workbook as:
+
+"MQS_Validation_Results.xlsx"
+
+Provide a downloadable Excel file.
+
+Keep the final response concise.
+
+Report:
+
+- RAML fields extracted.
+- Mapping fields extracted.
+- Total validation rows.
+- PASS count.
+- FAIL count.
+- RAML-only and mapping-only counts.
+- Any unresolved source ambiguity.
+
+Do not claim exact manual-report accuracy unless the manual report was actually supplied and compared.
+
+The goal is to reproduce the established manual validation structure and conventions while applying the explicitly updated datatype-equivalence rule.
+
+FINAL INSTRUCTION: Prioritize correct source extraction, exact row correspondence, original display values, explicit overrides, and verified Excel formatting. Never silently skip a validation rule or invent missing information.
