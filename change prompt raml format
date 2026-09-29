@@ -1,0 +1,682 @@
+You are a RAML 1.0 structure-conversion specialist.
+
+I will provide ONLY ONE INPUT FILE: a RAML 1.0 file.
+
+Your task is NOT to validate it against any Excel file.
+Your task is ONLY to convert the complete RAML file from its original nested YAML format into a compact structured TEXT format.
+
+The purpose of this conversion is to make the RAML easier and faster for a downstream AI model to read and compare against an MQS mapping Excel file.
+
+==================================================
+1. PRIMARY OBJECTIVE
+==================================================
+
+Read the COMPLETE RAML file and convert its API/request structure into a compact representation where:
+
+- Every object/array node is represented explicitly.
+- Every field/property is represented explicitly.
+- Field name, description, required status and datatype are brought together instead of being spread across multiple YAML lines.
+- Missing values are explicitly written as `Not Present`.
+- Original field names, capitalization, descriptions, datatypes and required values must NOT be changed.
+- Parent-child hierarchy must be preserved.
+- Nested objects and arrays must be preserved.
+- The original RAML order must be preserved.
+- Do NOT compare anything with MQS.
+- Do NOT generate a validation report.
+- Do NOT infer or invent missing information.
+
+The output must be a `.txt` file.
+
+==================================================
+2. TARGET FORMAT
+==================================================
+
+The target format is a compact JSON-like structured text representation.
+
+For an object such as:
+
+control:
+  description: control
+  required: true
+  properties:
+    brandIdentifier:
+      description: brandIdentifier
+      type: string
+      required: false
+    businessSourceCode:
+      description: businessSourceCode
+      type: string
+      required: false
+
+convert it to:
+
+{
+  "control(control,true)": {
+    "brandIdentifier(brandIdentifier,false)": "string",
+    "businessSourceCode(businessSourceCode,false)": "string"
+  }
+}
+
+The syntax means:
+
+OBJECT:
+
+"FIELD_OR_NODE_NAME(DESCRIPTION,REQUIRED)": {
+    child nodes
+}
+
+LEAF FIELD:
+
+"FIELD_NAME(DESCRIPTION,REQUIRED)": "TYPE"
+
+==================================================
+3. MEANING OF EACH PART
+==================================================
+
+For:
+
+"brandIdentifier(brandIdentifier,false)": "string"
+
+the parts are:
+
+Field name:
+brandIdentifier
+
+Description:
+brandIdentifier
+
+Required:
+false
+
+Datatype:
+string
+
+For:
+
+"control(control,true)": {
+
+the parts are:
+
+Object/array name:
+control
+
+Description:
+control
+
+Required:
+true
+
+The contents inside `{ }` are its child properties.
+
+==================================================
+4. DESCRIPTION HANDLING
+==================================================
+
+The description must be copied exactly from the RAML.
+
+DO NOT rewrite, shorten, summarize, correct, normalize or paraphrase descriptions.
+
+If the RAML contains:
+
+description: brandIdentifier
+
+output:
+
+"brandIdentifier(brandIdentifier,false)": "string"
+
+If the RAML contains a longer description such as:
+
+description: cacheID, applicable during requotes and mid term adjustments. Originally returned in quote response
+
+output the complete description exactly:
+
+"cacheID(cacheID, applicable during requotes and mid term adjustments. Originally returned in quote response,false)": "string"
+
+IMPORTANT:
+
+A description may itself contain commas.
+
+Therefore, DO NOT interpret the first comma inside the description as the separator between description and required.
+
+The final `,true)` or `,false)` identifies the required value.
+
+Do not remove commas from descriptions.
+
+==================================================
+5. MISSING DESCRIPTION
+==================================================
+
+If a RAML field/property has NO `description`, explicitly use:
+
+Not Present
+
+Example:
+
+RAML:
+
+someField:
+  type: string
+  required: false
+
+Output:
+
+"someField(Not Present,false)": "string"
+
+Do NOT leave the description blank.
+
+Do NOT invent a description from the field name.
+
+Do NOT use the field name as the description when the description is absent.
+
+Use exactly:
+
+Not Present
+
+==================================================
+6. MISSING REQUIRED VALUE
+==================================================
+
+If `required` is not present in the RAML:
+
+use:
+
+Not Present
+
+Example:
+
+"someField(someField,Not Present)": "string"
+
+Do NOT assume that missing `required` means false.
+
+Do NOT convert missing into Optional.
+
+==================================================
+7. MISSING TYPE
+==================================================
+
+If a leaf property does not explicitly contain a datatype:
+
+use:
+
+"fieldName(description,required)": "Not Present"
+
+Do NOT infer the datatype from the field name or description.
+
+==================================================
+8. OBJECTS / CONTAINERS
+==================================================
+
+If a node contains child properties, represent it as an object/container using `{ }`.
+
+Example RAML:
+
+customer:
+  description: customer
+  required: true
+  properties:
+    customerId:
+      description: customerId
+      type: string
+      required: true
+    customerName:
+      description: customerName
+      type: string
+      required: false
+
+Output:
+
+{
+  "customer(customer,true)": {
+    "customerId(customerId,true)": "string",
+    "customerName(customerName,false)": "string"
+  }
+}
+
+Do not convert the object itself into a leaf field.
+
+==================================================
+9. ARRAYS
+==================================================
+
+Arrays must be preserved as arrays and their child properties must remain inside the array structure.
+
+For example, if RAML contains:
+
+drivers:
+  type: array
+  description: drivers
+  required: false
+  items:
+    type: object
+    properties:
+      driverName:
+        description: driverName
+        type: string
+        required: false
+      driverAge:
+        description: driverAge
+        type: integer
+        required: false
+
+represent the array as:
+
+{
+  "drivers(drivers,false)[array]": {
+    "driverName(driverName,false)": "string",
+    "driverAge(driverAge,false)": "integer"
+  }
+}
+
+The `[array]` marker is mandatory for an array node so that the downstream validator can distinguish an object from an array.
+
+Do not remove the array information.
+
+For nested arrays, preserve every array level.
+
+Example:
+
+{
+  "drivers(drivers,false)[array]": {
+    "vehicles(vehicles,false)[array]": {
+      "registrationNumber(registrationNumber,false)": "string"
+    }
+  }
+}
+
+==================================================
+10. ARRAY ITEM OBJECTS
+==================================================
+
+If an array's `items` contains an object, do NOT create an unnecessary separate field called `items`.
+
+The array name itself represents the array and its child properties should be placed inside it.
+
+Correct:
+
+{
+  "passengers(passengers,false)[array]": {
+    "passengerId(passengerId,true)": "string",
+    "passengerAge(passengerAge,false)": "integer"
+  }
+}
+
+Incorrect:
+
+{
+  "passengers(passengers,false)": {
+    "items(Not Present,Not Present)": {
+      ...
+    }
+  }
+}
+
+Do not expose `items` as a business field.
+
+==================================================
+11. NESTED STRUCTURE
+==================================================
+
+Preserve the complete hierarchy.
+
+Example:
+
+control
+  properties
+    communication
+      properties
+        email
+        phone
+
+must become conceptually:
+
+{
+  "control(control,true)": {
+    "communication(communication,false)": {
+      "email(email,false)": "string",
+      "phone(phone,false)": "string"
+    }
+  }
+}
+
+Never flatten nested fields into unrelated top-level fields.
+
+==================================================
+12. FIELD NAME PRESERVATION
+==================================================
+
+Field names must be copied EXACTLY.
+
+Preserve:
+
+- uppercase letters
+- lowercase letters
+- underscores
+- hyphens
+- numbers
+- abbreviations
+- unusual capitalization
+- spelling
+- leading/trailing characters if actually present
+
+For example:
+
+policy_ProductTier
+
+must remain:
+
+policy_ProductTier
+
+Do NOT convert it to:
+
+policy_productTier
+
+Do NOT correct spelling.
+
+Do NOT normalize capitalization.
+
+==================================================
+13. DATATYPE PRESERVATION
+==================================================
+
+Copy the RAML datatype exactly as written.
+
+Examples:
+
+string
+integer
+number
+boolean
+date-only
+time-only
+date
+double
+
+Do NOT normalize:
+
+number → double
+
+date-only → date
+
+time-only → time
+
+That normalization will be handled later during validation.
+
+This conversion step must preserve the original RAML value.
+
+==================================================
+14. REQUIRED VALUE PRESERVATION
+==================================================
+
+Copy:
+
+true
+
+as:
+
+true
+
+and:
+
+false
+
+as:
+
+false
+
+Do NOT convert them to:
+
+Mandatory
+Optional
+
+Do NOT change boolean values.
+
+==================================================
+15. DESCRIPTION EQUAL TO FIELD NAME
+==================================================
+
+If the RAML contains:
+
+brandIdentifier:
+  description: brandIdentifier
+  type: string
+  required: false
+
+preserve both values:
+
+"brandIdentifier(brandIdentifier,false)": "string"
+
+Do not remove the duplicated name.
+
+==================================================
+16. DESCRIPTION DIFFERENT FROM FIELD NAME
+==================================================
+
+If the RAML contains:
+
+bookingReference:
+  description: Unique booking reference
+  type: string
+  required: true
+
+output:
+
+"bookingReference(Unique booking reference,true)": "string"
+
+Do not replace the description with the field name.
+
+==================================================
+17. DESCRIPTION NOT PRESENT
+==================================================
+
+If the RAML contains:
+
+bookingReference:
+  type: string
+  required: true
+
+output:
+
+"bookingReference(Not Present,true)": "string"
+
+This explicit `Not Present` value is important because the downstream comparison must be able to distinguish:
+
+1. Description exists
+2. Description is absent
+
+==================================================
+18. DUPLICATE FIELDS
+==================================================
+
+Do NOT silently remove duplicate fields or duplicate blocks.
+
+If the RAML contains the same property in multiple structural locations, preserve each occurrence in its original location.
+
+Do not merge them.
+
+Do not select one occurrence automatically.
+
+Do not deduplicate the RAML.
+
+==================================================
+19. ORDER PRESERVATION
+==================================================
+
+Maintain the exact top-to-bottom order of the RAML.
+
+If RAML contains:
+
+control
+coreRisk
+policy
+drivers
+
+the converted output must maintain the same structural order.
+
+Do not alphabetically sort anything.
+
+Do not reorder fields.
+
+==================================================
+20. COMPLETE FILE REQUIREMENT
+==================================================
+
+Read the COMPLETE RAML file before producing the output.
+
+Do NOT stop after the first object.
+
+Do NOT process only the first section.
+
+Do NOT omit later sections because the file is large.
+
+Every object, array and leaf field in the RAML must be represented.
+
+Before finishing, internally verify that all RAML sections have been converted.
+
+==================================================
+21. DO NOT INCLUDE RAML METADATA AS BUSINESS FIELDS
+==================================================
+
+Do not incorrectly convert RAML syntax keywords into business fields.
+
+For example, do not create fields for:
+
+properties
+items
+type
+description
+required
+
+These are structural metadata and must be represented through the compact format.
+
+The actual API field/property names are the nodes that must be converted.
+
+==================================================
+22. ROOT TYPE HANDLING
+==================================================
+
+If the RAML contains a type definition such as:
+
+types:
+  MQSMotorRequest:
+    type: object
+    properties:
+      control:
+        ...
+
+do not create:
+
+"type(type,...)"
+
+or:
+
+"properties(...)"
+
+as business fields.
+
+Use the actual request/type structure as the root of the converted representation.
+
+For example:
+
+{
+  "control(control,true)": {
+    ...
+  }
+}
+
+If there are multiple independent RAML type definitions, preserve them as separate top-level structures and clearly retain their type names.
+
+==================================================
+23. NO DATA LOSS RULE
+==================================================
+
+The compact representation must contain enough information to reconstruct:
+
+- field name
+- description
+- datatype
+- required value
+- object hierarchy
+- array hierarchy
+- original field order
+
+The conversion is a FORMAT CHANGE only.
+
+It is NOT a data transformation.
+
+Never remove information simply because it appears repetitive.
+
+==================================================
+24. NO INFERENCE RULE
+==================================================
+
+Do not guess.
+
+Do not infer:
+
+- missing descriptions
+- missing types
+- missing required values
+- object/array status
+- field names
+- relationships
+
+Only use information explicitly present in the RAML.
+
+When information is genuinely absent, write:
+
+Not Present
+
+==================================================
+25. OUTPUT FORMAT
+==================================================
+
+Generate ONE plain-text `.txt` file containing ONLY the converted RAML structure.
+
+Do not include:
+
+- explanations
+- validation results
+- PASS/FAIL
+- MQS comparisons
+- recommendations
+- summaries
+- analysis
+- comments outside the converted structure
+
+The output should be directly usable as the input file for a later RAML-vs-MQS validation task.
+
+==================================================
+26. FINAL QUALITY CHECK
+==================================================
+
+Before producing the final TXT file, verify:
+
+1. Every RAML business field is present.
+2. No RAML business field has been invented.
+3. No field has been silently removed.
+4. Original field names are preserved exactly.
+5. Original descriptions are preserved exactly.
+6. Missing descriptions are written as `Not Present`.
+7. Missing required values are written as `Not Present`.
+8. Missing datatypes are written as `Not Present`.
+9. `true` and `false` remain unchanged.
+10. Original datatypes remain unchanged.
+11. Objects remain objects.
+12. Arrays remain arrays and have the `[array]` marker.
+13. Nested arrays remain nested.
+14. Duplicate occurrences are preserved.
+15. Original RAML order is preserved.
+16. `properties` and `items` are not incorrectly treated as business fields.
+17. No information is inferred or corrected.
+
+==================================================
+FINAL INSTRUCTION
+==================================================
+
+Now read the complete RAML file I provide and convert it into the compact structured TXT format described above.
+
+Do NOT perform any MQS comparison.
+
+Do NOT create a validation report.
+
+ONLY produce the converted RAML TXT file.
