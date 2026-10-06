@@ -1,0 +1,276 @@
+ Ref 	 MQS Orchestrator Quote Request Interface Path 	 MQS Orchestrator Quote Request Interface Field Name 	Field definition	 Data Type 	 Mandatory/Optional (Orchestrator) 	 Mandatory/Optional (Pre-Comp) 	 Data Category 	Data Example	Comments	Allianz Motor	Britannia	LV Motor	"Sign -off
+Date"	Version	Glossary Reference
+AMQR0001	control.brandIdentifier	brandIdentifier	Brand identifier is the umbrella in which a section of policies sit under. It will not change throughout the lifetime of a policy. At present, there are two possible values for this; AZ & LV. This will expand as more sections of the business are onboarded to MQS	string	Optional	Mandatory	Reference Data	LV		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0002	control.businessSourceCode	businessSourceCode		string	Mandatory	Mandatory	Reference Data	001	This is mapped to Agent/InceptionChannel from PolicyCenter for LV Motor. Needs be present for throttling. We get inception channel from Policy Center	Yes	Yes	Yes	8/5/2026	V3.5	
+AMQR0003	control.cacheID	cacheID	Cache Id is not passed for NEW business quote requests, it is generated as part of the process in a downstream step. It is populated as part of Requote or Mid term Adjustment. And enables MQS to retrieve the relavent from its internal quote cache in order to perform AQBCXYZ logic. 	string	Mandatory	Optional ( Mandatory for MTA and Requote )	Unique Identifier			Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0004	control.channel	channel		string	Optional	Mandatory	Reference Data			Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0005	control.currentTime	currentTime	Current time is the time the quote was sent from the calling application	time	Optional	Mandatory	Source system data	211433.0		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0006	control.externalID	externalID		string	Optional	Optional	Unique Identifier	123ABCD		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0007	control.productIdentifier	productIdentifier		string	Optional	Mandatory	Reference Data	Motor 		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0008	control.todaysDate	todaysDate	todaysdate is the date the quote was sent from the calling application	date	Optional	Mandatory	Source system data	2024-04-06		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0009	control.transactionType	transactionType	Mule confirmed that this is not mandatory for behaviour. Therefore, there will be no translation required until the Radar Stage. 	string	Optional	Mandatory	Reference Data			Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0010	control.transactionTypeCount	transactionTypeCount	contains the number of MTAs that a policy has, there is a limit of 8 MTAs that can be performed and this limit is reset on renewal	Integer	Optional	Mandatory	Derived Data			Yes	Yes	Yes	9/10/2025	V.2.8	
+AMQR0228	control.AddressChangeCount	AddressChangeCount	Optional - Will come from LN	Integer	Optional	Optional	Derived Data			Yes	Yes	No	11/26/2025	V3.5	
+AMQR0229	control.VRNChangeCount	VRNChangeCount	Optional - Will come from LN	Integer	Optional	Mandatory	Derived Data			Yes	Yes	No	11/26/2025	V3.5	
+AMQR0011	coreRisk.cover[].cover_AllDriversResideAtSameAddressInd	cover_AllDriversResideAtSameAddressInd		boolean	Optional	Mandatory	Derived Data	N		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0012	coreRisk.cover[].cover_Code	cover_Code	Cover_Code is the ABI code definition of the type of cover that is being requested. 	string	Optional	Mandatory	Reference data	01		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0013	coreRisk.cover[].cover_ExpiryDate	cover_ExpiryDate		date	Optional	Mandatory	Derived Data		The CSF key ExpiryDate will be changed to CoverExpiryDate	Yes		Yes	8/5/2026	V3.5	
+AMQR0014	coreRisk.cover[].cover_Period	cover_Period	This is the cover period in months. It will always be set to 12	double	Optional	Mandatory	Derived Data	12.0		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0015	coreRisk.cover[].cover_PeriodUnits	cover_PeriodUnits	This is the definition of the period unit. It will always be set to 02 (which is defined as Months) 	string	Optional	Mandatory	Derived Data	2		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0016	coreRisk.cover[].cover_RequiredDrivers	cover_RequiredDrivers		string	Optional	Mandatory	Reference Data	7		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0017	coreRisk.cover[].cover_StartDate	cover_StartDate		date	Optional	Mandatory	Source system data	2024-04-06		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0018	coreRisk.cover[].cover_TempCoverInd	cover_TempCoverInd		boolean	Optional	Mandatory	Derived Data	N		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0019	coreRisk.cover[].cover_TotalNoOfAddlVehicles	cover_TotalNoOfAddlVehicles		double	Optional	Mandatory	Derived Data	1.0		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0020	coreRisk.cover[].cover_TotalNoOfSubstituteVehicles	cover_TotalNoOfSubstituteVehicles		double	Optional	Mandatory	Derived Data	0.0		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0021	coreRisk.cover[].cover_vehiclePRN	cover_vehiclePRN		string	Optional	Mandatory	Unique Identifier	0.0		Yes	Yes	Yes	3/4/2025	v.1.9	
+AMQR0022	coreRisk.cover[].cover_VolXsAmt	cover_VolXsAmt		double	Optional	Mandatory	Source system data	250.0		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0023	coreRisk.cover[].optionalExtras.breakdownCover	breakdownCover		boolean	Optional	Optional	Derived Data	TRUE		Yes	Yes	No	2/18/2025	v.1.7	
+AMQR0024	coreRisk.cover[].optionalExtras.breakdownCoverEuCost	breakdownCoverEuCost		double	Optional	Optional	Derived Data	133.0		Yes	Yes	No	2/18/2025	v.1.7	
+AMQR0025	coreRisk.cover[].optionalExtras.breakdownCoverEuDeposit	breakdownCoverEuDeposit		double	Optional	Optional	Derived Data	0.0		Yes	Yes	No	2/18/2025	v.1.7	
+AMQR0026	coreRisk.cover[].optionalExtras.breakdownCoverEuMonthlyCost	breakdownCoverEuMonthlyCost		double	Optional	Optional	Derived Data	12.08		Yes	Yes	No	2/18/2025	v.1.7	
+AMQR0027	coreRisk.cover[].optionalExtras.breakdownCoverLevel	breakdownCoverLevel		string	Optional	Optional	Derived Data	EU		Yes	Yes	No	2/18/2025	v.1.7	
+AMQR0028	coreRisk.cover[].optionalExtras.breakdownCoverLocalCost	breakdownCoverLocalCost		double	Optional	Optional	Derived Data	31.0		Yes	Yes	No	2/18/2025	v.1.7	
+AMQR0029	coreRisk.cover[].optionalExtras.breakdownCoverLocalDeposit	breakdownCoverLocalDeposit		double	Optional	Optional	Derived Data	0.0		Yes	Yes	No	2/18/2025	v.1.7	
+AMQR0030	coreRisk.cover[].optionalExtras.breakdownCoverLocalMonthlyCost	breakdownCoverLocalMonthlyCost		double	Optional	Optional	Derived Data	2.82		Yes	Yes	No	2/18/2025	v.1.7	
+AMQR0031	coreRisk.cover[].optionalExtras.breakdownCoverUkCost	breakdownCoverUkCost		double	Optional	Optional	Derived Data	78.00		Yes	Yes	No	2/18/2025	v.1.7	
+AMQR0032	coreRisk.cover[].optionalExtras.breakdownCoverUkDeposit	breakdownCoverUkDeposit		double	Optional	Optional	Derived Data	0.0		Yes	Yes	No	2/18/2025	v.1.7	
+AMQR0033	coreRisk.cover[].optionalExtras.breakdownCoverUkMonthlyCost	breakdownCoverUkMonthlyCost		double	Optional	Optional	Derived Data	0.0		Yes	Yes	No	2/18/2025	v.1.7	
+AMQR0034	coreRisk.cover[].optionalExtras.courtesyCar	courtesyCar		boolean	Optional	Optional	Derived Data	FALSE		Yes	Yes	No	2/18/2025	v.1.7	
+AMQR0035	coreRisk.cover[].optionalExtras.courtesyCarTotalLoss	courtesyCarTotalLoss		boolean	Optional	Optional	Derived Data			Yes	Yes	No	4/30/2025	V2.1	
+AMQR0236	coreRisk.cover[].optionalExtras.enhancedCourtesyCar	enhancedCourtesyCar		boolean	Optional	Optional	Derived Data	TRUE	True, False	No	Yes	No	2/4/2026	v3.1	
+AMQR0036	coreRisk.cover[].optionalExtras.motorLegalExpenses	motorLegalExpenses		boolean	Optional	Optional	Derived Data	FALSE		Yes	Yes	No	2/18/2025	v.1.7	
+AMQR0037	coreRisk.cover[].optionalExtras.protectedNcd	protectedNcd		boolean	Optional	Optional	Derived Data			Yes	Yes	No	4/30/2025	V2.1	
+AMQR0038	coreRisk.cover[].optionalExtras.protectedNcdCost	protectedNcdCost		double	Optional	Optional	Derived Data			Yes	Yes	No	4/30/2025	V2.1	
+AMQR0284	coreRisk.cover[].optionalExtras.personalAccident5k	personalAccident5k		double	Optional	Optional	Derived Data			Yes	Yes	No	7/18/2025	V2.5	
+AMQR0260	coreRisk.cover[].optionalExtras.courtesyCarTotalRepair	courtesyCarTotalRepair		double	Optional	Optional	Derived Data			Yes	Yes	No	7/18/2025	V2.5	
+AMQR0237	coreRisk.cover[].optionalExtras.windscreen	windscreen		boolean	Optional	Optional	Derived Data	TRUE	True, False	No	Yes	No	2/4/2026	v3.1	
+AMQR0238	coreRisk.cover[].optionalExtras.windscreenCost	windscreenCost		double	Optional	Optional	Derived Data	0.0		No	Yes	No	2/4/2026	v3.1	
+AMQR0039	coreRisk.drivers[].customerInsight_PhCancellationReasonWorstScore	customerInsight_PhCancellationReasonWorstScore	For AZ Motor only. Is there ebcause AZ does not have MPP data enrichment.	double	Optional	Mandatory 	Derived Data	0.0		Yes	Yes	No	11/11/2024	v.1.3	
+AMQR0040	coreRisk.drivers[].driver_CurrentDvlaDataNotUsedReason	driver_CurrentDvlaDataNotUsedReason		string	Optional	Mandatory	Reference Data	004		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0041	coreRisk.drivers[].driver_DateOfBirth	driver_DateOfBirth		date	Optional	Mandatory	Customer Data	1982-03-06		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0042	coreRisk.drivers[].driver_DrivesVehicle1Ind	driver_DrivesVehicle1Ind		string	Optional	Mandatory	Derived Data	M		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0043	coreRisk.drivers[].driver_DvlaDataInd	driver_DvlaDataInd	This field indicates whether the licence and conviction data for the driver has been serlf declared (N) or whether it has been provided by the DVLA enrichment (Y)	string	Optional	Mandatory	Derived Data	N		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0044	coreRisk.drivers[].driver_EverHadPolicyCancelledInd	driver_EverHadPolicyCancelledInd		boolean	Optional	Mandatory	Customer Data	N		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0045	coreRisk.drivers[].driver_Forename	driver_Forename		string	Optional	Mandatory	Customer Data	Patrick		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0046	coreRisk.drivers[].driver_HomeownerInd	driver_HomeownerInd		string	Optional	Mandatory	Customer Data	Y		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0047	coreRisk.drivers[].driver_LicenceCountryofIssue	driver_LicenceCountryofIssue	To be populated for self declared only. No DVLA sourced data to be used.	string	Optional	Mandatory	Customer Data	023		Yes	Yes	Yes ( if self declared)	9/16/2024	V1.0	
+AMQR0048	coreRisk.drivers[].driver_LicenceDate	driver_LicenceDate	To be populated for self declared only. No DVLA sourced data to be used.	date	Optional	Mandatory	Customer Data	2015-04-07		Yes	Yes	Yes ( if self declared)	9/16/2024	V1.0	
+AMQR0049	coreRisk.drivers[].driver_LicenceType	driver_LicenceType	To be populated for self declared only. No DVLA sourced data to be used.	string	Optional	Mandatory	Customer Data	F		Yes	Yes	Yes ( if self declared)	9/16/2024	V1.0	
+AMQR0050	coreRisk.drivers[].driver_LicenceValidatedInd	driver_LicenceValidatedInd	To be populated for self declared only. No DVLA sourced data to be used.	string	Optional	Optional	Customer Data			Yes	Yes	Yes ( if self declared)	8/29/2025	V.2.7	
+AMQR0051	coreRisk.drivers[].driver_MaritalStatus	driver_MaritalStatus		string	Optional	Mandatory	Customer Data	M		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0052	coreRisk.drivers[].driver_MedicalConditionInd	driver_MedicalConditionInd	To be populated for self declared only. No DVLA sourced data to be used.	string	Optional	Mandatory	Customer Data	N		Yes	Yes	Yes ( if self declared)	9/16/2024	V1.0	
+AMQR0053	coreRisk.drivers[].driver_NonMotoringConvictionInd	driver_NonMotoringConvictionInd		string	Optional	Mandatory	Customer Data	N		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0054	coreRisk.drivers[].driver_NoOfYearsUkResidency	driver_NoOfYearsUkResidency		double	Optional	Mandatory	Customer Data	50.0		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0055	coreRisk.drivers[].driver_Prn	driver_Prn		string	Optional	Mandatory	Unique Identifier	0.0		Yes	Yes	Yes	3/4/2025	V1.9	
+AMQR0056	coreRisk.drivers[].driver_ProsecutionPendingInd	driver_ProsecutionPendingInd		string	Optional	Mandatory	Customer Data	N		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0057	coreRisk.drivers[].driver_RefusedCoverInd	driver_RefusedCoverInd		string	Optional	Mandatory	Customer Data	N		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0058	coreRisk.drivers[].driver_RegdDisabledInd	driver_RegdDisabledInd	To be populated for self declared only. No DVLA sourced data to be used.	string	Optional	Optional	Customer Data			Yes	Yes	Yes ( if self declared)	8/29/2025	V.2.7	
+AMQR0059	coreRisk.drivers[].driver_RelationshipToProposer	driver_RelationshipToProposer		string	Optional	Mandatory	Reference Data	P		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0060	coreRisk.drivers[].driver_Surname	driver_Surname		string	Optional	Mandatory	Customer Data	Oneil		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0061	coreRisk.drivers[].driver_TempAddlInd	driver_TempAddlInd		boolean	Optional	Mandatory	Derived Data	N		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0062	coreRisk.drivers[].driver_Title	driver_Title		string	Optional	Mandatory	Reference Data	003		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0063	coreRisk.drivers[].driver_UkResidencyDate	driver_UkResidencyDate		date	Optional	Mandatory	Customer Data	2020-05-01		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0064	coreRisk.drivers[].drivesVehicle[].driverUsesIncluded_Code	driverUsesIncluded_Code		string	Optional	Mandatory	Reference Data	ABI		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0065	coreRisk.drivers[].drivesVehicle[].drivesVehicle_DrivingFrequency	drivesVehicle_DrivingFrequency		string	Optional	Mandatory	Reference Data	M		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0066	coreRisk.drivers[].drivesVehicle[].drivesVehicle_StartDate	drivesVehicle_StartDate		date	Optional	Mandatory	Customer Data	1982-03-06		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0067	coreRisk.drivers[].drivesVehicle[].drivesVehicle_VehiclePrn	drivesVehicle_VehiclePrn		string	Optional	Mandatory	Unique Identifier	999		Yes	Yes	Yes	3/4/2025	v.1.9	
+AMQR0068	coreRisk.drivers[].incidents.claims[].claim_ClaimType	claim_ClaimType		string	Optional	Mandatory	Reference Data	ABI		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0069	coreRisk.drivers[].incidents.claims[].claim_Date	claim_Date		date	Optional	Mandatory	Customer Data	1982-03-06		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0070	coreRisk.drivers[].incidents.claims[].claim_DriverAtFaultInd	claim_DriverAtFaultInd		string	Optional	Mandatory	Customer Data	Y		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0071	coreRisk.drivers[].incidents.claims[].claim_NcdLostInd	claim_NcdLostInd		string	Optional	Mandatory	Customer Data	N		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0072	coreRisk.drivers[].incidents.claims[].claim_PRN	claim_PRN		double	Optional	Optional	Unique Identifier			Yes	Yes	Yes	2/18/2025	V1.7	
+AMQR0073	coreRisk.drivers[].incidents.convictions[].conviction_Code	conviction_Code	To be populated for self declared only. No DVLA sourced data to be used.	string	Optional	Mandatory (if convictions populated)	Customer Data	SP30		Yes	Yes	Yes ( if self declared)	9/16/2024	V1.0	
+AMQR0074	coreRisk.drivers[].incidents.convictions[].conviction_Date	conviction_Date	To be populated for self declared only. No DVLA sourced data to be used.	date	Optional	Mandatory (if convictions populated)	Customer Data	1982-03-06		Yes	Yes	Yes ( if self declared)	9/16/2024	V1.0	
+AMQR0075	coreRisk.drivers[].incidents.convictions[].conviction_DisqualifiedEndDate	conviction_DisqualifiedEndDate	To be populated for self declared only. No DVLA sourced data to be used.	date	Optional	Mandatory (if convictions populated)	Customer Data	1982-03-06		Yes	Yes	Yes ( if self declared)	9/16/2024	V1.0	
+AMQR0076	coreRisk.drivers[].incidents.convictions[].conviction_DisqualifiedInd	conviction_DisqualifiedInd	To be populated for self declared only. No DVLA sourced data to be used.	string	Optional	Mandatory (if convictions populated)	Customer Data	N		Yes	Yes	Yes ( if self declared)	9/16/2024	V1.0	
+AMQR0077	coreRisk.drivers[].incidents.convictions[].conviction_Prn	conviction_Prn	To be populated for self declared only. No DVLA sourced data to be used.	double	Optional	Mandatory (if convictions populated)	Customer Data	0		Yes	Yes	Yes ( if self declared)	9/17/2025	V2.9	
+AMQR0078	coreRisk.drivers[].incidents.convictions[].conviction_SuspensionPeriod	conviction_SuspensionPeriod	To be populated for self declared only. No DVLA sourced data to be used.	double	Optional	Mandatory (if convictions populated)	Customer Data	0		Yes	Yes	Yes ( if self declared)	9/16/2024	V1.0	
+AMQR0079	coreRisk.drivers[].MedicalCondition_DvlaAdvisedInd	MedicalCondition_DvlaAdvisedInd	To be populated for self declared only. No DVLA sourced data to be used.	string	Optional	Optional	Customer Data			Yes	Yes	Yes ( if self declared)	8/29/2025	V.2.7	
+AMQR0080	coreRisk.drivers[].occupations[].occupation_EmployersBusiness	occupation_EmployersBusiness		string	Optional	Mandatory	Reference Data	001		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0081	coreRisk.drivers[].occupations[].occupation_EmploymentType	occupation_EmploymentType		string	Optional	Mandatory	Reference Data	E		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0082	coreRisk.drivers[].occupations[].occupation_FullTimeEmploymentInd	occupation_FullTimeEmploymentInd		string	Optional	Mandatory	Customer Data	Y		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0083	coreRisk.drivers[].occupations[].occupation_Occupation_Code	occupation_Occupation_Code		string	Optional	Mandatory	Reference Data	53D		Yes	Yes	Yes	3/4/2025	v.1.9	
+AMQR0232	coreRisk.drivers[].driver_DriverAddedCount	driver_DriverAddedCount		Integer	Mandatory	Mandatory	Customer Data			Yes	Yes	Yes	11/26/2025	v.3.0	
+AMQR0084	coreRisk.policy.policy_EffectiveEndDate	policy_EffectiveEndDate		date	Optional	Mandatory	System Data			Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0085	coreRisk.policy.policy_EffectiveEndTime	policy_EffectiveEndTime		time	Optional	Mandatory	System Data			Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0086	coreRisk.policy.policy_EffectiveStartDate	policy_EffectiveStartDate		date	Optional	Mandatory	Customer Data	2024-02-21		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0087	coreRisk.policy.policy_EffectiveStartTime	policy_EffectiveStartTime		time	Optional	Mandatory	Customer Data			Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0088	coreRisk.policy.policy_Event_Date	policy_Event_Date		date	Optional	Mandatory	System Data	2024-02-21		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0089	coreRisk.policy.policy_ExpiryDate	policy_ExpiryDate		date	Optional	Mandatory	System Data		The CSF key ExpiryDate will be changed to PolicyExpiryDate	Yes	Yes	Yes	8/5/2026	V3.5	
+AMQR0090	coreRisk.policy.policy_ExpiryTime	policy_ExpiryTime		time	Optional	Mandatory	System Data			Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0091	coreRisk.policy.policy_GenerationCode	policy_GenerationCode		string	Optional	Mandatory	System Data	FLOWAN01		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0092	coreRisk.policy.policy_InceptionDate	policy_InceptionDate		date	Optional	Mandatory	System Data	2024-02-21		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0093	coreRisk.policy.policy_InceptionPurchaseLag	policy_InceptionPurchaseLag		double	Optional	Optional	Derived Data			Yes	Yes	Yes	3/4/2025	V1.9	
+AMQR0094	coreRisk.policy.policy_InceptionQuoteLag	policy_InceptionQuoteLag		double	Optional	Optional	Derived Data			Yes	Yes	Yes	3/4/2025	V1.9	
+AMQR0095	coreRisk.policy.policy_InitialRateDate	policy_InitialRateDate	Only used within AZ Motor	date	Optional	Optional	System Data	2024-04-06		Yes	Yes	No	10/30/2024	v.1.2 	
+AMQR0096	coreRisk.policy.policy_IptRateMtaAddPremium	policy_IptRateMtaAddPremium		string	Optional	Optional	System Data			Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0097	coreRisk.policy.policy_IptRateMtaReturnPremium	policy_IptRateMtaReturnPremium		string	Optional	Optional	System Data			Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0098	coreRisk.policy.policy_IptRateNewBusinessRenewal	policy_IptRateNewBusinessRenewal		string	Optional	Optional	System Data			Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0099	coreRisk.policy.policy_LyPaymentMethod	policy_LyPaymentMethod		string	Optional	Mandatory	Reference Data	CC		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0100	coreRisk.policy.policy_MultiCarNumberOfVehicles	policy_MultiCarNumberOfVehicles		double	Optional	Mandatory	Derived Data	1		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0239	coreRisk.policy.policy_NumberOfAZOActivePolicies	policy_NumberOfAZOActivePolicies		integer	Optional	Mandatory		2		Yes	Yes	No	7/1/2026	v3.2	
+AMQR0101	coreRisk.policy.policy_PolicyNo	policy_PolicyNo		string	Optional	Optional	Unique Identifier	987987987	Applicable only for MTAs & Renewal	Yes	Yes	Yes	8/29/2025	V.2.7	
+AMQR0102	coreRisk.policy.policy_productTier	policy_productTier		string	Optional	Optional	Reference Data		Applicable only for MTAs & Renewal.  Need to make sure there is clear documentation of naming conventation 	Yes	Yes	Yes	8/29/2025	V.2.7	
+AMQR0103	coreRisk.policy.policy_SchemeName	policy_SchemeName		string	Optional	Mandatory	Reference Data	LV	"LV Motor: This is mapped to SchemeType from PolicyCenter for LV Motor
+"	Yes	Yes	Yes	8/5/2026	V3.5	
+AMQR0104	coreRisk.policy.policy_SchemeVariant	policy_SchemeVariant		double	Optional	Optional	Reference Data	10	AZ Motor: Internal to Polaris  - identifying if quote is from agg or Allianz Motor portal 	Yes	Yes	No	8/29/2025	V.2.7	
+AMQR0105	coreRisk.policy.policy_FlowEmailInsured	policy_FlowEmailInsured		string	Optional	Optional	Derived Data		Possible values: “Y“ and “N“	Yes	Yes	No	7/15/2026	V3.5	
+AMQR0106	coreRisk.policy.policy_FlowPhInsured	policy_FlowPhInsured		string	Optional	Optional	Derived Data		Possible values: “Y“ and “N“	Yes	Yes	No	7/15/2026	V3.5	
+AMQR0107	coreRisk.policy.policy_FlowEmailLoa	policy_FlowEmailLoa		double	Optional	Optional	Derived Data			Yes	Yes	No	7/15/2026	V3.5	
+AMQR0108	coreRisk.policy.policy_FlowPhLoa	policy_FlowPhLoa		double	Optional	Optional	Derived Data			Yes	Yes	No	7/15/2026	V3.5	
+AMQR0109	coreRisk.policy.policy_PremiumType	policy_PremiumType		string	Optional	Mandatory	Reference Data			Yes	Yes	Yes	5/13/2025	v2.3	
+AMQR0285	coreRisk.policy.policy_Event_Time	policy_Event_Time		time	Optional	Optional	Derived Data			No	No	Yes	7/1/2026	V3.5	
+AMQR0241	coreRisk.policy.policy_BreakdownLoa	policy_BreakdownLoa		Int	Optional	Optional	Derived Data	1		No	No	Yes	6/22/2026	V3.5	
+AMQR0242	coreRisk.policy.policy_BreakdownMembership	policy_BreakdownMembership		string	Optional	Optional	Derived Data			No	No	Yes	6/22/2026	V3.5	
+AMQR0243	coreRisk.policy.policy_BreakdownNoOfCallouts	policy_BreakdownNoOfCallouts		string	Optional	Optional	Derived Data			No	No	Yes	6/22/2026	V3.5	
+AMQR0244	coreRisk.policy.policy_SourceCode	policy_SourceCode		string	Optional	Optional	Derived Data			No	No	Yes	6/22/2026	V3.5	
+AMQR0245	coreRisk.policy.policy_CancellationReason	policy_CancellationReason	Need to define what this is - Get what this does in current 	string	Optional	Optional	Derived Data			No	No	Yes	6/22/2026	V3.5	
+AMQR0246	coreRisk.policy.policy_LVMember	policy_LVMember		boolean	Optional	Optional	Customer Data			No	No	Yes	6/22/2026	V3.6	
+AMQR0247	coreRisk.policy.policy_MultiProductDiscountInd	policy_MultiProductDiscountInd	Question around whether this will be the correct field. Definition is that PC sets this manually when the customer says they have a policy already.	boolean	Optional	Optional	Derived Data			No	No	Yes	6/22/2026	V3.5	
+AMQR0248	coreRisk.policy.policy_MarketingDiscountAmt	policy_MarketingDiscountAmt	Question to PC around whether these these are used. 	double	Optional	Optional	Derived Data			No	No	Yes	6/22/2026	V3.5	
+AMQR0249	coreRisk.policy.policy_MarketingDiscountPct	policy_MarketingDiscountPct	Question to PC around whether these these are used. 	double	Optional	Optional	Derived Data			No	No	Yes	6/22/2026	V3.5	
+AMQR0250	coreRisk.policy.policy_IptRateInitial	policy_IptRateInitial		double	Optional	Optional	System Data			No	No	Yes	6/22/2026	V3.5	
+AMQR0251	coreRisk.policy.policy_LVStaffDiscount	policy_LVStaffDiscount		string	Optional	Optional	Derived Data			No	No	Yes	6/22/2026	V3.5	
+AMQR0253	coreRisk.policy.intermediary_QuoteArea	intermediary_QuoteArea	Keep in for now	string	Optional	Optional	System Data			No	No	Yes	6/22/2026	V3.5	
+AMQR0255	coreRisk.policy.policy_RecapturedInd	policy_RecapturedInd		string	Optional	Optional	Derived Data			No	No	Yes	6/22/2026	V3.5	
+AMQR0110	coreRisk.proposerPolicyHolder.address.BuildingName	BuildingName		string	Optional	Optional	Derived Data			Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0111	coreRisk.proposerPolicyHolder.address.BuildingNumber	BuildingNumber		string	Optional	Mandatory	Derived Data	1		Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0112	coreRisk.proposerPolicyHolder.address.DependentLocality	DependentLocality		string	Optional	Optional	Derived Data	ASH		Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0113	coreRisk.proposerPolicyHolder.address.DependentThoroughfareDescriptor	DependentThoroughfareDescriptor		string	Optional	Optional	Derived Data			Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0114	coreRisk.proposerPolicyHolder.address.DependentThoroughfareName	DependentThoroughfareName		string	Optional	Optional	Derived Data			Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0116	coreRisk.proposerPolicyHolder.address.DoubleDependentLocality	DoubleDependentLocality		string	Optional	Optional	Derived Data			Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0117	coreRisk.proposerPolicyHolder.address.DPS	DPS		string	Optional	Optional	Derived Data			Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0118	coreRisk.proposerPolicyHolder.address.Eastings	Eastings		string	Optional	Optional	Derived Data			Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0119	coreRisk.proposerPolicyHolder.address.Incode	Incode		string	Optional	Optional	Derived Data			Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0120	coreRisk.proposerPolicyHolder.address.ISBFPO	ISBFPO		string	Optional	Optional	Derived Data			Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0121	coreRisk.proposerPolicyHolder.address.IsnotyetBuilt	IsnotyetBuilt		string	Optional	Optional	Derived Data			Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0122	coreRisk.proposerPolicyHolder.address.Lattitude	Lattitude		string	Optional	Optional	Derived Data			Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0123	coreRisk.proposerPolicyHolder.address.Longitude	Longitude		string	Optional	Optional	Derived Data			Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0124	coreRisk.proposerPolicyHolder.address.Multiresidency	Multiresidency		string	Optional	Optional	Derived Data			Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0125	coreRisk.proposerPolicyHolder.address.Northings	Northings		string	Optional	Optional	Derived Data			Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0126	coreRisk.proposerPolicyHolder.address.OrganisationName	OrganisationName		string	Optional	Optional	Derived Data			Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0127	coreRisk.proposerPolicyHolder.address.Outcode	Outcode		string	Optional	Optional	Derived Data			Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0128	coreRisk.proposerPolicyHolder.address.POBox	POBox		string	Optional	Optional	Derived Data			Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0129	coreRisk.proposerPolicyHolder.address.PostTown	PostTown		string	Optional	Mandatory	Derived Data	MARTOCK		Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0130	coreRisk.proposerPolicyHolder.address.proposerPolicyholder_PostCodeFull	proposerPolicyholder_PostCodeFull		string	Optional	Mandatory	Derived Data	TA126PH		Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0131	coreRisk.proposerPolicyHolder.address.SubBuildingName	SubBuildingName		string	Optional	Optional	Derived Data			Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0132	coreRisk.proposerPolicyHolder.address.ThoroughfareDescriptor	ThoroughfareDescriptor		string	Optional	Optional	Derived Data	CROFT		Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0133	coreRisk.proposerPolicyHolder.address.ThoroughfareName	ThoroughfareName		string	Optional	Optional	Derived Data	ASH		Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0134	coreRisk.proposerPolicyHolder.address.UDPRN	UDPRN		string	Optional	Optional	Derived Data	24369026		Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0135	coreRisk.proposerPolicyHolder.address.UMRRN	UMRRN		string	Optional	Optional	Derived Data			Yes	Yes	Yes	2/14/2025	v.1.7	
+AMQR0136	coreRisk.proposerPolicyHolder.occupations[].occupation_EmployersBusiness	occupation_EmployersBusiness		string	Optional	Mandatory	Reference Data	001		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0137	coreRisk.proposerPolicyHolder.occupations[].occupation_EmploymentType	occupation_EmploymentType		string	Optional	Mandatory	Reference Data	E		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0138	coreRisk.proposerPolicyHolder.occupations[].occupation_FullTimeEmploymentInd	occupation_FullTimeEmploymentInd		string	Optional	Mandatory	Customer Data	Y		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0139	coreRisk.proposerPolicyHolder.occupations[].occupation_Occupation_Code	occupation_Occupation_Code		string	Optional	Mandatory	Reference Data	53D		Yes	Yes	Yes	8/6/2025	v.2.6	
+AMQR0140	coreRisk.proposerPolicyHolder.otherInsurances[].otherInsurances_Insurer	otherInsurances_Insurer		string	Optional	Optional	Reference Data			Yes	Yes	Yes	8/29/2025	V3.6	
+AMQR0141	coreRisk.proposerPolicyHolder.otherInsurances[].otherInsurances_Insurer_Type	otherInsurances_Insurer_Type		string	Optional	Optional	Reference Data			Yes	Yes	Yes	8/29/2025	V3.6	
+AMQR0142	coreRisk.proposerPolicyHolder.proposer_Email	proposer_Email		string	Optional	Mandatory	Customer Data	this@that.com		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0143	coreRisk.proposerPolicyHolder.proposerPolicyholder_DateOfBirth	proposerPolicyholder_DateOfBirth		date	Optional	Mandatory	Customer Data	1982-03-06		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0144	coreRisk.proposerPolicyHolder.proposerPolicyholder_Forename	proposerPolicyholder_Forename		string	Optional	Mandatory	Customer Data	Young		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0145	coreRisk.proposerPolicyHolder.proposerPolicyholder_ForenameInitial1	proposerPolicyholder_ForenameInitial1		string	Optional	Mandatory	Customer Data	P		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0146	coreRisk.proposerPolicyHolder.proposerPolicyholder_HomeownerInd	proposerPolicyholder_HomeownerInd		string	Optional	Mandatory	Customer Data	Y		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0147	coreRisk.proposerPolicyHolder.proposerPolicyholder_MaritalStatus	proposerPolicyholder_MaritalStatus		string	Optional	Mandatory	Reference Data	M		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0148	coreRisk.proposerPolicyHolder.proposerPolicyholder_NoOfVehiclesAvailableToFamily	proposerPolicyholder_NoOfVehiclesAvailableToFamily		double	Optional	Mandatory	Customer Data	1.0		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0149	coreRisk.proposerPolicyHolder.proposerPolicyholder_PostCodeSector	proposerPolicyholder_PostCodeSector		string	Optional	Mandatory	Derived Data	TR1 3		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0150	coreRisk.proposerPolicyHolder.proposerPolicyholder_Prn	proposerPolicyholder_Prn		string	Optional	Mandatory	Unique Identifier	0.0		Yes	Yes	Yes	3/4/2025	V1.9	
+AMQR0151	coreRisk.proposerPolicyHolder.proposerPolicyholder_Sex	proposerPolicyholder_Sex		string	Optional	Mandatory	Reference Data	N		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0152	coreRisk.proposerPolicyHolder.proposerPolicyholder_Surname	proposerPolicyholder_Surname		string	Optional	Mandatory	Customer Data	Oneil		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0153	coreRisk.proposerPolicyHolder.proposerPolicyholder_TitleCode	proposerPolicyholder_TitleCode		string	Optional	Mandatory	Reference Data	003		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0154	coreRisk.proposerPolicyHolder.proposerPolicyholder_Type	proposerPolicyholder_Type		string	Optional	Mandatory	Reference Data	P		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0155	coreRisk.renewalDetails.annualPayerInitialPaymentDate	annualPayerInitialPaymentDate		 Date	Optional	Optional	System Data	10	Applicable only for renewal	Yes	Yes	Yes ( If Renewal)	2/18/2025	V1.7	
+AMQR0156	coreRisk.renewalDetails.annualPayerProposedPaymentDay	annualPayerProposedPaymentDay		Integer	Optional	Optional	System Data	10	Applicable only for renewal	Yes	Yes	Yes ( If Renewal)	6/13/2025	V.2.4	
+AMQR0157	coreRisk.renewalDetails.annualPayerProposedSecondPaymentDate	annualPayerProposedSecondPaymentDate		 Date	Optional	Optional	System Data	2025-03-10	Applicable only for renewal	Yes	Yes	Yes ( If Renewal)	2/18/2025	V1.7	
+AMQR0158	coreRisk.renewalDetails.lastYearsCoverEndDate	lastYearsCoverEndDate		 Date	Optional	Optional	System Data	2025-02-09	Applicable only for renewal	Yes	Yes	Yes ( If Renewal)	2/18/2025	V1.7	
+AMQR0159	coreRisk.renewalDetails.lastYearsCoverStartDate	lastYearsCoverStartDate		 Date	Optional	Optional	System Data	2023-02-10	Applicable only for renewal	Yes	Yes	Yes ( If Renewal)	2/18/2025	V1.7	
+AMQR0160	coreRisk.renewalDetails.lastYearsMonthlyPremium	lastYearsMonthlyPremium		double	Optional	Optional	System Data		Applicable only for renewal	Yes	Yes	Yes ( If Renewal)	6/13/2025	V.2.4	
+AMQR0161	coreRisk.renewalDetails.lastYearsMonthlyTotalPremium	lastYearsMonthlyTotalPremium		double	Optional	Optional	System Data		Applicable only for renewal	Yes	Yes	Yes ( If Renewal)	6/13/2025	V.2.4	
+AMQR0162	coreRisk.renewalDetails.lastYearsPremium	lastYearsPremium		double	Optional	Optional	System Data	335.31	Applicable only for renewal	Yes	Yes	Yes ( If Renewal)	6/13/2025	V.2.4	
+AMQR0163	coreRisk.renewalDetails.lyCoverLevel	lyCoverLevel		 String	Optional	Optional	Customer Data	ALLIANZ	The lyCoverLevel field currently has two possible values: " ALLIANZ" and “ALLIANZ_ESSENTIALS”	Yes	Yes	Yes ( If Renewal)	2/18/2025	V1.7	
+AMQR0164	coreRisk.renewalDetails.lyPremiumPreIptAndAddOns	lyPremiumPreIptAndAddOns		double	Optional	Optional	System Data	516.46	Applicable only for renewal	Yes	Yes	Yes ( If Renewal)	6/13/2025	V.2.4	
+AMQR0165	coreRisk.renewalDetails.lyPremiumPreIptAndAddOnsEssentials	lyPremiumPreIptAndAddOnsEssentials		double	Optional	Optional	System Data	475.41	Applicable only for renewal	Yes	Yes	Yes ( If Renewal)	6/13/2025	V.2.4	
+AMQR0166	coreRisk.renewalDetails.lyPremiumType	lyPremiumType		 String	Optional	Optional	Customer Data	annual	The lyPremiumType field has two possible values: "annual" and “monthly”	Yes	Yes	Yes ( If Renewal)	2/18/2025	V1.7	
+AMQR0167	coreRisk.renewalDetails.monthlyPayerInitialPaymentDate	monthlyPayerInitialPaymentDate		 Date	Optional	Optional	System Data	2025-02-10	Applicable only for renewal	Yes	Yes	Yes ( If Renewal)	2/18/2025	V1.7	
+AMQR0168	coreRisk.renewalDetails.periodStartDate	periodStartDate		 Date	Optional	Optional	Customer Data		Applicable only for renewal	Yes	Yes	Yes ( If Renewal)	2/18/2025	V1.7	
+AMQR0169	coreRisk.renewalDetails.policyAgeYears	policyAgeYears		 Integer	Optional	Optional	Derived Data	1	Applicable only for renewal	Yes	Yes	Yes ( If Renewal)	2/18/2025	V1.7	
+AMQR0170	coreRisk.renewalDetails.policy_GenerationCode	policy_GenerationCode		string	Optional	Optional	Persisted Factor Data			Yes	Yes	Yes ( If Renewal)	9/17/2025	V2.9	
+AMQR0171	coreRisk.renewalDetails.policy_InceptionQuoteLagOriginal	policy_InceptionQuoteLagOriginal		 Integer	Optional	Optional	Persisted Factor Data			Yes	Yes	Yes ( If Renewal)	9/17/2025	V2.9	
+AMQR0174	coreRisk.renewalDetails.vehicle[].Ncd_GrantedYears	Ncd_GrantedYears		 Integer	Optional	Optional	Persisted Factor Data			Yes	Yes	Yes ( If Renewal)	5/13/2025	v2.3	
+AMQR0261	coreRisk.renewalDetails.PriceMatchAmt	PriceMatchAmt		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	8/25/2026	v3.4	
+AMQR0262	coreRisk.renewalDetails.vehicle[].MultiCarDiscountRate	MultiCarDiscountRate		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	8/25/2026	v3.4	
+AMQR0263	coreRisk.renewalDetails.MPDiscountAppliedManually	MPDiscountAppliedManually		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	8/25/2026	v3.6	
+AMQR0264	coreRisk.renewalDetails.policy_RecapturedInd	policy_RecapturedInd		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	8/25/2026	v3.4	
+AMQR0266	coreRisk.renewalDetails.FullCAISDataUsed	FullCAISDataUsed		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	8/25/2026	v3.4	
+AMQR0265	coreRisk.renewalDetails.vehicle[].RVS_PolicyRiskScore	RVS_PolicyRiskScore		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	8/25/2026	v3.4	
+AMQR0286	coreRisk.renewalDetails.vehicle[].RVS_PolicyRiskOutcome	RVS_PolicyRiskOutcome		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	8/25/2026	v3.6	
+AMQR0180	coreRisk.renewalDetails.vehicle[].RVS_ScorecardIdScore	RVS_ScorecardIdScore		 Integer	Optional	Optional	Persisted Factor Data			Yes	Yes	Yes ( If Renewal)	5/13/2025	v2.3	
+AMQR0267	coreRisk.renewalDetails.vehicle[].RVS_ScorecardIdOutcome	RVS_ScorecardIdOutcome		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	8/25/2026	v3.4	
+AMQR0175	coreRisk.renewalDetails.vehicle[].RVS_CueMotorScore	RVS_CueMotorScore		 Integer	Optional	Optional	Persisted Factor Data			Yes	Yes	Yes ( If Renewal)	5/13/2025	v2.3	
+AMQR0268	coreRisk.renewalDetails.vehicle[].RVS_CUEMotorOutcome	RVS_CUEMotorOutcome		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	8/25/2026	v3.4	
+AMQR0176	coreRisk.renewalDetails.vehicle[].RVS_CuePiScore	RVS_CuePiScore		 Integer	Optional	Optional	Persisted Factor Data			Yes	Yes	Yes ( If Renewal)	5/13/2025	v2.3	
+AMQR0269	coreRisk.renewalDetails.vehicle[].RVS_CUEPIOutcome	RVS_CUEPIOutcome		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	8/25/2026	v3.4	
+AMQR0181	coreRisk.renewalDetails.vehicle[].RVS_NCDValidationScore	RVS_NCDValidationScore		 Integer	Optional	Optional	Persisted Factor Data			Yes	Yes	Yes ( If Renewal)	5/13/2025	v2.3	
+AMQR0270	coreRisk.renewalDetails.vehicle[].RVS_NCDValidationOutcome	RVS_NCDValidationOutcome		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	8/25/2026	V3.6	
+AMQR0271	coreRisk.renewalDetails.vehicle[].RVS_MPPCancellationScore	RVS_MPPCancellationScore		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	9/17/2026	v1.1	
+AMQR0272	coreRisk.renewalDetails.vehicle[].RVS_MPPCancellationOutcome	RVS_MPPCancellationOutcome		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	9/17/2026	v1.1	
+AMQR0273	coreRisk.renewalDetails.vehicle[].RVS_ContradictionScore	RVS_ContradictionScore		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	9/17/2026	v1.1	
+AMQR0274	coreRisk.renewalDetails.vehicle[].RVS_ContradictionOutcome	RVS_ContradictionOutcome		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	9/17/2026	v1.1	
+AMQR0177	coreRisk.renewalDetails.vehicle[].RVS_ProfileScore	RVS_ProfileScore		 Integer	Optional	Optional	Persisted Factor Data			Yes		Yes ( If Renewal)	5/13/2025	v2.3	
+AMQR0275	coreRisk.renewalDetails.vehicle[].RVS_ProfileOutcome	RVS_ProfileOutcome		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	8/25/2026	V3.6	
+AMQR0276	coreRisk.renewalDetails.vehicle[].RVS_RiskSegmentScore	RVS_RiskSegmentScore		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	9/17/2026	v1.1	
+AMQR0277	coreRisk.renewalDetails.vehicle[].RVS_ValidationScorecardTotal	RVS_ValidationScorecardTotal		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	8/25/2026	v3.4	
+AMQR0278	coreRisk.renewalDetails.vehicle[].RVS_ValidationScorecardOutcome	RVS_ValidationScorecardOutcome		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	8/25/2026	v3.4	
+AMQR0178	coreRisk.renewalDetails.vehicle[].RVS_ExceptionFileScore	RVS_ExceptionFileScore		 Integer	Optional	Optional	Persisted Factor Data			Yes	Yes	Yes ( If Renewal)	5/13/2025	v2.3	
+AMQR0279	coreRisk.renewalDetails.vehicle[].RVS_ExceptionFileOutcome	RVS_ExceptionFileOutcome		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	8/28/2026	v3.4	
+AMQR0172	coreRisk.renewalDetails.vehicle[].RVS_QuoteManipulationScore	RVS_QuoteManipulationScore		 Integer	Optional	Optional	Persisted Factor Data			Yes	Yes	Yes ( If Renewal)	5/13/2025	v2.3	
+AMQR0280	coreRisk.renewalDetails.vehicle[].RVS_QuoteManipulationOutcome	RVS_QuoteManipulationOutcome		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	8/28/2026	v3.4	
+AMQR0281	coreRisk.renewalDetails.vehicle[].RVS_RiskSegmentOutcome	RVS_RiskSegmentOutcome		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	9/17/2026	v1.1	
+AMQR0173	coreRisk.renewalDetails.vehicle[].RVS_TotalScoreInception	RVS_TotalScoreInception		 Integer	Optional	Optional	Persisted Factor Data			Yes	Yes	Yes ( If Renewal)	5/13/2025	v2.3	
+AMQR0282	coreRisk.renewalDetails.vehicle[].RVS_TotalOutcomeInception	RVS_TotalOutcomeInception		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	8/28/2026	v3.4	
+AMQR0179	coreRisk.renewalDetails.vehicle[].RVS_WorstCancellationScore	RVS_WorstCancellationScore		 Integer	Optional	Optional	Persisted Factor Data			Yes	Yes	Yes ( If Renewal)	5/13/2025	v2.3	
+AMQR0283	coreRisk.renewalDetails.vehicle[].RVS_WorstCancellationOutcome	RVS_WorstCancellationOutcome		string	Optional	Optional	Persisted Factor Data			No	No	Yes ( If Renewal)	8/28/2026	v3.4	
+AMQR0182	coreRisk.renewalDetails.vehicle[].VehiclePRN	VehiclePRN			Optional	Optional	Persisted Factor Data			Yes	Yes	Yes ( If Renewal)	5/13/2025	v2.3	
+AMQR0183	coreRisk.vehicles[].drivenBy[].drivenBy_DriverPrn	drivenBy_DriverPrn		string	Optional	Mandatory	Unique Identifier	0.0		Yes	Yes	Yes	3/4/2025	v.1.9	
+AMQR0184	coreRisk.vehicles[].drivenBy[].drivenBy_DrivingFrequency	drivenBy_DrivingFrequency		string	Optional	Mandatory	Reference Data	M		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0185	coreRisk.vehicles[].modifications[].modifications_Code	modifications_Code		string	Optional	Mandatory	Reference Data	ABI		Yes	Yes	Yes	9/16/2024	V3.6	
+AMQR0186	coreRisk.vehicles[].ncd.ncd_ClaimedCountryEarned	ncd_ClaimedCountryEarned		string	Optional	Mandatory	Reference Data	GB		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0187	coreRisk.vehicles[].ncd.ncd_ClaimedEntitlementReason	ncd_ClaimedEntitlementReason		string	Optional	Mandatory	Reference Data	11		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0188	coreRisk.vehicles[].ncd.ncd_ClaimedProtectedInd	ncd_ClaimedProtectedInd		string	Optional	Mandatory	Customer Data	Y		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0189	coreRisk.vehicles[].ncd.ncd_ClaimedProtectionReqdInd	ncd_ClaimedProtectionReqdInd		string	Optional	Mandatory	Customer Data	Y		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0190	coreRisk.vehicles[].ncd.ncd_ClaimedYears	ncd_ClaimedYears		double	Optional	Mandatory	Customer Data	0.0		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0191	coreRisk.vehicles[].ncd.ncd_NcdHolderPrn	ncd_NcdHolderPrn		string	Optional	Mandatory	System Data	0.0		Yes	Yes	Yes	3/4/2025	v.1.9	
+AMQR0192	coreRisk.vehicles[].uses_AbiCode	uses_AbiCode		string	Optional	Mandatory	Reference Data	01		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0193	coreRisk.vehicles[].vehicle_AnnualMileage	vehicle_AnnualMileage		double	Optional	Mandatory	Customer Data	10000.00		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0194	coreRisk.vehicles[].vehicle_DateFirstRegd	vehicle_DateFirstRegd		date	Optional	Mandatory	Customer Data	1980-01-01		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0195	coreRisk.vehicles[].vehicle_DateManufactured	vehicle_DateManufactured		date	Optional	Mandatory	Customer Data	1980-01-01		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0196	coreRisk.vehicles[].vehicle_Keeper	vehicle_Keeper		string	Optional	Mandatory	Reference Data	1		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0197	coreRisk.vehicles[].vehicle_LeftOrRightHandDrive	vehicle_LeftOrRightHandDrive		string	Optional	Optional	Customer Data	L		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0198	coreRisk.vehicles[].vehicle_LocationKeptOvernight	vehicle_LocationKeptOvernight		string	Optional	Mandatory	Customer Data	4		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0199	coreRisk.vehicles[].vehicle_Model	vehicle_Model	Contains the actual Vehicle ABI Code of the Vehicle not a dummy code. I have not added the Vehicle ABI Code to the reference data, as it is updated monthly and contains over 100,000 records.	string	Optional	Mandatory	Reference Data	23		Yes	Yes	Yes	9/16/2024	V2.0	
+AMQR0200	coreRisk.vehicles[].vehicle_ModifiedInd	vehicle_ModifiedInd		string	Optional	Mandatory	Customer Data	N		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0201	coreRisk.vehicles[].vehicle_Ownership	vehicle_Ownership		string	Optional	Mandatory	Reference Data	1		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0202	coreRisk.vehicles[].vehicle_PostCodeFull	vehicle_PostCodeFull		string	Optional	Mandatory	Customer Data	TA126PH		Yes	Yes	Yes	10/30/2024	v.1.2 	
+AMQR0203	coreRisk.vehicles[].vehicle_PremiumPreIptAndAddOns	vehicle_PremiumPreIptAndAddOns		double	Optional	Optional	Derived Data			Yes	Yes	No	3/4/2025	V1.9	
+AMQR0204	coreRisk.vehicles[].vehicle_PurchaseDate	vehicle_PurchaseDate		date	Optional	Mandatory	Customer Data	1980-01-01		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0205	coreRisk.vehicles[].vehicle_QPlateInd	vehicle_QPlateInd		string	Optional	Mandatory	Customer Data	N		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0206	coreRisk.vehicles[].vehicle_QuoteManipulationScoreIn	vehicle_QuoteManipulationScoreIn		double	Optional	Optional	Customer Data			Yes	Yes	Yes	3/4/2025	V1.9	
+AMQR0207	coreRisk.vehicles[].vehicle_RegNo	vehicle_RegNo		string	Optional	Mandatory	Customer Data	CV65OZJ		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0208	coreRisk.vehicles[].vehicle_RiskScoreInceptionIn	vehicle_RiskScoreInceptionIn		double	Optional	Optional	Derived Data			Yes	Yes	Yes	3/4/2025	V1.9	
+AMQR0209	coreRisk.vehicles[].vehicle_StartDate	vehicle_StartDate		date	Optional	Mandatory	Customer Data	1980-01-01		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0210	coreRisk.vehicles[].vehicle_TransmissionType	vehicle_TransmissionType		string	Optional	Mandatory	Reference Data	CV65OZJ		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0211	coreRisk.vehicles[].vehicle_Value	vehicle_Value		double	Optional	Mandatory	Customer Data	12702		Yes	Yes	Yes	9/16/2024	V1.0	
+AMQR0212	coreRisk.vehicles[].vehicle_VehiclePrn	vehicle_VehiclePrn		string	Optional	Mandatory	Unique Identifier	0.0		Yes	Yes	Yes	3/4/2025	V1.9	
+AMQR0256	coreRisk.vehicles[].vehicle_Vehicle_PersonalImportInd	vehicle_Vehicle_PersonalImportInd		string			Customer Data	Imported				Yes	6/22/2026	V3.5	
+AMQR0259	coreRisk.vehicles[].vehicle_ChoiceAddOns	vehicle_ChoiceAddOns		string			Customer Data					Yes	6/22/2026	V3.5	
+AMQR0225	coreRisk.vehicles[].vehicle_FlowVRNInsured	vehicle_FlowVRNInsured		string	Optional	Optional	Derived Data			Yes	Yes	No	7/15/2026	V3.5	
+AMQR0213	rawEnrichments[].compression	compression	This is the type of compression that has been used on the enrichment message. This will always be snappy ( check if that is true)	string	Optional	Mandatory	System Data	snappy		Yes	Yes	Yes	1/13/2025	V.1.5	
+AMQR0214	rawEnrichments[].data	data	This field contains the data that has been returned from the enrichment request.	string	Optional	Mandatory	Third Party Data	sdsdsdskehdoiuewfoFleaujgoegfjewgfefefewkfefegf		Yes	Yes	Yes	1/13/2025	V.1.5	
+AMQR0215	rawEnrichments[].dataset	dataset		string	Optional	Optional	Unique Identifier	multiple		Yes	Yes	Yes	1/13/2025	V.1.5	
+AMQR0216	rawEnrichments[].driverPRN	driverPRN	This is the DriverPRN that the enrichment relates to.	string	Optional	Mandatory 	Unique Identifier			Yes	Yes	Yes	3/4/2025	V.1.9	
+AMQR0217	rawEnrichments[].driverPRNMap[].driverPRN	driverPRN	This is the DriverPRN this is a primary foreign key relationship to tie the PRN in the enrichment to the PRN that is used within this message.	string	Optional	Optional	Unique Identifier	45fb45f5-0e7c-4d1c-8987-435649418daf		Yes	Yes	Yes	1/13/2025	V.2.2	
+AMQR0218	rawEnrichments[].driverPRNMap[].LexisNexisPRN	LexisNexisPRN	This is the LexisNexis DriverPRN this is a primary foreign key relationship to tie the PRN in the enrichment to the PRN that is used within this message.	string	Optional	Optional	Unique Identifier	1		Yes	Yes	Yes	1/13/2025	V.2.2	
+AMQR0219	rawEnrichments[].errorCode	errorCode	This is the error code that has been returned from the enrichment if there has been a failure in the call to the specific enrichment.	string	Optional	Optional	System Data	500		Yes	Yes	Yes	3/7/2025	v1.8	
+AMQR0220	rawEnrichments[].errorMessage	errorMessage	This is the error message that has been returned from the enrichment if there has been a failure in the call to the specific enrichment.	string	Optional	Optional		Service unavailable		Yes	Yes	Yes	3/7/2025	v1.8	
+AMQR0221	rawEnrichments[].outputformat	outputformat	the format that the enrichment message has been sent in	string	Optional	Mandatory	System Data	xml		Yes	Yes	Yes	1/13/2025	V.1.5	
+AMQR0222	rawEnrichments[].outputschema	outputschema	The schema that is used to construct the response message. 	string	Optional	Mandatory	System Data	LexisNexisPI_v1.xsd		Yes	Yes	Yes	1/13/2025	V.1.5	
+AMQR0223	rawEnrichments[].provider	provider	The provider of the enrichment	string	Optional	Mandatory	System Data	lexis-nexis		Yes	Yes	Yes	1/13/2025	V.1.5	
+AMQR0224	rawEnrichments[].vehiclePRN	vehiclePRN	This is the DriverPRN that the enrichment relates to.	string	Optional	Optional	Unique Identifier	63c9a4d8-fcff-4b38-8e8a-61e35c9ab097		Yes	Yes	Yes	3/4/2025	V.1.9	
