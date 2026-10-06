@@ -1,0 +1,298 @@
+"SSP standard" Polaris Request Mapping							
+Nodes  / Elements not relevant to the Quote are not shown							
+			SSP Quote Request				
+Tx Type	Parent Object/Property	Property	Section	Element	Type	Notes	Comments
+All	PolMessage	Type			String	Populated with a constant value of "TransactionRequest"	
+All	PolMessage	Version			String	Populated with a constant value of "1"	
+All	PolMessage	Dictionary.DictName			String	Populated with a constant value of "UKMotor"	
+All	PolMessage	Dictionary.DictVer			String	Polaris_dictionary_version is an input parameter to the transform	"Updated as needed for new Dictionary versions.
+"
+All	PolMessage	Dictionary.DictId			String	Populated with a constant value of "1"	
+All	PolMessage	Transaction.EffectiveDate	Policy	CoverDate	Date	rating_date is an input	
+	PolMessage	Transaction.TranName	Control	TransactionType	String	"Populated with:
+""QuoteDetail"" for NewBusiness
+""MTAAccept"" for MTA
+""RenewalAccept"" for Renewal"	Default is NewBusiness / QuoteDetail
+All	PolMessage.Schemes.Scheme	Schemes.Scheme.Ref	N/A		String	Populated within the call using the Panel configured and referenced by the Scheme Ref attribute.	This field is used to populate schemes / scheme variants into the request. These come from the Panel that has been configured. This is a collection. If more than one scheme / scheme variant is given, the output will contain a collection of SchemeResult objects.
+All	PolMessage.Schemes.Scheme	PolData.Type	N/A		String	Populated with a constant value of "Input"	
+All	PolMessage.PolData.ProposerPolicyHolder	ProposerPolicyholder_Type	Proposer	ProposerType>Abi	Abi	Defaults to "P"	Mapped as shown
+All	PolMessage.PolData.ProposerPolicyHolder	ProposerPolicyholder_NoOfVehiclesAvailableToFamily	Proposer	NumberOfCarsInFamily	Integer		Mapped as shown
+	PolMessage.PolData.ProposerPolicyHolder	ProposerPolicyholder_Sex	Driver	Sex>Abi	Abi	Looked up from the Driver object that is the Proposer.	Mapped as shown
+All	PolMessage.PolData.ProposerPolicyHolder	ProposerPolicyholder_DateOfBirth	Driver	DOB	Date	Looked up from the Driver object that is the Proposer.	Mapped to the Driver object which is the Proposer. (RelationshipToProposer = "P")
+	PolMessage.PolData.ProposerPolicyHolder	ProposerPolicyHolder_AddressLine1	Proposer	Address>Address1	String		Mapped as shown
+	PolMessage.PolData.ProposerPolicyHolder	ProposerPolicyHolder_AddressLine2	Proposer	Address>Address2	String		Mapped as shown
+	PolMessage.PolData.ProposerPolicyHolder	ProposerPolicyHolder_AddressLine3	Proposer	Address>Address3	String		Mapped as shown
+	PolMessage.PolData.ProposerPolicyHolder	ProposerPolicyHolder_AddressLine4	Proposer	Address>Address4	String		Mapped as shown
+	PolMessage.PolData.ProposerPolicyHolder	ProposerPolicyHolder_AddressLine5	Proposer	Address>Address5	String		Mapped as shown
+	PolMessage.PolData.ProposerPolicyHolder	ProposerPolicyHolder_AddressLine6	Proposer	Address>Address6	String		Mapped as shown
+All	PolMessage.PolData.ProposerPolicyHolder	ProposerPolicyholder_PostCodeFull	Proposer	AddressPostcode	String	Postcode is contained in the Address object	Mapped as shown
+	PolMessage.PolData.ProposerPolicyHolder	ProposerPolicyholder_YearsAtHomeAddress	Proposer	HomeYears	int		Mapped as shown
+All	PolMessage.PolData.ProposerPolicyHolder	ProposerPolicyholder_HomeownerInd	Driver	Homeowner	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown (Driver is the Proposer)
+	PolMessage.PolData.ProposerPolicyHolder	ProposerPolicyholder_PostCodeSector	Proposer	AddressPostcode	String	Postcode sector  is retreived from the Full Postcode, less the last 2 characters	Mapped as shown
+	PolMessage.PolData.ProposerPolicyHolder	ProposerPolicyholder_DateOfBirthOFYoungestChild	Proposer	YoungestChildDOB	Date		Mapped as shown
+All	PolMessage.PolData.ProposerPolicyHolder	ProposerPolicyholder_CreditChecksConsentInd	Control	CreditControlConsent	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	PolMessage.PolData.ProposerPolicyHolder	ProposerPolicyholder_TelematicsConsentInd	Proposer	TelematicsConsentInd	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	PolMessage.PolData.ProposerPolicyHolder	ProposerPolicyholder_YearsWithCurrentInsurer	Proposer	CurrentInsurerYearsWith	Integer		Mapped as shown
+All	PolMessage.PolData.ProposerPolicyHolder	ProposerPolicyholder_DvlaConsentInd	Proposer	DVLAConsentInd	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	PolMessage.PolData.ProposerPolicyHolder	ProposerPolicyholder_DvlaLicencePostcodeMismatchInd	Driver	MyLicence>DvlaLicencePostcodeMismatchInd	Boolean	"True = Y, False = N ABI Codelist 100 True / False
+Looked up from the Driver object that belongs to the Proposer"	Mapped as shown
+All	PolMessage.PolData.ProposerPolicyHolder	OtherInsurances_Type	Proposer	OtherInsurance>TypeOfInsurance>Abi	String	Defaults to"PC"	Derived from ABI Codelist 007, Values of Commercial Vehicle = CV; Motorcycle = MC and Private Car = PC
+All	PolMessage.PolData.ProposerPolicyHolder	OtherInsurances_Insurer	Proposer	OtherInsurance>OtherInsurer>Abi	String	Abi Codelist 81, Defaults to"997"	Mapped as shown
+All	PolMessage.PolData.ProposerPolicyHolder	OtherInsurances_ExpiryDate	Proposer	OtherInsurance>ExpiryDate	Date		Mapped as shown
+All	PolMessage.PolData.ProposerPolicyHolder	OtherInsurances_NcdYearsEarned	Proposer	OtherInsurance>NCDEarned	Integer		Mapped as shown
+All	PolMessage.PolData.Vehicle	Vehicle_DateManufactured	Vehicle	DateManufactured	Date	SSP:  YYY-MM-DD	Mapped as shown
+All	PolMessage.PolData.Vehicle	Vehicle_Model	Vehicle	VehicleDetails>Abi	Abi	Code list 44	Mapped as shown
+All	PolMessage.PolData.Vehicle	Vehicle_CubicCapacity	Vehicle	EngineSize	string		Mapped as shown
+All	PolMessage.PolData.Vehicle	Vehicle_NoOfSeats	Vehicle	NumberSeats	Integer		Mapped as shown
+	PolMessage.PolData.Vehicle	Vehicle_BodyType	Vehicle	BodyType>Abi	string		Mapped as shown
+All	PolMessage.PolData.Vehicle	Vehicle_Value	Vehicle	Value	Integer		Mapped as shown
+All	PolMessage.PolData.Vehicle	Vehicle_AnnualMileage	Vehicle	AnnualMiles	Integer		If Vehicle> AnnualMileage has a value, this is used, other wise the sum of the values of Vehicle> PleasureMiles and Vehicle> BusinessMiles are used
+All	PolMessage.PolData.Vehicle	Vehicle_LeftOrRightHandDrive	Vehicle	DriveSide>Abi	Abi	Code list 103, Defaults to"R"	Mapped as shown
+All	PolMessage.PolData.Vehicle	Vehicle_LocationKeptOvernight	Vehicle	KeptLocation>Abi	Abi	Code list 15	Mapped as shown
+	PolMessage.PolData.Vehicle	Vehicle_PostCodeSector	Vehicle	KeptAddress>Postcode	string		Mapped as shown
+All	PolMessage.PolData.Vehicle	Vehicle_Ownership	Vehicle	VehicleOwner>Abi	Abi	Code list 27	Mapped as shown
+All	PolMessage.PolData.Vehicle	Vehicle_ModifiedInd	Vehicle	Modification		Derived: set to true if there are Modifications in the Vehicle > Modifications Element	
+All	PolMessage.PolData.Vehicle	Vehicle_DateFirstRegd	Vehicle	DateRegistered	Date	SSP:  YYY-MM-DD	Mapped as shown
+All	PolMessage.PolData.Vehicle	Vehicle_QPlateInd	Vehicle	QPlate	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+	PolMessage.PolData.Vehicle	Vehicle_Colour	Vehicle	VehicleColour>Abi	string	Defaults to"009"	Mapped as shown
+	PolMessage.PolData.Vehicle	Vehicle_Finish	Vehicle	VehicleFinish>Abi	string	Defaults to"3"	Mapped as shown
+All	PolMessage.PolData.Vehicle	Vehicle_VehiclePrn	Vehicle	VehiclePRN	Integer		Mapped as shown
+	PolMessage.PolData.Vehicle	Vehicle_DerivedClassOfUse			String	Set to "1"	
+All	PolMessage.PolData.Vehicle	Vehicle_RegNo	Vehicle	Registration	String		Mapped as shown
+	PolMessage.PolData.Vehicle	Vehicle_GrossWeight	Vehicle	CommercialVehicle>GrossVehicleWeight	Decimal		Mapped as shown
+All	PolMessage.PolData.Vehicle	Vehicle_PurchaseDate	Vehicle	DatePurchased	Date	SSP:  YYY-MM-DD	Mapped as shown
+All	PolMessage.PolData.Vehicle	Vehicle_UkRegdInd	Vehicle	UKRegistered	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+	PolMessage.PolData.Vehicle	Vehicle_ValueCode	Vehicle	ValueType>Abi	string	Defaults to "M"	Mapped as shown
+All	PolMessage.PolData.Vehicle	Vehicle_PersonalImportInd	Vehicle	Imported	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	PolMessage.PolData.Vehicle	Vehicle_Keeper	Vehicle	VehicleKeeper>Abi	Abi	Code list 27	Mapped as shown
+	PolMessage.PolData.Vehicle	Vehicle_StartDate	Vehicle	StartDate	Date	The date on which cover for the Vehicle is to start	Mapped as shown
+MTA	PolMessage.PolData.Vehicle	Vehicle_TempAddlDuration	Vehicle	TempAddlDuration	String	Temporary Vehicles / MTA	Mapped as shown
+MTA	PolMessage.PolData.Vehicle	Vehicle_TempAddlInd	Vehicle	TempAddlInd	Date	Temporary Vehicles / MTA	Mapped as shown
+MTA	PolMessage.PolData.Vehicle	Vehicle_TempAddlDate	Vehicle	TempAddlDate	Date	a	Mapped as shown
+All	PolMessage.PolData.Vehicle	Vehicle_YearManufactured	Vehicle	DateManufactured	Date	SSP:  YYY-MM-DD	This is input as the Year portion of the date field.
+All	PolMessage.PolData.Vehicle	Vehicle_FirstRegdYear	Vehicle	DateRegistered	Date	SSP:  YYY-MM-DD	This is input as the Year portion of the date field.
+	PolMessage.PolData.Vehicle	Vehicle_SecurityDeviceFittedInd	Vehicle	SecurityDevices	Boolean	True if a SecurityDevice collection is present in the request	Mapped as shown
+	PolMessage.PolData.Vehicle	Vehicle_TypeOfFuel	Vehicle	Fuel>Abi	string		Mapped as shown
+	PolMessage.PolData.Vehicle	Vehicle_TransmissionType	Vehicle	TransmissionType>Abi	string	Defaults to"002"	Mapped as shown
+	PolMessage.PolData.Vehicle	Vehicle_SideCarFittedInd	Vehicle	Motorcycle>Sidecare	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+	PolMessage.PolData.Vehicle	Vehicle_BusinessMileage	Vehicle	BusinessMiles	int		Mapped as shown
+	PolMessage.PolData.Vehicle	Vehicle_PleasureMileage	Vehicle	PleasureMiles	int		Mapped as shown
+All	PolMessage.PolData.Vehicle	Vehicle_PostCodeFull	Vehicle	KeptAddress>Postcode	String		Mapped as shown
+	PolMessage.PolData.Vehicle	Vehicle_PassengerPillionINd	Vehicle	Motorcycle>PassengersPillion	boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	PolMessage.PolData.Vehicle	Vehicle_VehicleKeptDaytime	Vehicle	KeptLocationDaytime>Abi	Abi	ABI Codelist 15	Added to Request at v31
+All	PolMessage.PolData.Vehicle	Modifications_Code	Vehicle	Modifications>Modification>ModificationType>Abi	Abi	Code list 86	Mapped as shown
+	PolMessage.PolData.Vehicle	Modifications_ForMedicalConditionInd	Vehicle	Modifications>Modification>Infirmity	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	PolMessage.PolData.Vehicle	Security_MakeModel	Vehicle	SecurityDevices>SecurityDevice>DeviceType>Abi	string	Code list 78	Mapped as shown
+	PolMessage.PolData.Vehicle	Security_Installer	Vehicle	SecurityDevices>SecurityDevice>DeviceFitter>Abi	String	Defaults to "6"	Mapped as shown
+	PolMessage.PolData.Vehicle	Security_FittedDate	Vehicle	SecurityDevices>SecurityDevice>DateFitted	Date		Mapped as shown
+	PolMessage.PolData.Vehicle	ForeignTravel_PortUseOnlyInd	Vehicle	ForeignTravel>PortUseOnlyInd	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	PolMessage.PolData.Vehicle	ForeignTravel_NoOfDaysCover	Vehicle	ForeignTravel>NoOfDaysCover	Integer		Mapped as shown
+	PolMessage.PolData.Vehicle	ForeignTravel_GcardNo	Vehicle	ForeignTravel>GCardNo	string		Mapped as shown
+	PolMessage.PolData.Vehicle	ForeignTravel_VehicleGcardCat	Vehicle	ForeignTravel>VehicleGcardCat>Abi	string		Mapped as shown
+	PolMessage.PolData.Vehicle	ForeignTravel_TrailerGcardCat	Vehicle	ForeignTravel>TrailerGcardCat>Abi	String		Mapped as shown
+	PolMessage.PolData.Vehicle	ForeignTravel_VehicleCoverCode	Vehicle	ForeignTravel>VehicleCoverCode>Abi	String		Mapped as shown
+	PolMessage.PolData.Vehicle	ForeignTravel_HandbookToBeIssuedInd	Vehicle	ForeignTravel>HandbookToBeIssuedInd	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+	PolMessage.PolData.Vehicle	ForeignTravel_HazardousGoodsCarriedInd	Vehicle	ForeignTravel>HazardousGoodsCarriedInd	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+	PolMessage.PolData.Vehicle	ForeignTravel_HazardousGoodsCarriedDesc	Vehicle	ForeignTravel>HazardousGoodsCarriedDesc	String		Mapped as shown
+	PolMessage.PolData.Vehicle	ForeignTravel_SpanishBailbondReqdInd	Vehicle	ForeignTravel>SpanishBailbondReqdInd	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+	PolMessage.PolData.Vehicle	ForeignTravel_XsType	Vehicle	ForeignTravel>XsType>Abi	String		Mapped as shown
+	PolMessage.PolData.Vehicle	ForeignTravel_XsValue	Vehicle	ForeignTravel>XsValue	Int		Mapped as shown
+	PolMessage.PolData.Vehicle	ForeignTravel_GcardStatus	Vehicle	ForeignTravel>GcardStatus>Abi	String		Mapped as shown
+	PolMessage.PolData.Vehicle	ForeignTravel_GcardStatusDate	Vehicle	ForeignTravel>GcardStatusDate	Date		Mapped as shown
+	PolMessage.PolData.Vehicle	ForeignTravel_GcardStartDate	Vehicle	ForeignTravel>GcardStartDate	Date		Mapped as shown
+All	PolMessage.PolData.Vehicle	Country_Name	Vehicle	ForeignTravel>Country>Abi	String	Code list 32	Mapped as shown
+All	PolMessage.PolData.Vehicle	Uses_AbiCode	Driver	DriverUsesIncluded>DriverUse>Abi	Abi	Code list 52	A Uses chunk is created under the Vehicle object for each unique DriverUse ABI value that is found in the Drivers collection.
+All	PolMessage.PolData.Vehicle	Uses_UsedByDriver1Ind	Driver	Calculated			For each of the Uses appearing in a Driver in the Drivers collection, each Driver record is inspected to establish whether that use is present in that Drivers DriverUse chunk. If there's a Match, the value is set to Y, otherwise it is set to N.
+All	PolMessage.PolData.Vehicle	Uses_UsedByDriver2Ind	Driver	Calculated			See comment for Uses> UsedByDriver1Ind
+All	PolMessage.PolData.Vehicle	Uses_UsedByDriver3Ind	Driver	Calculated			See comment for Uses> UsedByDriver1Ind
+All	PolMessage.PolData.Vehicle	Uses_UsedByDriver4Ind	Driver	Calculated			See comment for Uses> UsedByDriver1Ind
+All	PolMessage.PolData.Vehicle	Uses_UsedByDriver5Ind	Driver	Calculated			See comment for Uses> UsedByDriver1Ind
+All	PolMessage.PolData.Vehicle	Uses_UsedByDriver6Ind	Driver	Calculated			See comment for Uses> UsedByDriver1Ind
+All	PolMessage.PolData.Vehicle	Uses_UsedByDriver7Ind	Driver	Calculated			See comment for Uses> UsedByDriver1Ind
+All	PolMessage.PolData.Vehicle	Uses_UsedByDriver8Ind	Driver	Calculated			See comment for Uses> UsedByDriver1Ind
+All	PolMessage.PolData.Vehicle	Uses_UsedByDriver9Ind	Driver	Calculated			See comment for Uses> UsedByDriver1Ind
+All	PolMessage.PolData.Vehicle	Uses_UsedByDriver10Ind	Driver	Calculated			See comment for Uses> UsedByDriver1Ind
+All	PolMessage.PolData.Vehicle	Uses_UsedByDriver11Ind	Driver	Calculated			See comment for Uses> UsedByDriver1Ind
+All	PolMessage.PolData.Vehicle	Uses_UsedByDriver12Ind	Driver	Calculated			See comment for Uses> UsedByDriver1Ind
+All	PolMessage.PolData.Vehicle	Uses_UsedByDriver13Ind	Driver	Calculated			See comment for Uses> UsedByDriver1Ind
+All	PolMessage.PolData.Vehicle	Uses_UsedByDriver14Ind	Driver	Calculated			See comment for Uses> UsedByDriver1Ind
+All	PolMessage.PolData.Vehicle	Uses_UsedByDriver15Ind	Driver	Calculated			See comment for Uses> UsedByDriver1Ind
+All	PolMessage.PolData.Vehicle	Uses_UsedByDriver16Ind	Driver	Calculated			See comment for Uses> UsedByDriver1Ind
+All	PolMessage.PolData.Vehicle.Ncd	Ncd_ClaimedCountryEarned	Vehicle	NCD>Country	String		Mapped as shown
+All	PolMessage.PolData.Vehicle.Ncd	Ncd_ClaimedDiscountType	Vehicle	NCD>CurrentTypeOfBonus>Abi	String	Codelist 84	Mapped as shown
+All	PolMessage.PolData.Vehicle.Ncd	Ncd_ClaimedEntitlementReason	Vehicle	NCD>NCDType>Abi	String	"List of values from the Integration Guide: 
+  1,2,8,11,12,13"	Mapped as shown
+	PolMessage.PolData.Vehicle.Ncd	Ncd_ClaimedProtectedInd	Vehicle	NCD>Protected	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	PolMessage.PolData.Vehicle.Ncd	Ncd_ClaimedProtectionReqdInd	Vehicle	NCD>Protected	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	PolMessage.PolData.Vehicle.Ncd	Ncd_ClaimedYears	Vehicle	NCD>Years	Integer		Mapped as shown
+All	PolMessage.PolData.Vehicle.Ncd	Ncd_ClaimedPreviousPolicyExpiryDate	Proposer	PreviousInsurance>PreviousInsuranceEndDate	Date		Mapped as shown
+All	PolMessage.PolData.Vehicle.DrivenBy	DrivenBy_DriverNumber	Driver	DriverPRN	Int		Mapped as shown
+All	PolMessage.PolData.Vehicle.DrivenBy	DrivenBy_DrivingFrequency	Driver	DrivesVehicle>DrivingFrequency>Abi	Abi	Code list 21, Defaults to"C"	Mapped as shown
+All	Cover	Cover_Code	Cover	Code>Abi	String	Code list 2	Mapped as shown (Single Vehicle Mode)
+	Cover	Cover_TrailerCover	Cover	TrailerCover>Abi	String		Mapped as shown
+All	Cover	Cover_PeriodUnits				Populated with a value of "2"	Mapped as shown (Single Vehicle Mode)
+All	Cover	Cover_Period	Policy	CoverMonths	Int		Mapped as shown 
+All	Cover	Cover_StartDate	Policy	CoverDate	Date	SSP:  YYY-MM-DD	Mapped as shown
+	Cover	Cover_DriversAllowed	Cover	RequiredDrivers>Abi	String		Mapped as shown (Single Vehicle Mode)
+All	Cover	Cover_AgeOfYoungestDriverForOpenDriving	Derive from all declared drivers DOB and driving restriction				This field is not mapped, it is derived in Polaris
+All	Cover	Cover_AllDriversResideAtSameAddressInd	Derived from the residency address of each driver				This field is not mapped - it  should be derived from the residency address of each driver. This property is not supported by Quotes Engine.
+	Cover	Cover_TempCoverInd	Cover	TempCoverInd	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+	Cover	Cover_VolXsSection	Cover	VolXsSecrtion>Abi	string		Mapped as shown
+All	Cover	Cover_VolXsAmt	Cover	VolXsAmt	Integer		Mapped as shown (Single Vehicle Mode)
+MTA	Cover	Cover_TotalTempMTAs	Vehicle	TMTA>TransactionTypeCount	String		Mapped as shown (Single-vehicle Mode)
+MTA	Cover	Cover_TotalNoOfSubstituteVehicleDays	Vehicle	TMTA>TotalNoofSubstituteVehicleDays	String		Mapped as shown (Single-vehicle Mode)
+MTA	Cover	Cover_TotalNoOfAdditionalVehicles	Vehicle	TMTA>TotalnoofAddVehicle	String		Mapped as shown (Single-vehicle Mode)
+MTA	Cover	Cover_TotalNoOfAdditionalVehicleDays	Vehicle	TMTA>TotalNoOfAdditionalVehicleDays	String		Mapped as shown (Single-vehicle Mode)
+MTA	Cover	Cover_Restrictions	Cover	Restrictions>Abi	String		Mapped as shown (Multi-vehicle mode)
+All	Cover	Cover_RequiredDrivers	Cover	RequiredDrivers>Abi	String	Code list 134	Mapped as shown (Single-vehicle Mode)
+	Cover	Cover_VehPrn	Cover	VehiclePRN	Int		Mapped as shown (Single-vehicle Mode)
+MTA	Cover	Cover_TotalNoOfTempAddlDriverDays	Vehicle	TMTA>TotalNoofTempAddlDriverDays	String		Mapped as shown (Single-vehicle Mode)
+MTA	Cover	Cover_TotalNoOfTempAddlDrivers	Vehicle	TMTA>TotalNoOfTempAddlDrivers	String		Mapped as shown (Single-vehicle Mode)
+MTA	Cover	Cover_TotalNoOfTempAddlDriversInForce	Vehicle	TMTA>TotalNoofTempAddlDriversinForce	String		Mapped as shown (Single-vehicle Mode)
+	Driver	Driver_RegdDisabledInd	Driver	Disabled	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	Driver	Driver_RelationshipToProposer	Driver	RelationshipToProposer>Abi	String	Code list 19	Mapped as shown
+All	Driver	Driver_DateOfBirth	Driver	DOB	Date	SSP:  YYY-MM-DD	Mapped as shown
+	Driver	Driver_Sex	Driver	Sex>Abi	String		Mapped as shown
+All	Driver	Driver_MaritalStatus	Driver	MaritalStatus>Abi	String	Code list 6	Mapped as shown
+All	Driver	Driver_LicenceType	Driver	Licence>LicenceType>Abi	String	Code list 20	Mapped as shown
+All	Driver	Driver_LicenceDate	Driver	Licence>LicenceDate	Date	SSP:  YYY-MM-DD	Mapped as shown
+All	Driver	Driver_AnnualMileage	Driver	"AnnualMileageor
+PleasureMiles+BusinessMilesifnomileagevalue"	Integer		Mapped as shown
+All	Driver	Driver_ProsecutionPendingInd	Driver	ProsecutionsPending	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	Driver	Driver_NonMotoringConvictionInd	Driver	CriminalConvictions	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	Driver	Driver_RefusedCoverInd	Driver	Refused	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	Driver	Driver_MotoringOrganisationMembership	Driver	MotorOrganisation>Abi	String	Defaults to"99"	Mapped as shown
+All	Driver	Driver_NoOfOtherVehiclesDriven	Driver	AccessOtherCars	Integer		Mapped as shown
+All	Driver	Driver_OtherVehicleYearsClaimFree	Driver	ClaimFreeYearsAlternativePolicy	Integer		Mapped as shown
+All	Driver	Driver_CoCarUsageNoOfYearsNcdClaimed	Proposer	CompanyCar>NCD	Integer		Mapped as shown
+All	Driver	Driver_CoCarUsageType	Proposer	CompanyCar>CoCarExperienceType>Abi	String		Mapped as shown
+All	Driver	Driver_CoCarUsageCeasedDate	Proposer	CompanyCar>EndDate	Date	SSP:  YYY-MM-DD	Mapped as shown
+All	Driver	Driver_PrevRestrictiveTermsAppliedInd	Driver	SpecialTerms	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+	Driver	Driver_SmokerInd	Driver	Smoker	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	Driver	Driver_Prn	Driver	DriverPRN	Integer		Mapped as shown
+	Driver	Driver_Title	Driver	Title>Abi	String		Mapped as shown
+	Driver	Driver_DisabledBadgeHolderInd	Driver	Badgeholder	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+	Driver	Driver_NoOfOtherVehiclesOwned	Driver	OwnOtherCars	Int		Mapped as shown
+All	Driver	Driver_PrevlyAppliedIncrsdPremInd	Driver	Increased	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+	Driver	Driver_ClaimsInd	Driver	Claims	Boolean	Derived: set to true if there are Claims in the Claims collection.	Mapped as shown
+	Driver	Driver_ConvictionsInd	Driver	Convictions	Boolean	Derived: set to true if there are Convictions  in the Convictions collection.	Mapped as shown
+	Driver	Driver_MedicalConditionsInd	Driver	MedicalConditions	Boolean	Derived: set to true if there are Medical Conditions in the Medical Conditions collection.	Mapped as shown
+All	Driver	Driver_UkResidencyDate	Driver	Residency>DateToUK	Date	SSP:  YYY-MM-DD	Mapped as shown
+All	Driver	Driver_DrivesVehicle1Ind	Driver	DrivingFrequency>Abi	Abi	Code list 21	Mapped as shown
+All	Driver	Driver_TypeOfDwelling	Driver	HomeType>Abi	Abi	Polaris Code 038, Defaults to"99"	Mapped as shown
+All	Driver	Driver_PermanentlyResidentInd	Driver	Residency>Permanent	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	Driver	Driver_ResidesWithProposerInd	Driver	Residency>AtProposersAddress	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+	Driver	Driver_DrivingQualificationsInd	Driver	Qualifications	Boolean	Derived: set to true if there are Qualifications in the Qualifications collection.	Mapped as shown
+All	Driver	Driver_EverHadPolicyCancelledInd	Driver	Refused	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+MTA	Driver	Driver_TempAddlDuration	Driver	TempAddDuration	Integer		Mapped as shown
+MTA	Driver	Driver_TempAddlInd	Driver	TempAddlInd	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	Driver	Driver_HomeownerInd	Driver	Homeowner	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+	Driver	Driver_TaxiDrivingCommencementDate	Driver	TaxiExperienceStart	Date		Mapped as shown
+	Driver	Driver_TaxiLicenceOriginallyGrantedDate	Driver	TaxiLicenceObtained	Date		Mapped as shown
+All	Driver	Driver_NoOfYearsDrivingExperience	Driver	YearsDrivingExperience	Int		Mapped as shown
+All	Driver	Driver_DvlaDataInd	Driver	Driver>LicenceDVLANotUsedIndicator	Boolean	True = Y, False = N ABI Codelist 100 True / False	"This field is mapped as shown to the request. 
+Negative values are mapped to Y, positive values to N."
+All	Driver	Driver_LicenceCountryOfIssue	Driver	LicenceCountryOfIssue>Abi	String	Code list 21	Mapped as shown
+All	Driver	Driver_LicenceEndDate	Driver	Licence>LicenceValidTo	Date		Mapped as shown
+All	Driver	Driver_LicenceExpiredInd	Driver	MyLicence>LicenceExpiredInd	Boolean	Only captured for data obtained via Mylicence	Mapped as shown
+All	Driver	Driver_LicenceNumber	Driver	LicenceReferenceNumber	String		Mapped as shown
+All	Driver	Driver_LicenceRestrictedDuration	Driver	Licence>LicenceRestrictions>LicenceRestriction>RestrictionDuration	Int		Mapped as shown
+	Driver	Driver_LicenceRestrictedInd	Driver	Licence>LicenceRestrictions		Derived: set to true if there are LicenceRestrictions in the LicenceRestrictions collection.	Mapped as shown
+All	Driver	Driver_CurrentDvlaDataNotUsedReason	Driver	Licence>SelfDeclaredReason>Abi	String	Abi Codelist 350	Mapped as shown
+All	Driver	Driver_LicenceStatus	Driver	Licence>LicenceStatus>Abi	String	"Only captured for data obtained via Mylicence
+Abi Codelist 351 in the request"	Mapped as shown
+All	Driver	Driver_DvlaDataObtainedDate	Driver	DvlaDataObtainedDate	Date	Only captured for data obtained via Mylicence	Mapped as shown
+All	Driver	Driver_DvlaLicenceStartDate	Driver	Licence>LicenceValidFrom	Date	Only captured for data obtained via Mylicence	Mapped as shown
+All	Driver.Incident	Incident_Date	Driver	Claims>Claim>DateMade	Date	SSP:  YYY-MM-DD 	Mapped as shown
+All	Driver.Incident	Incident_ArisingFromMedicalConditionInd	Driver	Claims>Claim>Medical	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	Driver.Incident	Incident_PendingProsecutionInd	Driver	Conviction>Pending	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	Driver.Incident	Incident_PendingClaimInd	Driver	Claims>Claim>Pending	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	Driver.Incident.Claim	Claim_ClaimType	Driver	Claims>Claim>ClaimType>Abi	String	Code list 22	Mapped as shown
+All	Driver.Incident.Claim	Claim_Date	Driver	Claims>Claim>DateMade	Date	SSP:  YYY-MM-DD 	Mapped as shown
+	Driver.Incident.Claim	Claim_CostsInsd	Driver	Claims>Claim>CostOwn	Int		Mapped as shown
+	Driver.Incident.Claim	Claim_Costs3rdParty	Driver	Claims>Claim>Cost3rdParty	Int		Mapped as shown
+	Driver.Incident.Claim	Claim_CostsTotal	Driver	Claims>Claim>CostsTotal	Int		Mapped as shown
+All	Driver.Incident.Claim	Claim_NcdLostInd	Driver	Claims>Claim>NCDLost	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	Driver.Incident.Claim	Claim_DriverAtFaultInd	Driver	Claims>Claim>FaultType>Abi	String		"Mapped as shown - a value map is used to map the FaultType Abi codes to Y/N.
+A5, A6 and W are N"
+	Driver.Incident.Claim	Claim_PersonalInjurySettlement	Driver	Claims>Claim>CostInjury	Int		Mapped as shown
+All	Driver.Incident.Claim	Claim_CurrentPolicyInd	Driver	Claim>ThisPolicy	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	Driver.Incident.Conviction	Conviction_Date	Driver	Cinvictions>Conviction>ConvictionDate	Date		Mapped as shown
+All	Driver.Incident.Conviction	Conviction_Code	Driver	Convictions>Conviction>ConvictionType>Abi	String	Code list 23	Mapped as shown
+	Driver.Incident.Conviction	Conviction_PenaltyPts	Driver	Convictions>Conviction>Points	Int		Mapped as shown
+	Driver.Incident.Conviction	Conviction_PenaltyAmt	Driver	Convictions>Conviction>Fine	Int		Mapped as shown
+All	Driver.Incident.Conviction	Conviction_SuspensionPeriod	Driver	Convictions>Conviction>DisqualificationMonths	Int		Mapped as shown
+	Driver.Incident.Conviction	Conviction_Prn	Driver	Convictions>Conviction>ConvictionPRN	Int		Mapped as shown
+All	Driver.Incident.Conviction	Conviction_DisqualifiedInd	Driver	Convictions>Conviction>DisqualifiedIndicator	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+	Driver.Incident.Conviction	Conviction_AlcoholReadingType	Driver	Convictions>Conviction>AlcoholReadingType>Abi	String		Mapped as shown
+	Driver.Incident.Conviction	Conviction_AlcoholReading	Driver	Convictions>Conviction>AlcoholReading	Int		Mapped as shown
+	Driver.Incident.Conviction	Conviction_CustodialPeriodCode	Driver	Convictions>Conviction>CustodialPeriod>Abi	String		Mapped as shown
+All	Driver.Incident.Conviction	Conviction_DisqualifiedEndDate	Driver	Convictions>Conviction>DisqualifiedEndDate	Date		Mapped as shown
+	Driver.Incident.Conviction	Conviction_DisqualifiedPeriodQualifier	Driver	Convictions>Conviction>DisqualificationUnit>Abi	String		Mapped as shown
+	Driver.Incident.Conviction	Conviction_DisqualifiedStartDate	Driver	Convictions>Conviction>DisqualifiedStartDate	Date		Mapped as shown
+	Driver.Incident.Conviction	Conviction_RehabilitationSpentDate	Driver	Convictions>Conviction>RehabilitationSpentDate	Date		Mapped as shown
+All	Driver.MedicalCondition	MedicalCondition_Code	Driver	MedicalConditions>MedicalCondition>MedicalConditionType>Abi	String	Code list 3	Mapped as shown
+	Driver.MedicalCondition	MedicalCondition_LastOccurrenceDate	Driver	MedicalConditions>MedicalCondition>LastOcurred	Date		Mapped as shown
+	Driver.MedicalCondition	MedicalCondition_DateOfOnset	Driver	MedicalConditions>MedicalCondition>Started			Mapped as shown
+All	Driver.MedicalCondition	MedicalCondition_DvlaAdvisedInd	Driver	MedicalCondition>DVLATold	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	Driver.Qualification	Qualification_Date	Driver	Qualification>Passed	Date		Mapped as shown
+All	Driver.Qualification	Qualification_Code	Driver	Qualification>QualificationType>Abi	String	Not Code list 38 but #186	Mapped as shown
+All	Driver.Occupation	Occupation_FullTimeEmploymentInd	Occupation	FullTime	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown (under Drivers> Driver)
+All	Driver.Occupation	Occupation_Code	Occupation	OccupationType>Abi	String	Code list 55	Mapped as shown (under Drivers> Driver)
+All	Driver.Occupation	Occupation_EmployersBusiness	Occupation	Business>Abi	String	Code list 11	Mapped as shown (under Drivers> Driver)
+All	Driver.Occupation	Occupation_EmploymentType	Occupation	EmploymentStatus>Abi	String	Code list 56	Mapped as shown (under Drivers> Driver)
+All	Driver.LicenceRestrictions	LicenceRestrictions_Code	Driver	LicenceRestrictions>LicenceRestriction>RestrictionNature>Abi	Abi	Code list 96	Mapped as shown
+	Driver.LicenceRestrictions	LicenceRestrictions_Reason	Driver	LicenceRestrictions>LicenceRestriction>RestrictionReason>Abi			Mapped as shown
+All	Driver.DrivesVehicle	DrivesVehicle_DrivingFrequency	Driver	DrivesVehicle>DrivingFrequency>Abi	String	Code list 21	Mapped as shown
+All	Driver.DrivesVehicle	DrivesVehicle_CoverCode	Driver	DrivesVehicle>CoverCode>Abi	String	Code list 2, Defaults to"01"	Mapped as shown
+	Driver.DrivesVehicle	DrivesVehicle_VehiclePrn	Driver	DrivesVehicle>VehiclePRN	Int		Mapped as shown
+	Driver.DrivesVehicle	DrivesVehicle_StartDate	Driver	DrivesVehicle>DateOfFirstAssociation	Date		Mapped as shown
+All	Driver.DrivesVehicle	DriverUsesIncluded_Code	Driver	DrivesVehicle>DriverUsesIncluded>DriverUse>Abi	String	Code list 52	Mapped as shown
+All	Driver.LicenceEntitlement	LicenceEntitlement_Code	Driver	Licence>Entitlements>Entitlement>EntitlementCode>Abi	String	Code list 352	Mapped as shown
+All	Driver.LicenceEntitlement	LicenceEntitlement_PriorToInd	Driver	Licence>Entitlements>Entitlement>EntitlementPriorTo	boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+All	Driver.LicenceEntitlement	LicenceEntitlement_TypeCode	Driver	Licence>Entitlements>Entitlement>EntitlementType>Abi	String	Code list 353	Mapped as shown
+All	Driver.LicenceEntitlement	LicenceEntitlement_ValidFromDate	Driver	Licence>Entitlements>Entitlement>EntitlementValidFrom	Date		Mapped as shown
+All	Driver.LicenceEntitlement	LicenceEntitlement_ValidToDate	Driver	Licence>Entitlements>Entitlement>EntitlementValidTo	Date		Mapped as shown
+All	Driver.LicenceEntitlement.EntitlementInformation	EntitlementInformation_AppliesUntilDate	Driver	Licence>Entitlements>Entitlement>EntitlementRestrictions>EntitlementRestriction>AppliesUntilDate	Date		Mapping changed 02/01/2018
+All	Driver.LicenceEntitlement.EntitlementInformation	EntitlementInformation_Code	Driver	Licence>Entitlements>Entitlement>EntitlementRestrictions>EntitlementRestriction>EntitlementInformationCode>Abi	String	Abi Codelist 354	Mapping changed 02/01/2018
+	Miscellaneous	Miscellaneous_TodaysDate				Populated with today's date, formatted "YYYY-MM-DD" (no leading zeros)	Mapped as shown
+	Miscellaneous	Miscellaneous_CurrentTime				Populated with the current time, Formatted HHMMSS. So half past three in the afternoon is 153000	Mapped as shown
+	CalculatedResult	CalculatedResult_OriginalPremium	Vehicle	TMTA>OriginalPremium	String		Mapped as shown
+All	Intermediary	Intermediary_Code	Control	Control>SingleQuoteRequest>BrokerSCIDs	Abi	Code list 1	Mapped as shown
+	Intermediary	Intermediary_QuoteArea	Populated with a value = "01"			Set to "01"	Mapped as shown
+All	Intermediary	Intermediary_BusinessSourceCode	Agent	SourceOfBusiness>Abi	String	Abi Codelist 183	Mapped as shown
+	Intermediary	Intermediary_BusinessSouceText	Agent	CurrentSOB,orSOB	String		Mapped as shown
+All	Policy	Policy_EffectiveStartDate	Policy 	CoverDate	Date	SSP:  YYY-MM-DD	Mapped as shown
+All	Policy	Policy_EffectiveStartTime	Policy 	EffectiveDate	DateTime	Populated with the time portion of the field, formatted "[H01][m01][s01]" (no leading zeros) so 09:00:00 comes as 90000.	Mapped as shown
+	Policy	Policy_PrevlyInsdInd	Proposer	PreviousInsurance>PreviousInsurer>Abi	String	Set to "Y" if there's an ABI tag.	Mapped as shown
+	Policy	Policy_HazardousGoodsCarriedInd	Vehicle	CommercialVehicle>HazardousGoods	Boolean	True = Y, False = N ABI Codelist 100 True / False	Mapped as shown
+	Policy	Policy_PrevInsr	Proposer	PreviousInsurance>PreviousInsurer>Abi	String		Mapped as shown
+All	Policy	Policy_PrevExpiryDate	Proposer	PreviousInsurance>PreviousInsuranceEndDate	Date	SSP:  YYY-MM-DD	Mapped as shown
+All	Policy	Policy_InceptionDate	Policy 	InceptionDate	Date	SSP:  YYY-MM-DD	Mapped as shown
+All	Policy	Policy_YearsWithPreviousInsurer	Proposer	PreviousInsurance>PreviousInsuranceYearsWith	Int	IQH Def: Number of years on cover with the current insurer	Mapped as shown
+All	Policy	Policy_PrevPaymentRegularity	Proposer	PaymentFrequency	Code		Mapped as shown
+All	Policy	Policy_PrevPolicyPremium	Proposer	PreviousInsurance>PreviousPolicyPremium	Decimal		Mapped as shown
+All	Policy	PolicyEvent_Date	Policy 	EffectiveDate	DateTime	Implict conversion from DataTime to Date	Mapped as shown
+MTA	Policy.PolicyEvent	PolicyEvent_SwhTransactionType	Policy	PolicyEvents>PolicyEvent>SwhTransactionType>Abi	String	Abi codelist Pol87	Mapped as shown
+	Policy.PolicyEvent	PolicyEvent_AdjustmentEffectiveTime	Control	TransactionType	Int	Populated with: 8 if the TransactionType=NewBusiness; 10 if the TransactionType=Renewal; 12 if the TransactionType=MTA	Mapped as shown
+All	Software	Software_Supplier	Control	Software>SoftwareSupplier	String	ABI Code List 082.	Mapped as shown
+All	ProcessingIndicators	ProcessingIndicators_ProcessType	Control	TransactionType	String	Defaults to "NewBusiness"	Mapped as shown. If no value, New Business is assumed
+	ProcessingIndicators	ProcessingIndicators_TransactionTypeCount	Vehicle	TMTA>TransactionTypeCount	Int		Mapped as shown
+	ReferResult	ReferResult_Code	ReferResult	Code	Int		Mapped as shown
+	ReferResult	ReferResult_Text	ReferResult	Text	String		Mapped as shown
+	ReferResult	ReferResult_DriverPRN	ReferResult	DriverPRN	Int		Mapped as shown
+	ReferResult	ReferResult_VehiclePRN	ReferResult	VehiclePRN	Int		Mapped as shown
+	InsurerRatingFactor	InsurerRatingFactor_Code	This is populated with the Key from CustomerSpecificFields; InsurerSpecificData; as well as from any populated instances of these fields located in the Proposer, Drivers, or Vehicles objects.				Mapped as shown
+	InsurerRatingFactor	InsurerRatingFactor_Text	This is populated with the Value from CustomerSpecificFields; InsurerSpecificData; as well as from any populated instances of these fields located in the Proposer, Drivers, or Vehicles objects.				Mapped as shown
+	IeVehicle	VehicleAbiCode	Vehicle	Model>ABICode	String		
+	IePolicy	CommercialAddress	Proposer	Address>PAFAddress>OrgansiationName	String		
+	IePolicy	Udprn	Proposer	Address>PAFAddress>UDPRN	int		
+All	N/A	N/A	Control	LOB>Abi	string		Not used in Polaris. Needs to be sent into CRS for correct Flow processing.
+	SelectedCoverVariations	SelectedCoverVariations_Code	Cover	SelectedCoverVariations>SelectedCoverVariation>Code	string	Added at v33	Mapped as shown
+	SelectedCoverVariations	SelectedCoverVariations_PremiumVariationInclIpt	Cover	SelectedCoverVariations>SelectedCoverVariation>PremiumVariationInclIpt	Decimal	Added at v33	Mapped as shown
+	SelectedCoverVariations	SelectedCoverVariations_PremiumVariationIExlIpt	Cover	SelectedCoverVariations>SelectedCoverVariation>PremiumVariationExclIpt	Decimal	Added at v33	Mapped as shown
+	SelectedCoverVariations	SelectedCoverVariations_OriginalPremiumVariation	Cover	SelectedCoverVariations>SelectedCoverVariation>OriginalPremiumVariation	Decimal	Added at v33	Mapped as shown
+	SelectedCoverVariations	SelectedCoverVariations_RemoveAtThisMtaInd	Cover	SelectedCoverVariations>SelectedCoverVariation>RemoveAtThisMTAInd	Boolean	Added at v33	Mapped as shown
+	SelectedCoverVariations	SelectedCoverVariations_ApplicableMtaInd	Cover	SelectedCoverVariations>SelectedCoverVariation>ApplicableMidTermInd	Boolean	Added at v33	Mapped as shown
+	SelectedCoverVariations	SelectedCoverVariations_ProRateableAtMtaInd	Cover	SelectedCoverVariations>SelectedCoverVariation>ProRateableAtMTAInd	Boolean	Added at v33	Mapped as shown
+	SelectedCoverVariations	SelectedCoverVariations_CancellaionMidTermInd	Cover	SelectedCoverVariations>SelectedCoverVariation>CancellationMidTermInd	Boolean	Added at v33	Mapped as shown
