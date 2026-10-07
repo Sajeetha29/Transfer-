@@ -1,0 +1,350 @@
+								
+								
+	brandIdentifier - Internal Reference Data							
+								
+	AZP Definition	AZ Motor 	LV Motor					
+	Allianz Online	AZ	N/A					
+	LV	N/A	LV					
+	Britannia	BRITANNIA	N/A					
+								
+	BusinessSourceCode - ABI 183							
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	001	Broker Website	Web	001	001			
+	003	Comparethemarket.com	Compare the market	003	003			
+	004	car-insurance-quote.org.uk	ElectriX	004	004			
+	009	moneysupermarket.co.uk	Money Supermarket	009	009			
+	013	gocompare.com	Go Compare	013	013			
+	015	confused.com	Confused	015	015			
+								
+	channel - Internal Reference Data							
+	AZP Definition	AZ Motor 	LV Motor					
+	Athena Annual Motor	Athena	N/A					
+	LV Annual Motor	N/A	LV					
+								
+	transactionType - Internal Reference Data							
+	AZP Definition	AZ Motor 	LV Motor					
+	New Business Quote	02	QuoteDetail					
+	Mid Term Adjustment Quote	30	MTA Accept					
+	Renewal Quote	08	RenewalAccept					
+								
+								
+	cover_Code - ABI 2							
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	01	Comprehensive	Comprehensive	01	01			
+	02	Third Party, Fire And Theft	Third Party, Fire And Theft	02	02			
+	03	Third Party	Third Party Only	03	03			
+								
+	cover_RequiredDrivers - ABI 134							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	1	Insured Only	Insured Only	1	1			
+	7	Insured And Named Drivers	Insured And Named Drivers	7	7			
+								
+	driver_CurrentDvlaDataNotUsedReason - Abi 350							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	004	Licence Record Not Found	Licence Record Not Found	004	N/A			
+	005	Driver Prefers To Self-Declare Rather Than Provide DLN	Driver Prefers To Self-Declare Rather Than Provide DLN	005	005			
+	006	Invalid DLN	Invalid DLN	N/A	006			
+								
+								
+								
+	driver_RelationshipToProposer - ABI 19							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	A	Brother or Sister	Brother or Sister	A	A			
+	P	Proposer	Proposer	P	P			
+	O	Daughter Or Son	Daughter Or Son	O	O			
+	U	Unrelated	Unrelated	U	U			
+	M	Parent	Parent	M	M			
+	S	Spouse	Spouse	S	S			
+	F	Family	Family	F	F			
+	W	Partner - Common Law	Partner - Common Law	W	W			
+	G	Daughter in Law or Son in Law	Daughter in Law or Son in Law	G	G			
+	V	Partner Of Family	Partner Of Family	V	V			
+	K	Grandchild	Grandchild	K	K			
+	H	Sister In Law Or Brother In Law	Sister In Law Or Brother In Law	H	H			
+	R	Grandparent	Grandparent	R	R			
+								
+								
+								
+	proposerPolicyholder_TitleCode / driver_Title - ABI 53							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	001	Doctor	Doctor	001	001			
+	002	Miss	Miss	002	002			
+	003	Mr	Mr	003	003			
+	004	Mrs	Mrs	004	004			
+	005	Ms	Ms	005	005			
+	106	Mx	Mx	006	106			
+				006 IS NOT A TYPO for AZ Motor				
+								
+								
+	driverUsesIncluded_Code - ABI 52							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	01	Commuting	Commuting	01	01			
+	03	Personal Business Use	Personal Business Use	03	03			
+	04	Social, Domestic And Pleasure	Social, Domestic And Pleasure	04	04			
+	06	Commercial Travelling	Commercial Travelling	06	06			
+								
+								
+								
+	drivesVehicle_DrivingFrequency - ABI 21							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	C	Infrequent (Casual)	Infrequent (Casual)	C	C			
+	M	Main	Main	M	M			
+								
+								
+	claim_ClaimType - ABI 22							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	A	Accident	Accident	A	A			
+	F	Fire	Fire	F	F			
+	Q	Theft from Vehicle	Theft from Vehicle	Q	Q			
+	S	Storm	Storm	S	S			
+	W	Windscreen/Glass	Windscreen/Glass	W	W			
+	X	Other	Other	X	X			
+	Y	Malicious Damage Claim	Malicious Damage Claim	Y	Y			
+	Z	Theft of Vehicle	Theft of Vehicle	Z	Z			
+								
+								
+								
+	occupation_EmployersBusiness - ABI 11							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	001	Accountancy	Accountancy	001	001			
+	002	Advertising	Advertising	002	002			
+	003	Air Transport	Air Transport	003	003			
+	004	Airports	Airports	004	004			
+	005	Amusement	Amusement	005	005			
+	006	Amusement Arcade	Amusement Arcade	006	006			
+	007	Animals	Animals	007	007			
+	008	Antiques	Antiques	008	008			
+	009	Architecture	Architecture	009	009	Note: Other values hidden, unhide for full list		
+								
+								
+	occupation_EmploymentType - ABI 55							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	V	Voluntary Work	Voluntary Work	V	V			
+	E	Employed	Employed	E	E			
+	U	Unemployed	Unemployed	U	U			
+	N	Not Employed Due To Disability	Not Employed Due To Disability	N	N			
+	H	Household Duties	Household Duties	H	H			
+	S	Self Employed	Self Employed	S	S			
+	F	In Full Or Part Time Education	In Full Or Part Time Education	F	F			
+	R	Retired	Retired	R	R			
+								
+	occupation_Occupation_Code - ABI 56							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	001	Abattoir Worker	Abattoir Worker	001	001			
+	002	Accounts Assistant	Accounts Assistant	002	002			
+	003	Accounts Clerk	Accounts Clerk	003	003			
+	004	Actor	Actor	004	004			
+	005	Actress	Actress	005	005			
+	006	Acupuncturist	Acupuncturist	006	006			
+	007	Administration Assistant	Administration Assistant	007	007			
+	008	Administration Clerk	Administration Clerk	008	008			
+	009	Administrator	Administrator	009	009	Note: Other values hidden, unhide for full list		
+								
+								
+								
+	policy_productTier - Internal Reference Data							
+	AZP Definition	AZ Motor 	LV Motor					
+	ALLIANZ	ALLIANZ	N/A					
+	ALLIANZ_SILVER	ALLIANZ_SILVER	N/A					
+	ALLIANZ_ESSENTIALS	ALLIANZ_ESSENTIALS	N/A					
+	AGG_BUNDLE_BASIC - NOT CONFIRMED	N/A	AGG_BUNDLE_BASIC					
+	AGG_BUNDLE_EXTRA - NOT CONFIRMED	N/A	AGG_BUNDLE_EXTRA					
+	AGG_BUNDLE_PLUS - NOT CONFIRMED	N/A	AGG_BUNDLE_PLUS					
+								
+								
+	policy_SchemeName - Internal Reference Data							
+	AZP Definition	AZ Motor 	LV Motor					
+		AZ	N/A					
+		BRITANNIA	N/A					
+		N/A	boundless					
+		N/A	gmb					
+		N/A	nut					
+		N/A	pcs					
+		N/A	pcscsma					
+		N/A	prospect					
+		N/A	rcm					
+		N/A	rcn					
+		N/A	unison					
+		N/A	nationwide					
+		N/A	nationwideStaff					
+		N/A	lvGeneralPublic					
+		N/A	boundlessap					
+		N/A	cooperativebank					
+		N/A	coventry					
+		N/A	intermediary					
+		N/A	lgmigrated					
+		N/A	newcastle					
+		N/A	principality					
+		N/A	skipton					
+		N/A	smartquotepartners					
+		N/A	amazon					
+		N/A	ageco					
+		N/A	sbm					
+		N/A	asda	Will not expect Partners for MQS at present				
+		N/A	sbnb	Will not expect Partners for MQS at present				
+								
+								
+	policy_PremiumType - Internal Reference Data / ABI 312							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	A	Annually	Annually	annual	A			
+	D	Daily	Daily	N/A	D			
+	F	Free Insurance Provided	Free Insurance Provided	N/A	F			
+	H	Half Yearly	Half Yearly	N/A	H			
+	M	Monthly	Monthly	monthly	M			
+	N	No Previous Insurance	No Previous Insurance	N/A	N			
+	R	Quarterly	Quarterly	N/A	R			
+	W	Weekly	Weekly	N/A	W			
+	Z	Withheld	Withheld	N/A	Z			
+				NOTE: AZ will be 'annual' only				
+								
+	proposerPolicyholder_MaritalStatus - ABI 6							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	A	Separated	Separated	A	A			
+	B	Civil Partnership	Civil Partnership	B	B			
+	C	Living with Partner/Common Law	Living with Partner/Common Law	C	C			
+	M	Married	Married	M	M			
+	S	Single	Single	S	S			
+	D	Divorced	Divorced	D	D			
+	W	Widowed	Widowed	W	W			
+								
+								
+	proposerPolicyholder_Sex - ABI 5							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	N	Not Applicable	Not Applicable	N	N			
+	F	Female	Female	N/A	F			
+	M	Male	Male	N/A	M			
+	U	Not Specified	Not Specified	N/A	U			
+								
+								
+	Modifications_Code  - ABI 86							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	167	Adapted For Disability	Adapted For Disability	167	167			
+	69	Additional Seating	Additional Seating	69	69			
+	70	Additional Windows	Additional Windows	70	70			
+	78	Air Conditioning	Air Conditioning	78	78			
+	83	Air Filter	Air Filter	83	83			
+	2	Wheels - Alloy	Wheels - Alloy	2	2			
+	71	Altered Pedal Configuration	Altered Pedal Configuration	71	71			
+	3	Blueprinting	Blueprinting	3	3			
+	49	Body Kit	Body Kit	49	49			
+	4	Bonnet Bulge	Bonnet Bulge	4	4			
+	5	Bored-out Engine	Bored-out Engine	5	5			
+	86	Braided Brake Hoses	Braided Brake Hoses	86	86			
+	6	Bull Bars	Bull Bars	6	6	Note: Other values hidden, unhide for full list		
+								
+	ncd_ClaimedCountryEarned  - ABI 32							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	GB	United Kingdom	United Kingdom	GB	GB			
+	RU	Russian Federation	Russian Federation	RU	RU			
+								
+	ncd_ClaimedCountryEarned  - ABI 83							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	3	Company Car Experience	Company Car Experience	3	3			
+	9	Named Driver Experience	Named Driver Experience	9	9			
+	11	Private Car Bonus	Private Car Bonus	11	11			
+	23	Other	Other	23	23			
+								
+	uses_AbiCode  - ABI 52							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	01	Commuting	Commuting	01	01			
+	03	Personal Business Use	Personal Business Use	03	03			
+	04	Social, Domestic And Pleasure	Social, Domestic And Pleasure	04	04			
+	06	Commercial Travelling	Commercial Travelling	06	06			
+								
+								
+	vehicle_Ownership & vehicle_Keeper - ABI 27							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	1	Proposer/Policyholder	Proposer/Policyholder	1	1			
+	2	Spouse	Spouse	2	2			
+	3	Company Other Than Proposer	Company Other Than Proposer	3	3			
+	4	Vehicle Leasing Company	Vehicle Leasing Company	4	4			
+	6	Parent	Parent	6	6			
+	7	Partner - Common Law	Partner - Common Law	7	7			
+	8	Son or Daughter	Son or Daughter	8	8			
+	9	Other	Other	9	9			
+	A	Employer	Employer	A	A			
+	H	Other Family Member	Other Family Member	H	H			
+	M	Brother or Sister	Brother or Sister	M	M			
+								
+								
+	vehicle_TransmissionType - ABI 110							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	001	Automatic	Automatic	001	001			
+	002	Manual	Manual	002	002			
+	003	Semi Automatic	Semi Automatic	003	003			
+								
+								
+	vehicle_LocationKeptOvernight - ABI 15							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	1	Garage	Garage	1	1			
+	3	Kept On Public Road	Kept On Public Road	3	3			
+	4	Parked On Drive	Parked On Drive	4	4			
+	5	Car Park	Car Park	5	5			
+	G	Secure Public Car Park	Secure Public Car Park	G	G			
+								
+								
+								
+	policy_LyPaymentMethod - ABI 75							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	CC	Credit Card	Credit Card	CC	CC			
+	DD	Direct Debit	Direct Debit	DD	DD			
+								
+								
+	vehicle_TransmissionType - ABI 110							
+								
+	ABI Code	ABI Description	AZP Definition	AZ Motor	LV Motor			
+	001	Automatic	Automatic	001	001			
+	002	Manual	Manual	002	002			
+	003	Semi Automatic	Semi Automatic	003	003			
+								
+								
+								
+	Provider / Dataset List							
+								
+	Provider		Dataset			AZ Dataset	LV Dataset	Per Driver / Per Vehicle / Policyholder
+	experian		automotive			automotive	automotive	Per Vehicle
+	experian		creditscore			creditscore	creditscore	Policyholder
+	experian		cue			cue	cue	Per Driver
+	experian		cue-migrated			cue-migrated	N/A ( not sent)	Per Driver
+	lexis-nexis		emailage			emailage	N/A (Day2)	Policyholder
+	lexis-nexis		emailage-migrated			emailage-migrated	N/A ( not sent)	Policyholder
+	lexis-nexis		header			header	header	N/A?
+	lexis-nexis		policyInsightsNCD			policyInsightsNCD	N/A ( not sent)	Per Driver
+	lexis-nexis		policyInsightsNCD-migrated			policyInsightsNCD-migrated	N/A ( not sent)	Per Driver
+	lexis-nexis		quoteIntelligence			quoteIntelligence	quoteIntelligence	Per Vehicle
+	lexis-nexis		quoteIntelligence-migrated			quoteIntelligence-migrated	N/A ( not sent)	Per Vehicle
+	lexis-nexis		riskInsights			riskInsights	N/A ( not sent)	Per Driver
+	lexis-nexis		policyInsightsNCD			N/A ( not sent)	lniq	Per Driver
+	lexis-nexis		riskInsights			N/A ( not sent)		Per Driver
+	mot		N/A ( not populated)			N/A ( not populated)	N/A ( not populated)	Per Vehicle
+	mylicence		N/A ( not populated)			N/A ( not populated)	N/A ( not populated)	Per Driver
+	watchlist		personCapstones			personCapstones	N/A ( not sent)	Per Driver
+	watchlist		vehicleCapstones			vehicleCapstones	N/A ( not sent)	Per Vehicle
+	vrnlookup		vfs			vfs	vfs	Per Vehicle
+	vrnlookup		hri			hri	hri	Per Vehicle
+	lexis-nexis		sira-rtq			sira-rtq	N/A (Day2)	Policyholder
+	lexis-nexis		vehiclebuild			N/A ( not sent)	vehiclebuild	Per Vehicle
+	MPP		N/A ( not populated)			N/A ( not sent)	N/A	Policyholder
+	sspverify		watchlist			N/A ( not sent)	watchlist	Policyholder
+	sspverify		quotemanipulation			N/A ( not sent)	quotemanipulation	Policyholder?
