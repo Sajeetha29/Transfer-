@@ -1,0 +1,34 @@
+EXPECTED MISMATCH KEY — PRIVATE VERIFICATION ONLY
+Dataset: Vehicle, Fleet & Motor Insurance
+Expected records: 300 | Expected PASS: 280 | Expected FAIL: 20
+Keep this file separate; do not provide it to the validation agent during blind testing.
+
+Record index; Excel row; RAML property; mismatch category; exact source comparison
+7; Excel row 14; acquisitionDate; Tag name; RAML tag='Acquisition Date' | MQS field name='Acquisition DateX'
+15; Excel row 22; vehicleNotes; Data type; RAML type='string' | MQS type='integer'
+28; Excel row 35; registrationRiskScore; Tag name; RAML tag='Registration Risk Score' | MQS field name='registration risk score'
+36; Excel row 43; vehicleModelYear; Data type; RAML type='integer' | MQS type='string'
+44; Excel row 51; vehicleIdentityReviewDate; Tag name; RAML tag='Vehicle Identity Review Date' | MQS field name='vehicle identity review date'
+53; Excel row 60; ownerEndDate; Mandatory/Optional; RAML required=false (expected 'Optional') | MQS column F='Mandatory'
+62; Excel row 69; driverDetailsName; Data type; RAML type='string' | MQS type='integer'
+83; Excel row 90; vehicleSpecificationEndDate; Tag name; RAML tag='Vehicle Specification End Date' | MQS field name='Vehicle Specification End DateX'
+91; Excel row 98; engineDetailsReference; Mandatory/Optional; RAML required=true (expected 'Mandatory') | MQS column F='Optional'
+109; Excel row 116; fuelAndEnergyStatus; Data type; RAML type='string' | MQS type='integer'
+117; Excel row 124; fuelAndEnergyReviewDate; Tag name; RAML tag='Fuel and Energy Review Date' | MQS field name='Fuel and Energy Review DateX'
+143; Excel row 150; vehicleAssetsEndDate; Mandatory/Optional; RAML required=false (expected 'Optional') | MQS column F='Mandatory'
+164; Excel row 171; insurancePolicySource; Data type; RAML type='string' | MQS type='integer'
+188; Excel row 195; maintenanceEndDate; Mandatory/Optional; RAML required=false (expected 'Optional') | MQS column F='Mandatory'
+206; Excel row 213; inspectionVerified; Tag name; RAML tag='Inspection Verified' | MQS field name='inspection verified'
+224; Excel row 231; vehicleFinanceSource; Mandatory/Optional; RAML required=false (expected 'Optional') | MQS column F='Mandatory'
+237; Excel row 244; telematicsReviewDate; Data type; RAML type='date-only' | MQS type='datetime'
+267; Excel row 274; usageMetricsReviewDate; Mandatory/Optional; RAML required=false (expected 'Optional') | MQS column F='Mandatory'
+281; Excel row 288; incidentDetailsVerified; Tag name; RAML tag='Incident Details Verified' | MQS field name='Incident Details VerifiedX'
+294; Excel row 301; complianceCount; Data type; RAML type='integer' | MQS type='string'
+
+VALIDATION EXPECTATIONS
+- Use only MQS_Quote_Request; header row is 7; records are rows 8–307.
+- Compare RAML description/tag to MQS column C exactly and case-sensitively.
+- Build/compare paths from actual property names; array paths include [].
+- Validate required flags against MQS column F, not column G.
+- Approved aliases in passing rows include date-only=date and int=integer.
+- Expected outcome: exactly 280 PASS and 20 FAIL.
