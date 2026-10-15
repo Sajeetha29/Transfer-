@@ -1,0 +1,34 @@
+EXPECTED MISMATCH KEY — PRIVATE VERIFICATION ONLY
+Dataset: Home, Property & Asset Management
+Expected records: 150 | Expected PASS: 130 | Expected FAIL: 20
+Keep this file separate; do not provide it to the validation agent during blind testing.
+
+Record index; Excel row; RAML property; mismatch category; exact source comparison
+4; Excel row 11; propertyDetailsStatus; Tag name; RAML tag='Property Details Status' | MQS field name='property details status'
+11; Excel row 18; propertyDetailsVerified; Data type; RAML type='boolean' | MQS type='string'
+19; Excel row 26; ownershipStatus; Tag name; RAML tag='Ownership Status' | MQS field name='Ownership StatusX'
+26; Excel row 33; ownershipVerified; Data type; RAML type='boolean' | MQS type='string'
+33; Excel row 40; buildingStructureType; Tag name; RAML tag='Building Structure Type' | MQS field name='Building Structure TypeX'
+41; Excel row 48; buildingStructureVerified; Mandatory/Optional; RAML required=false (expected 'Optional') | MQS column F='Mandatory'
+48; Excel row 55; roomsType; Data type; RAML type='string' | MQS type='integer'
+56; Excel row 63; roomsVerified; Tag name; RAML tag='Rooms Verified' | MQS field name='rooms verified'
+63; Excel row 70; assetsType; Mandatory/Optional; RAML required=true (expected 'Mandatory') | MQS column F='Optional'
+71; Excel row 78; assetsVerified; Data type; RAML type='boolean' | MQS type='string'
+78; Excel row 85; utilitiesType; Tag name; RAML tag='Utilities Type' | MQS field name='utilities type'
+86; Excel row 93; utilitiesVerified; Mandatory/Optional; RAML required=false (expected 'Optional') | MQS column F='Mandatory'
+93; Excel row 100; insuranceType; Data type; RAML type='string' | MQS type='integer'
+101; Excel row 108; insuranceVerified; Mandatory/Optional; RAML required=false (expected 'Optional') | MQS column F='Mandatory'
+108; Excel row 115; occupancyType; Tag name; RAML tag='Occupancy Type' | MQS field name='occupancy type'
+116; Excel row 123; occupancyVerified; Data type; RAML type='boolean' | MQS type='string'
+123; Excel row 130; maintenanceType; Mandatory/Optional; RAML required=true (expected 'Mandatory') | MQS column F='Optional'
+131; Excel row 138; maintenanceVerified; Mandatory/Optional; RAML required=false (expected 'Optional') | MQS column F='Mandatory'
+139; Excel row 146; valuationStatus; Tag name; RAML tag='Valuation Status' | MQS field name='Valuation StatusX'
+147; Excel row 154; valuationReviewDate; Data type; RAML type='date-only' | MQS type='datetime'
+
+PASS/FAIL RULE CHECKS
+- Use only sheet MQS_Quote_Request; header row is 7; records are rows 8–157.
+- Compare RAML description/tag to MQS column C exactly and case-sensitively.
+- Build/compare paths from actual property names; array paths include [].
+- Validate required flags against MQS column F, not column G.
+- Approved aliases used in passing rows include date-only=date and int=integer.
+- Expected outcome: exactly 130 PASS and 20 FAIL.
