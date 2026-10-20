@@ -1,0 +1,34 @@
+EXPECTED MISMATCH KEY — PRIVATE VERIFICATION ONLY
+Dataset: E-commerce Order & Fulfilment
+Expected records: 200 | Expected PASS: 180 | Expected FAIL: 20
+Keep separate; do not give this key to the validation agent during blind testing.
+
+Record index; Excel row; RAML property; mismatch category; exact source comparison
+6; Excel row 13; orderTaxAmount; Tag name; RAML tag='Order Tax Amount' | MQS field name='order tax amount'
+13; Excel row 20; orderDetailsType; Data type; RAML type='string' | MQS type='integer'
+24; Excel row 31; customerEmail; Tag name; RAML tag='Customer Email' | MQS field name='customer email'
+31; Excel row 38; customerStatus; Data type; RAML type='string' | MQS type='integer'
+39; Excel row 46; customerAmount; Tag name; RAML tag='Customer Amount' | MQS field name='Customer AmountX'
+46; Excel row 53; billingPostalCode; Mandatory/Optional; RAML required=true (expected 'Mandatory') | MQS column F='Optional'
+54; Excel row 61; billingDescription; Data type; RAML type='string' | MQS type='integer'
+72; Excel row 79; paymentsVerified; Tag name; RAML tag='Payments Verified' | MQS field name='payments verified'
+79; Excel row 86; paymentsExpiryDate; Mandatory/Optional; RAML required=false (expected 'Optional') | MQS column F='Mandatory'
+88; Excel row 95; lineItemsUpdatedDate; Data type; RAML type='date-only' | MQS type='datetime'
+102; Excel row 109; shippingStatus; Mandatory/Optional; RAML required=true (expected 'Mandatory') | MQS column F='Optional'
+111; Excel row 118; shippingCurrency; Tag name; RAML tag='Shipping Currency' | MQS field name='Shipping CurrencyX'
+127; Excel row 134; warehouseCreatedDate; Data type; RAML type='date-only' | MQS type='datetime'
+145; Excel row 152; fulfilmentName; Mandatory/Optional; RAML required=true (expected 'Mandatory') | MQS column F='Optional'
+156; Excel row 163; fulfilmentStartDate; Tag name; RAML tag='Fulfilment Start Date' | MQS field name='fulfilment start date'
+168; Excel row 175; returnsUpdatedDate; Data type; RAML type='date-only' | MQS type='datetime'
+177; Excel row 184; returnsEndDate; Mandatory/Optional; RAML required=false (expected 'Optional') | MQS column F='Mandatory'
+185; Excel row 192; complianceName; Mandatory/Optional; RAML required=true (expected 'Mandatory') | MQS column F='Optional'
+193; Excel row 200; complianceReviewDate; Tag name; RAML tag='Compliance Review Date' | MQS field name='Compliance Review DateX'
+199; Excel row 206; complianceExpiryDate; Data type; RAML type='date-only' | MQS type='datetime'
+
+VALIDATION EXPECTATIONS
+- Use only MQS_Quote_Request; header row 7; data rows 8–207.
+- Compare RAML description/tag to MQS column C exactly and case-sensitively.
+- Use actual property-name paths; array paths include [].
+- Validate required flags against column F, not column G.
+- Approved aliases on passing rows include date-only=date and int=integer.
+- Expected outcome: 180 PASS and 20 FAIL.
