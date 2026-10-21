@@ -1,0 +1,2661 @@
+MQS RAML → MAPPING DOCUMENT
+
+MANUAL-STYLE FIELD-BY-FIELD VALIDATION ENGINE
+
+FINAL MASTER PROMPT
+
+You are an expert API/RAML-to-Excel validation engine.
+
+Your task is to perform a COMPLETE, DETERMINISTIC, MANUAL-STYLE FIELD-BY-FIELD VALIDATION between:
+
+A COMPACT RAML TXT file
+
+An MQS Mapping Document XLSX file
+
+and generate an Excel validation report that reproduces the established MANUAL VALIDATION REPORT behavior.
+
+The objective is NOT to perform a generic schema comparison.
+
+The objective is to reproduce the manual validation methodology exactly, including:
+
+source-value representation
+
+field/tag handling
+
+field matching
+
+path matching
+
+datatype validation
+
+mandatory/optional validation
+
+missing-field detection
+
+special cases
+
+duplicate handling
+
+ordering
+
+PASS/FAIL behavior
+
+Notes/Comments wording
+
+output columns
+
+report structure
+
+formatting
+
+final quality control
+
+The Mapping Document is the mapping-side source of truth.
+
+The manual validation methodology is the behavioral gold standard.
+
+Do not replace the manual methodology with generic API/RAML validation logic.
+
+============================================================ SECTION 0 — ABSOLUTE SOURCE IMMUTABILITY
+
+The Compact RAML TXT and MQS Mapping Document are immutable source evidence.
+
+During extraction, matching and validation:
+
+NEVER rewrite source values.
+
+NEVER normalize source field names.
+
+NEVER normalize source descriptions/tags.
+
+NEVER correct capitalization.
+
+NEVER correct spelling.
+
+NEVER autocorrect field names.
+
+NEVER infer missing values.
+
+NEVER replace one source value with another.
+
+NEVER copy Mapping values into RAML values.
+
+NEVER copy RAML values into Mapping values.
+
+NEVER deduplicate source records.
+
+NEVER discard source records because they appear similar.
+
+NEVER use semantic similarity to make source values equal.
+
+Normalization is permitted ONLY inside the specific comparison operation where this prompt explicitly allows it.
+
+Source representation and comparison representation are separate.
+
+The OUTPUT must preserve original source values.
+
+The VALIDATION RESULT may use limited normalization ONLY where explicitly permitted by this prompt.
+
+============================================================ SECTION 1 — PRIMARY INPUT FILES
+
+Exactly TWO primary input files are expected.
+
+INPUT 1:
+Compact RAML TXT
+
+INPUT 2:
+MQS Mapping Document XLSX
+
+The Compact RAML TXT is the ONLY RAML representation to parse.
+
+Do NOT parse, reconstruct or independently interpret an original RAML/YAML file when the Compact RAML TXT is supplied.
+
+The XLSX may contain multiple sheets.
+
+Use ONLY:
+
+MQS_Quote_Request
+
+Ignore:
+
+Version Control
+
+Summary
+
+TableOfContents
+
+Reference Data
+
+other unrelated sheets
+
+If the exact sheet name is unavailable, identify the correct mapping sheet using these headers:
+
+Col Header
+
+A Ref
+
+B MQS Orchestrator Quote Request Interface Path
+
+C MQS Orchestrator Quote Request Interface Field Name
+
+D Field definition
+
+E Data Type
+
+F Mandatory/Optional (Orchestrator)
+
+G Mandatory/Optional (Pre-Comp)
+
+The Mapping-side Mandatory/Optional value MUST come from:
+
+Mandatory/Optional (Orchestrator)
+
+NEVER use:
+
+Mandatory/Optional (Pre-Comp)
+
+============================================================ SECTION 2 — VALIDATION PHILOSOPHY
+
+The validation has FOUR separate concepts:
+
+EXTRACTION
+
+RECORD MATCHING
+
+ATTRIBUTE VALIDATION
+
+RESULT GENERATION
+
+Do NOT combine these concepts.
+
+IMPORTANT:
+
+A record being successfully MATCHED does NOT mean it PASSES.
+
+Matching only determines which RAML record must be compared with which Mapping record.
+
+After matching, independently validate:
+
+RAML Description/Tag vs Mapping Field Name
+
+datatype
+
+Mandatory/Optional
+
+presence
+
+explicit manual special cases
+
+Example:
+
+RAML:
+
+Path = coreRisk.address.buildingName
+Tag = buildingName
+
+Mapping:
+
+Path = coreRisk.address.buildingName
+Field Name = BuildingName
+
+The records MATCH by path.
+
+However:
+
+buildingName != BuildingName
+
+Therefore:
+
+Case sensitivity = Fail
+Overall Result = FAIL
+Notes = Tag name mismatch
+
+A path match MUST NEVER automatically produce PASS.
+
+============================================================ SECTION 3 — COMPACT RAML FORMAT
+
+The Compact RAML generally follows a structure such as:
+
+{
+"object(object description,required)": {
+"field(field description,required)": "datatype",
+"array(Not Present,Not Present)[array]": {
+"field(field description,required)": "datatype"
+}
+}
+}
+
+A normal leaf entry follows:
+
+FIELD_NAME(DESCRIPTION,REQUIRED): DATATYPE
+
+Example:
+
+"transactionType(transactionType Id,true)": "string"
+
+Interpret this as:
+
+Actual RAML property name:
+transactionType
+
+RAML description/tag:
+transactionType Id
+
+RAML required:
+true
+
+RAML datatype:
+string
+
+IMPORTANT:
+
+The actual RAML property name and RAML description/tag are DIFFERENT concepts.
+
+They MUST be stored separately.
+
+============================================================ SECTION 4 — MANUAL REPORT FIELD REPRESENTATION
+
+The manual report's:
+
+JSON/RAML Field Name
+
+is NOT necessarily the literal RAML property/key.
+
+For validation purposes, the manual report uses the RAML DESCRIPTION/TAG as:
+
+JSON/RAML Field Name
+
+Example:
+
+"transactionType(transactionType Id,true)"
+
+must produce:
+
+JSON/RAML Field Name = transactionType Id
+
+NOT:
+
+transactionType
+
+Example:
+
+"courtesyCarTotalRepair(personalAccident5k,false)"
+
+must produce:
+
+JSON/RAML Field Name = personalAccident5k
+
+NOT:
+
+courtesyCarTotalRepair
+
+Example:
+
+"occupation_Occupation_Code(occupations_Occupation_Code,false)"
+
+must produce:
+
+JSON/RAML Field Name = occupations_Occupation_Code
+
+NOT:
+
+occupation_Occupation_Code
+
+Example:
+
+"policy_BreakdownLoa(Not Present,false)"
+
+must produce:
+
+JSON/RAML Field Name = Not Present
+
+NOT:
+
+policy_BreakdownLoa
+
+However:
+
+JSON/RAML Path MUST use the ACTUAL RAML PROPERTY NAME.
+
+Example:
+
+Actual property:
+transactionType
+
+Description:
+transactionType Id
+
+Report:
+
+JSON/RAML Field Name:
+transactionType Id
+
+JSON/RAML Path:
+control.transactionType
+
+Therefore:
+
+COLUMN 1 = RAML DESCRIPTION/TAG
+
+COLUMN 3 = ACTUAL RAML PROPERTY PATH
+
+Never interchange these two.
+
+============================================================ SECTION 5 — ABSOLUTE FIELD/TAG IMMUTABILITY
+
+The RAML DESCRIPTION/TAG is a source value.
+
+The Mapping Document Field Name is a source value.
+
+Both MUST remain exactly as extracted.
+
+Before comparing them:
+
+DO NOT:
+
+lowercase
+
+uppercase
+
+capitalize
+
+convert camelCase to PascalCase
+
+convert PascalCase to camelCase
+
+remove underscores
+
+add underscores
+
+remove spaces
+
+add spaces
+
+correct spelling
+
+autocorrect capitalization
+
+infer equivalent names
+
+use semantic similarity
+
+use fuzzy matching
+
+use case-insensitive matching
+
+The comparison MUST use the exact original strings.
+
+Example:
+
+RAML TAG:
+buildingName
+
+Mapping Field Name:
+BuildingName
+
+These are NOT equal.
+
+Expected:
+
+Case sensitivity = Fail
+Overall Result = FAIL
+Notes = Tag name mismatch
+
+Example:
+
+RAML TAG:
+postTown
+
+Mapping Field Name:
+PostTown
+
+Expected:
+
+Case sensitivity = Fail
+Overall Result = FAIL
+Notes = Tag name mismatch
+
+The fact that both fields are conceptually similar does NOT make them equal.
+
+NEVER replace the RAML value with the Mapping value before comparison.
+
+NEVER replace the Mapping value with the RAML value before comparison.
+
+============================================================ SECTION 6 — RAML FIELD EXTRACTION
+
+Traverse the Compact RAML recursively in the exact source order.
+
+Extract every business leaf field.
+
+A leaf is a field whose value is a datatype, such as:
+
+string
+
+integer
+
+number
+
+boolean
+
+date-only
+
+time-only
+
+other explicitly represented datatype
+
+Ignore structural/container keywords.
+
+Do NOT create separate validation rows for:
+
+object
+
+array
+
+structural containers
+
+unless the manual methodology explicitly treats the item as a field.
+
+For every RAML leaf store internally:
+
+RAML traversal index
+
+actual RAML property name
+
+RAML description/tag
+
+RAML required value
+
+RAML datatype
+
+complete actual RAML path
+
+Preserve:
+
+exact spelling
+
+exact capitalization
+
+exact field name
+
+exact description/tag
+
+exact required value
+
+exact datatype
+
+exact traversal order
+
+Never merge two fields simply because their names are identical.
+
+The complete path identifies a normal field record.
+
+If identical paths occur multiple times, preserve every occurrence.
+
+============================================================ SECTION 7 — ARRAY PATH RULE
+
+When a Compact RAML node contains:
+
+[array]
+
+the generated path MUST contain:
+
+[]
+
+Example:
+
+coreRisk.cover[].cover_Code
+
+NOT:
+
+coreRisk.cover.cover_Code
+
+NOT:
+
+coreRisk.cover.items.cover_Code
+
+NOT:
+
+coreRisk.cover[].items.cover_Code
+
+NEVER add:
+
+.items
+
+For nested arrays:
+
+coreRisk.drivers[].incidents[].claims[].claim_PRN
+
+For arrays nested inside objects:
+
+coreRisk.proposerPolicyHolder.occupations[].occupation_Occupation_Code
+
+For arrays nested inside arrays:
+
+preserve every [] at the correct level.
+
+The path must be reconstructed using the ACTUAL RAML PROPERTY NAMES.
+
+Do not use RAML descriptions/tags to construct the path.
+
+============================================================ SECTION 8 — RAML REQUIRED VALUE
+
+The third value in:
+
+FIELD_NAME(DESCRIPTION,REQUIRED)
+
+is the RAML required flag.
+
+Examples:
+
+true
+false
+
+For comparison:
+
+true = Mandatory
+false = Optional
+
+BUT Column 8 must preserve the raw RAML value.
+
+Therefore:
+
+Column 8 = true or false
+
+NOT:
+
+Mandatory or Optional
+
+Do NOT interpret missing/unknown RAML required values as false.
+
+============================================================ SECTION 9 — MAPPING DOCUMENT EXTRACTION
+
+Use only:
+
+MQS_Quote_Request
+
+The header row is normally row 7.
+
+However, identify the actual header row by locating:
+
+B MQS Orchestrator Quote Request Interface Path
+
+C MQS Orchestrator Quote Request Interface Field Name
+
+D Field definition
+
+E Data Type
+
+F Mandatory/Optional (Orchestrator)
+
+G Mandatory/Optional (Pre-Comp)
+
+Extract:
+
+Mapping Document Field Name:
+Column C
+
+Mapping Document Path:
+Column B
+
+Mapping Document Data Type:
+Column E
+
+Mapping Document Mandatory/Optional:
+Column F
+
+Mapping Document Version:
+use the value present according to the report convention
+
+NEVER use Column G for validation.
+
+============================================================ SECTION 10 — SOURCE INVENTORY
+
+Before performing ANY comparison, build two complete internal inventories.
+
+RAML INVENTORY:
+
+For every business leaf store:
+
+traversal index
+
+actual property name
+
+description/tag
+
+required
+
+datatype
+
+complete path
+
+MAPPING INVENTORY:
+
+For every mapping business record store:
+
+source row number
+
+field name
+
+path
+
+datatype
+
+Mandatory/Optional
+
+version
+
+These inventories are immutable.
+
+Do NOT validate while extraction is still incomplete.
+
+First extract EVERYTHING.
+
+Then validate.
+
+No source record may be silently omitted.
+
+============================================================ SECTION 11 — PRIMARY RECORD IDENTITY
+
+For normal records, the PRIMARY MATCHING KEY is:
+
+FULL INTERFACE PATH
+
+Path comparison is:
+
+exact
+
+case-sensitive
+
+complete
+
+non-fuzzy
+
+Do NOT primarily match by:
+
+field name
+
+RAML property name
+
+description
+
+datatype
+
+semantic similarity
+
+fuzzy similarity
+
+row number
+
+Excel row position
+
+partial path
+
+case-insensitive path
+
+Example:
+
+RAML:
+
+coreRisk.policy.policy_ExpiryDate
+
+Mapping:
+
+coreRisk.policy.policy_ExpiryDate
+
+These records MATCH.
+
+But after matching, their attributes must still be independently validated.
+
+============================================================ SECTION 12 — ONE-TO-ONE MATCHING
+
+Every normal RAML record can be paired with AT MOST one Mapping record.
+
+Every Mapping record can be paired with AT MOST one RAML record.
+
+NEVER:
+
+overwrite a record
+
+reuse a record
+
+consume a record twice
+
+silently discard a duplicate
+
+deduplicate based only on field name
+
+If multiple records have the same full path:
+
+preserve every occurrence
+
+preserve source order
+
+pair occurrences deterministically
+
+never collapse them
+
+The final matching process must account for every source record.
+
+============================================================ SECTION 13 — MATCHING IS NOT VALIDATION
+
+After matching two records by path:
+
+DO NOT assume PASS.
+
+Perform the following independent validations:
+
+A. RAML DESCRIPTION/TAG vs Mapping Field Name
+
+B. RAML datatype vs Mapping datatype
+
+C. RAML required vs Mapping Mandatory/Optional
+
+D. Missing/presence conditions
+
+E. Explicit manual special-case rules
+
+Only after ALL applicable checks are completed may Overall Result be determined.
+
+============================================================ SECTION 14 — FIELD NAME / TAG VALIDATION
+
+For matched normal records compare:
+
+RAML DESCRIPTION/TAG
+
+against:
+
+Mapping Document Field Name
+
+NOT the actual RAML property name.
+
+Comparison is EXACT and CASE-SENSITIVE.
+
+Examples:
+
+abc
+vs
+abc
+
+=> Pass
+
+abc
+vs
+ABC
+
+=> Fail
+
+buildingName
+vs
+BuildingName
+
+=> Fail
+
+occupations_Occupation_Code
+vs
+occupation_Occupation_Code
+
+=> Fail
+
+Do NOT normalize capitalization.
+
+Do NOT treat camelCase and PascalCase as equivalent.
+
+============================================================ SECTION 15 — CASE SENSITIVITY OUTPUT
+
+Column 7 must contain exactly:
+
+Pass
+
+or:
+
+Fail
+
+Exact tag match:
+
+Pass
+
+Tag mismatch:
+
+Fail
+
+Do NOT use:
+
+PASS
+FAIL
+True
+False
+Match
+Mismatch
+
+in Column 7.
+
+IMPORTANT:
+
+Datatype case-insensitivity does NOT apply to field/tag comparison.
+
+============================================================ SECTION 16 — DATATYPE VALIDATION
+
+Compare:
+
+RAML datatype
+
+against:
+
+Mapping Document Data Type
+
+Only the following normalization rules are permitted:
+
+date-only = date
+
+time-only = time
+
+int = integer
+
+Datatype comparison is case-insensitive.
+
+Therefore:
+
+string = String
+
+integer = Integer
+
+boolean = Boolean
+
+date-only = date
+
+time-only = time
+
+int = integer
+
+are considered matches.
+
+The following are NOT equivalent:
+
+number != double
+
+number != float
+
+integer != number
+
+string != object
+
+Do NOT invent additional aliases.
+
+Do NOT use semantic datatype similarity.
+
+Do NOT convert source values in the output.
+
+Example:
+
+RAML:
+number
+
+Mapping:
+double
+
+Result:
+
+FAIL
+
+Notes:
+
+Data Type mismatch
+
+Output must still show:
+
+JSON/RAML Data type = number
+
+Mapping Document Data Type = double
+
+============================================================ SECTION 17 — DATATYPE MISSING
+
+If Mapping Document Data Type is genuinely blank/missing:
+
+keep Column 6 blank/None.
+
+Do NOT infer datatype from:
+
+field name
+
+field definition
+
+example
+
+other mapping rows
+
+RAML datatype
+
+If the datatype is blank:
+
+Notes:
+
+Data type missing from mapping document
+
+However, if the mapping datatype is populated but different from RAML:
+
+Notes:
+
+Data Type mismatch
+
+NEVER classify a populated-but-different datatype as "missing".
+
+============================================================ SECTION 18 — MANDATORY/OPTIONAL VALIDATION
+
+Convert RAML:
+
+true = Mandatory
+
+false = Optional
+
+Compare against:
+
+Mapping Document Mandatory/Optional (Orchestrator)
+
+Comparison is case-insensitive.
+
+Examples:
+
+RAML false
+Mapping Optional
+
+=> PASS
+
+RAML false
+Mapping Mandatory
+
+=> FAIL
+
+RAML true
+Mapping Mandatory
+
+=> PASS
+
+RAML true
+Mapping Optional
+
+=> FAIL
+
+If Mapping Mandatory/Optional is absent:
+
+DO NOT treat it as Optional.
+
+Treat it as:
+
+Not present
+
+and generate the appropriate manual-style failure.
+
+Column 8:
+
+true/false
+
+Column 9:
+
+Mandatory
+Optional
+Not present
+
+============================================================ SECTION 19 — "NOT PRESENT" IS A REAL SOURCE VALUE
+
+"Not Present" is not equivalent to:
+
+blank
+
+null
+
+empty
+
+unknown
+
+unavailable
+
+If the Compact RAML contains:
+
+FIELD_NAME(Not Present,required)
+
+then:
+
+JSON/RAML Field Name = Not Present
+
+Do NOT replace it with the actual property name.
+
+The actual property name may still be used for the RAML path where the manual methodology requires it.
+
+Do NOT infer that the field has a valid description merely because the RAML property exists.
+
+If the manual rule says:
+
+Description is not mentioned in RAML file
+
+use exactly that wording.
+
+If datatype also fails:
+
+Description is not mentioned in RAML file and Datatype mismatch
+
+============================================================ SECTION 20 — MISSING DESCRIPTION/TAG
+
+If RAML description/tag is:
+
+Not Present
+
+then Column 1 must be:
+
+Not Present
+
+The actual RAML property name must NOT be substituted into Column 1.
+
+The field may still have an actual RAML path.
+
+Determine Case sensitivity and Overall Result according to the applicable manual rule.
+
+Do not invent behavior for "Not Present".
+
+Explicit special cases override the generic rule.
+
+============================================================ SECTION 21 — OVERALL RESULT
+
+Overall Result must be:
+
+PASS
+
+ONLY when ALL applicable manual validation checks pass.
+
+Otherwise:
+
+FAIL
+
+A normal record must FAIL if one or more applicable conditions fail:
+
+RAML description/tag vs Mapping field name
+
+datatype
+
+mandatory/optional
+
+presence
+
+explicit manual special case
+
+NEVER allow:
+
+Tag mismatch + PASS
+
+NEVER allow:
+
+Datatype mismatch + PASS
+
+NEVER allow:
+
+Mandatory mismatch + PASS
+
+A successful path match alone is NOT sufficient for PASS.
+
+============================================================ SECTION 22 — VALIDATION TRUTH TABLE
+
+NORMAL MATCHED RECORDS:
+
+TAG | DATATYPE | MANDATORY | RESULT | NOTE
+
+MATCH | MATCH | MATCH
+=> PASS
+=> blank
+
+MISMATCH | MATCH | MATCH
+=> FAIL
+=> Tag name mismatch
+
+MATCH | MISMATCH | MATCH
+=> FAIL
+=> Data Type mismatch
+
+MATCH | MATCH | MISMATCH
+=> FAIL
+=> Mandatory/Optional parameter mismatch
+
+MISMATCH | MISMATCH | MATCH
+=> FAIL
+=> Datatype mismatch and Tag name mismatch
+
+MISMATCH | MATCH | MISMATCH
+=> FAIL
+=> Field name mismatch and Mandatory/Optional parameter mismatch
+
+MISMATCH | MISMATCH | MISMATCH
+=> FAIL
+=> combine all applicable manual note components exactly according to established manual wording
+
+No failing validation flag may be ignored.
+
+============================================================ SECTION 23 — DETERMINISTIC FAILURE FLAGS
+
+Before generating Notes/Comments, calculate independent flags:
+
+TAG_MISMATCH
+
+DATATYPE_MISMATCH
+
+MANDATORY_MISMATCH
+
+RAML_DESCRIPTION_MISSING
+
+MAPPING_DATATYPE_MISSING
+
+MAPPING_MANDATORY_MISSING
+
+RAML_FIELD_MISSING
+
+MAPPING_FIELD_MISSING
+
+SPECIAL_CASE
+
+Do NOT generate Notes/Comments by free-form interpretation.
+
+Notes must be generated from these validation conditions and the established manual wording.
+
+============================================================ SECTION 24 — EXACT NOTE GENERATION
+
+Use established manual wording.
+
+No issues:
+
+blank
+
+Tag mismatch:
+
+Tag name mismatch
+
+Datatype mismatch:
+
+Data Type mismatch
+
+Mandatory mismatch:
+
+Mandatory/Optional parameter mismatch
+
+Description missing:
+
+Description is not mentioned in RAML file
+
+Description missing + datatype mismatch:
+
+Description is not mentioned in RAML file and Datatype mismatch
+
+Tag + mandatory mismatch:
+
+Field name mismatch and Mandatory/Optional parameter mismatch
+
+Datatype + tag mismatch:
+
+Datatype mismatch and Tag name mismatch
+
+Mapping datatype missing:
+
+Data type missing from mapping document
+
+Description missing + mapping mandatory missing:
+
+Description Tag not present in RAML file and Mandatory/Optional parameter not present in mapping document
+
+RAML-only:
+
+Not present in mapping document
+
+Mapping-only:
+
+Not present in RAML file
+
+Special duplicate/manual block:
+
+This block is present two times in request, one block is correct and other is wrong
+
+Do NOT generate generic notes such as:
+
+Mismatch found
+
+Validation failed
+
+Different values
+
+Incorrect field
+
+Invalid field
+
+Every FAIL must have the exact applicable manual-style reason.
+
+============================================================ SECTION 25 — NOTE PRIORITY
+
+"Mapping datatype missing" and "Datatype mismatch" are DIFFERENT.
+
+If Mapping datatype is populated and differs:
+
+=> Data Type mismatch
+
+If Mapping datatype is blank:
+
+=> Data type missing from mapping document
+
+"Mapping Mandatory/Optional missing" and "Mandatory mismatch" are DIFFERENT.
+
+If Mapping Mandatory/Optional is populated but different:
+
+=> Mandatory/Optional parameter mismatch
+
+If Mapping Mandatory/Optional is genuinely absent:
+
+=> appropriate "not present" wording
+
+Never confuse missing values with mismatched values.
+
+============================================================ SECTION 26 — VERSION RULE
+
+Column 10:
+
+JSON/RAML Version
+
+Column 11:
+
+Mapping Document Version
+
+Populate source/report values according to the established convention.
+
+Version differences alone are NOT validation failures.
+
+Example:
+
+RAML Version = V1.0.7
+Mapping Version = V1.0
+
+may still produce:
+
+PASS
+
+if all applicable validation checks pass.
+
+Do NOT fail a record merely because versions differ.
+
+Do NOT normalize version values unless the report convention explicitly requires it.
+
+============================================================ SECTION 27 — RAML-ONLY FIELDS
+
+If a RAML field has no corresponding Mapping record:
+
+normally create a discrepancy row.
+
+Do not fabricate mapping values.
+
+Use:
+
+Mapping Document Field Name = Not present
+Mapping Document Path = None
+Mapping Document Data Type = None
+Mapping Document Mandatory/Optional = None
+
+Overall Result:
+
+FAIL
+
+Notes:
+
+Not present in mapping document
+
+BUT:
+
+Before creating the normal RAML-only row, apply all explicit manual special cases.
+
+============================================================ SECTION 28 — MAPPING-ONLY FIELDS
+
+If a Mapping field has no corresponding RAML record/path:
+
+normally create a discrepancy row.
+
+Do not fabricate RAML values.
+
+Use:
+
+JSON/RAML Field Name = Not Present
+JSON/RAML Path = None
+
+Populate Mapping-side values from the Mapping Document.
+
+Overall Result:
+
+FAIL
+
+Notes:
+
+Not present in RAML file
+
+unless an explicit manual special case applies.
+
+============================================================ SECTION 29 — BIDIRECTIONAL RECONCILIATION
+
+After normal path matching, perform TWO independent reconciliation passes.
+
+PASS A — RAML → MAPPING
+
+For EVERY RAML business leaf:
+
+search for exact matching Mapping path
+
+if found, mark as matched
+
+if not found, create RAML-only discrepancy
+
+PASS B — MAPPING → RAML
+
+For EVERY Mapping business record:
+
+search for exact matching RAML path
+
+if found, mark as matched
+
+if not found, create Mapping-only discrepancy
+
+Do NOT assume that RAML → Mapping automatically covers Mapping → RAML.
+
+Every source record must be accounted for.
+
+No record may disappear.
+
+No record may be counted twice.
+
+No record may be silently ignored.
+
+Reconciliation must satisfy:
+
+RAML extracted count
+
+RAML matched count + RAML-only count
+
+Mapping extracted count
+
+Mapping matched count + Mapping-only count
+
+If either equation fails, DO NOT generate the final workbook.
+
+============================================================ SECTION 30 — SPECIAL-CASE PREPROCESSING
+
+Explicit manual special cases MUST be identified BEFORE generic path matching.
+
+Processing order:
+
+Extract all RAML records.
+
+Extract all Mapping records.
+
+Identify explicit special cases.
+
+Mark special records.
+
+Exclude special records from generic processing.
+
+Process special records according to their exact manual behavior.
+
+Perform generic one-to-one path matching.
+
+Perform bidirectional reconciliation.
+
+Generate final ordered report.
+
+A special record must NOT be processed once by special-case logic and again by generic matching.
+
+This prevents duplicate rows and prevents special cases from becoming normal PASS records.
+
+============================================================ SECTION 31 — SPECIAL CASE: VEHICLE_PERSONALIMPORTIND
+
+When the exact documented special field is:
+
+vehicle_Vehicle_PersonalImportInd
+
+and the RAML description/tag is:
+
+Not Present
+
+and the Mapping contains:
+
+vehicle_Vehicle_PersonalImportInd
+
+use the manual special-case representation:
+
+JSON/RAML Field Name:
+Not Present
+
+Mapping Document Field Name:
+vehicle_Vehicle_PersonalImportInd
+
+JSON/RAML Path:
+None
+
+Mapping Document Path:
+coreRisk.vehicles[].vehicle_Vehicle_PersonalImportInd
+
+JSON/RAML Data type:
+string
+
+Mapping Document Data Type:
+string
+
+Case sensitivity:
+Fail
+
+JSON/RAML Mandatory/Optional:
+false
+
+Mapping Document Mandatory/Optional:
+Not present
+
+Overall Result:
+FAIL
+
+Notes:
+
+Description Tag not present in RAML file and Mandatory/Optional parameter not present in mapping document
+
+Do NOT create a normal path-based PASS for this special case.
+
+Only trigger this special case when the exact documented field/block is actually present in the supplied inputs.
+
+============================================================ SECTION 32 — SPECIAL CASE: VEHICLE_CHOICEADDONS
+
+For:
+
+vehicle_ChoiceAddOns
+
+when the RAML description/tag is:
+
+Not Present
+
+use the same documented manual-style treatment:
+
+JSON/RAML Field Name:
+Not Present
+
+Mapping Document Field Name:
+vehicle_ChoiceAddOns
+
+JSON/RAML Path:
+None
+
+Mapping Document Path:
+coreRisk.vehicles[].vehicle_ChoiceAddOns
+
+JSON/RAML Data type:
+string
+
+Mapping Document Data Type:
+string
+
+Case sensitivity:
+Fail
+
+JSON/RAML Mandatory/Optional:
+false
+
+Mapping Document Mandatory/Optional:
+Not present
+
+Overall Result:
+FAIL
+
+Notes:
+
+Description Tag not present in RAML file and Mandatory/Optional parameter not present in mapping document
+
+Do NOT create a normal path-based PASS for this special case.
+
+============================================================ SECTION 33 — SPECIAL CASE: VEHICLE_MULTICARDISCOUNTRATEIN
+
+For:
+
+vehicle_MultiCarDiscountRateIn
+
+use the manual special row:
+
+JSON/RAML Field Name:
+vehicle_MultiCarDiscountRateIn
+
+Mapping Document Field Name:
+Not present
+
+JSON/RAML Path:
+None
+
+Mapping Document Path:
+None
+
+JSON/RAML Data type:
+None
+
+Mapping Document Data Type:
+None
+
+Case sensitivity:
+None
+
+JSON/RAML Mandatory/Optional:
+None
+
+Mapping Document Mandatory/Optional:
+None
+
+JSON/RAML Version:
+None
+
+Mapping Document Version:
+None
+
+Overall Result:
+FAIL
+
+Notes:
+
+Not present in mapping document
+
+Only trigger this special case when the exact documented condition applies.
+
+============================================================ SECTION 34 — SPECIAL CASE: DRIVER_MEDICALCONDITION_DVLAADVISEDIND
+
+For the documented manual exception:
+
+driver_MedicalCondition_DvlaAdvisedInd
+
+use the separate manual-style discrepancy:
+
+JSON/RAML Field Name:
+driver_MedicalCondition_DvlaAdvisedInd
+
+Mapping Document Field Name:
+MedicalCondition_DvlaAdvisedInd
+
+JSON/RAML Path:
+None
+
+Mapping Document Path:
+None
+
+JSON/RAML Data type:
+None
+
+Mapping Document Data Type:
+None
+
+Case sensitivity:
+None
+
+JSON/RAML Mandatory/Optional:
+None
+
+Mapping Document Mandatory/Optional:
+None
+
+JSON/RAML Version:
+None
+
+Mapping Document Version:
+None
+
+Overall Result:
+FAIL
+
+Notes:
+
+This block is present two times in request, one block is correct and other is wrong
+
+Do NOT automatically generate an additional normal field comparison if that would duplicate the manual report.
+
+============================================================ SECTION 35 — DUPLICATE FIELD HANDLING
+
+Never blindly remove duplicate field names.
+
+Two identical field names at different paths are separate records.
+
+Example:
+
+coreRisk.drivers[].occupations[].occupation_Occupation_Code
+
+and:
+
+coreRisk.proposerPolicyHolder.occupations[].occupation_Occupation_Code
+
+must remain separate.
+
+Full path distinguishes them.
+
+If the same path occurs more than once:
+
+preserve every occurrence.
+
+Do not overwrite.
+
+Do not deduplicate.
+
+Do not merge.
+
+Do not silently remove one.
+
+Explicit manual special cases override generic duplicate handling.
+
+============================================================ SECTION 36 — FIELD ORDER
+
+The final report must preserve the established manual ordering.
+
+For normal matched RAML records:
+
+preserve RAML traversal order.
+
+Do NOT:
+
+alphabetically sort
+
+sort by PASS/FAIL
+
+sort by path
+
+sort by datatype
+
+sort by field name
+
+After normal RAML records:
+
+append RAML-only, Mapping-only and special discrepancy rows according to the established manual ordering.
+
+The order must be deterministic.
+
+============================================================ SECTION 37 — EXACT OUTPUT COLUMNS
+
+The final workbook MUST contain exactly ONE validation result sheet:
+
+Validation Results
+
+with EXACTLY these 13 columns, in this exact order:
+
+JSON/RAML Field Name
+
+Mapping Document Field Name
+
+JSON/RAML Path
+
+Mapping Document Path
+
+JSON/RAML Data type
+
+Mapping Document Data Type
+
+Case sensitivity
+
+JSON/RAML Mandatory/Optional
+
+Mapping Document Mandatory/Optional
+
+JSON/RAML Version
+
+Mapping Document Version
+
+Overall Result
+
+Notes/Comments
+
+Do NOT add:
+
+Description
+
+Comments 2
+
+Difference Type
+
+Source
+
+Row Number
+
+Debug columns
+
+Hidden validation columns
+
+The final visible sheet must contain exactly these 13 columns.
+
+============================================================ SECTION 38 — SOURCE VALUE PRESERVATION
+
+Preserve source values exactly.
+
+Example:
+
+RAML:
+number
+
+Mapping:
+double
+
+Output:
+
+number
+double
+
+Do NOT replace either with a normalized value.
+
+Example:
+
+RAML:
+date-only
+
+Mapping:
+date
+
+Output:
+
+date-only
+date
+
+Normalization is ONLY for determining PASS/FAIL.
+
+Similarly:
+
+RAML field:
+buildingName
+
+Mapping field:
+BuildingName
+
+Output must retain:
+
+buildingName
+BuildingName
+
+Do not modify either value.
+
+============================================================ SECTION 39 — REQUIRED VALUE OUTPUT
+
+Column 8 must preserve RAML source semantics.
+
+RAML required = false:
+
+Column 8 = false
+
+RAML required = true:
+
+Column 8 = true
+
+Do NOT replace Column 8 with:
+
+Optional
+Mandatory
+
+Column 9 uses Mapping Document values:
+
+Mandatory
+Optional
+Not present
+
+============================================================ SECTION 40 — CASE SENSITIVITY OUTPUT
+
+Column 7 must contain exactly:
+
+Pass
+
+or:
+
+Fail
+
+It represents:
+
+RAML DESCRIPTION/TAG exactly matching Mapping Document Field Name.
+
+It does NOT represent:
+
+datatype match
+
+path match
+
+mandatory match
+
+============================================================ SECTION 41 — REPORT FORMATTING
+
+Create an Excel workbook.
+
+Sheet name:
+
+Validation Results
+
+Use exactly 13 columns.
+
+Formatting should reproduce the established manual report as closely as possible:
+
+clearly formatted header
+
+bold headers
+
+borders around data
+
+wrapped text
+
+readable column widths
+
+readable row heights
+
+freeze header row
+
+filters enabled
+
+all values visibly preserved
+
+PASS visually distinguishable
+
+FAIL visually highlighted
+
+long paths readable
+
+Notes/Comments fully visible
+
+professional formatting
+
+Do not alter source content merely to make formatting easier.
+
+============================================================ SECTION 42 — FINAL DETERMINISTIC VALIDATION ALGORITHM
+
+Execute the following sequence EXACTLY.
+
+STEP 1
+Read the Compact RAML TXT.
+
+STEP 2
+Read only the MQS_Quote_Request mapping sheet.
+
+STEP 3
+Build the complete immutable RAML inventory.
+
+STEP 4
+Build the complete immutable Mapping inventory.
+
+STEP 5
+Preserve all original source values.
+
+STEP 6
+Identify all explicit manual special cases.
+
+STEP 7
+Remove special-case records from generic processing.
+
+STEP 8
+Construct exact RAML paths using actual property names and [].
+
+STEP 9
+Perform exact one-to-one path matching.
+
+STEP 10
+Perform RAML → Mapping reconciliation.
+
+STEP 11
+Perform Mapping → RAML reconciliation.
+
+STEP 12
+For each matched NORMAL record:
+
+A. Column 1 = RAML description/tag
+B. Column 2 = Mapping field name
+C. Column 3 = actual RAML property path
+D. Column 4 = Mapping path
+E. Column 5 = raw RAML datatype
+F. Column 6 = raw Mapping datatype
+
+STEP 13
+
+Compare RAML description/tag against Mapping field name.
+
+Use exact case-sensitive comparison.
+
+STEP 14
+
+Compare datatypes using ONLY:
+
+date-only = date
+time-only = time
+int = integer
+
+Datatype comparison is case-insensitive.
+
+STEP 15
+
+Compare Mandatory/Optional.
+
+STEP 16
+
+Calculate validation flags.
+
+STEP 17
+
+Determine Overall Result.
+
+STEP 18
+
+Generate exact manual-style Notes/Comments.
+
+STEP 19
+
+Process RAML-only records.
+
+STEP 20
+
+Process Mapping-only records.
+
+STEP 21
+
+Process explicit special cases.
+
+STEP 22
+
+Arrange records according to established manual ordering.
+
+STEP 23
+
+Perform numerical reconciliation.
+
+STEP 24
+
+Perform final manual-behavior QC.
+
+STEP 25
+
+ONLY after all QC passes, generate the final workbook.
+
+============================================================ SECTION 43 — MANDATORY NUMERICAL RECONCILIATION
+
+Before final output calculate:
+
+RAML_LEAF_COUNT
+
+MAPPING_FIELD_COUNT
+
+MATCHED_COUNT
+
+RAML_ONLY_COUNT
+
+MAPPING_ONLY_COUNT
+
+SPECIAL_CASE_COUNT
+
+PASS_COUNT
+
+FAIL_COUNT
+
+FINAL_OUTPUT_ROW_COUNT
+
+Verify:
+
+RAML_LEAF_COUNT
+
+RAML_MATCHED_COUNT + RAML_ONLY_COUNT
+
+Mapping extracted count
+
+Mapping matched count + Mapping-only count
+
+FINAL_OUTPUT_ROW_COUNT
+
+PASS_COUNT + FAIL_COUNT
+
+Every source record must have a final disposition:
+
+MATCHED
+RAML_ONLY
+MAPPING_ONLY
+SPECIAL_CASE
+
+No record may have no disposition.
+
+No record may have two dispositions.
+
+No source record may be silently dropped.
+
+No source record may be counted twice.
+
+If any reconciliation equation fails:
+
+DO NOT generate the final workbook.
+
+Re-run extraction and matching.
+
+============================================================ SECTION 44 — MANDATORY QUALITY CONTROL
+
+Before returning the workbook, verify ALL of the following.
+
+A. Every RAML business leaf was considered.
+
+B. Every Mapping business field was considered.
+
+C. Every normal matched field is matched by exact full path.
+
+D. Path comparison is case-sensitive.
+
+E. No fuzzy matching was used.
+
+F. No semantic matching was used.
+
+G. Every array path contains [] correctly.
+
+H. No path contains .items.
+
+I. RAML Field Name contains RAML DESCRIPTION/TAG.
+
+J. JSON/RAML Path contains actual RAML property names.
+
+K. Mapping field name comes from Column C.
+
+L. Mapping path comes from Column B.
+
+M. Mapping datatype comes from Column E.
+
+N. Mapping Mandatory/Optional comes from Column F.
+
+O. Pre-Comp Column G was NOT used.
+
+P. number vs double = FAIL.
+
+Q. date-only vs date = PASS.
+
+R. time-only vs time = PASS.
+
+S. int vs integer = PASS.
+
+T. Datatype case differences are allowed.
+
+U. Field/tag case differences are NOT allowed.
+
+V. true = Mandatory.
+
+W. false = Optional.
+
+X. Missing mapping Mandatory/Optional is NOT Optional.
+
+Y. Version difference alone does not fail.
+
+Z. Every FAIL contains an explanatory note.
+
+AA. Every PASS has no failure note unless explicitly defined by the manual methodology.
+
+AB. Special cases are processed exactly once.
+
+AC. Special cases are not accidentally converted into normal PASS records.
+
+AD. Duplicate field names at different paths remain separate.
+
+AE. Duplicate records at identical paths are not silently removed.
+
+AF. No legitimate mapping row was removed.
+
+AG. No legitimate RAML leaf was removed.
+
+AH. No source value was normalized in the output.
+
+AI. Exactly 13 output columns exist.
+
+AJ. Output column order is exact.
+
+AK. Overall Result is PASS only if all applicable checks pass.
+
+AL. No FAIL validation flag is ignored.
+
+AM. RAML-only records are accounted for.
+
+AN. Mapping-only records are accounted for.
+
+AO. Source/output counts reconcile mathematically.
+
+AP. Final row count equals PASS + FAIL.
+
+AQ. No unexplained record loss exists.
+
+============================================================ SECTION 45 — KNOWN BEHAVIORAL SELF-TESTS
+
+Before finalizing the workbook, internally verify these examples.
+
+TEST 1 — TAG MISMATCH
+
+RAML:
+
+transactionType(transactionType Id,true)
+
+Mapping:
+
+transactionType
+
+Expected:
+
+JSON/RAML Field Name = transactionType Id
+
+Mapping Document Field Name = transactionType
+
+JSON/RAML Path = control.transactionType
+
+Mapping Path = control.transactionType
+
+Case sensitivity = Fail
+
+Overall Result = FAIL
+
+If mandatory also differs:
+
+Notes =
+Field name mismatch and Mandatory/Optional parameter mismatch
+
+TEST 2 — CASE-SENSITIVE TAG MISMATCH
+
+RAML:
+
+buildingName
+
+Mapping:
+
+BuildingName
+
+Expected:
+
+Case sensitivity = Fail
+
+Overall Result = FAIL
+
+Notes:
+
+Tag name mismatch
+
+NEVER normalize buildingName to BuildingName.
+
+TEST 3 — ANOTHER CASE-SENSITIVE TAG MISMATCH
+
+RAML:
+
+postTown
+
+Mapping:
+
+PostTown
+
+Expected:
+
+Case sensitivity = Fail
+
+Overall Result = FAIL
+
+Notes:
+
+Tag name mismatch
+
+TEST 4 — DATATYPE MISMATCH
+
+RAML:
+
+cover_Period(cover_Period,false): number
+
+Mapping:
+
+cover_Period
+
+Datatype:
+
+double
+
+Expected:
+
+Overall Result = FAIL
+
+Notes:
+
+Data Type mismatch
+
+Do NOT PASS this record.
+
+TEST 5 — APPROVED DATATYPE EQUIVALENCE
+
+RAML:
+
+policy_BreakdownLoa(Not Present,false): integer
+
+Mapping:
+
+policy_BreakdownLoa
+
+Datatype:
+
+Int
+
+Expected:
+
+JSON/RAML Field Name = Not Present
+
+Mapping Field Name = policy_BreakdownLoa
+
+Case sensitivity = Pass
+
+JSON/RAML datatype = integer
+
+Mapping datatype = Int
+
+Overall Result = FAIL
+
+Notes:
+
+Description is not mentioned in RAML file
+
+Do NOT classify integer vs Int as datatype mismatch.
+
+TEST 6 — TAG + DATATYPE MISMATCH
+
+RAML:
+
+courtesyCarTotalRepair(personalAccident5k,false): number
+
+Mapping:
+
+courtesyCarTotalRepair
+
+Datatype:
+
+double
+
+Expected:
+
+JSON/RAML Field Name = personalAccident5k
+
+Mapping Field Name = courtesyCarTotalRepair
+
+Case sensitivity = Fail
+
+JSON/RAML datatype = number
+
+Mapping datatype = double
+
+Overall Result = FAIL
+
+Notes:
+
+Datatype mismatch and Tag name mismatch
+
+TEST 7 — EXACT TAG CASE
+
+RAML:
+
+occupation_Occupation_Code(occupations_Occupation_Code,false)
+
+Mapping:
+
+occupation_Occupation_Code
+
+Expected:
+
+JSON/RAML Field Name =
+occupations_Occupation_Code
+
+Mapping Document Field Name =
+occupation_Occupation_Code
+
+Case sensitivity =
+Fail
+
+Overall =
+FAIL
+
+Notes =
+Tag name mismatch
+
+TEST 8 — SPECIAL NOT PRESENT FIELD
+
+RAML:
+
+vehicle_Vehicle_PersonalImportInd(Not Present,false)
+
+Mapping:
+
+vehicle_Vehicle_PersonalImportInd
+
+Expected special behavior:
+
+JSON/RAML Field Name = Not Present
+
+Mapping Document Field Name =
+vehicle_Vehicle_PersonalImportInd
+
+JSON/RAML Path = None
+
+Mapping Document Path =
+coreRisk.vehicles[].vehicle_Vehicle_PersonalImportInd
+
+JSON/RAML Data type = string
+
+Mapping Document Data Type = string
+
+Case sensitivity = Fail
+
+JSON/RAML Mandatory/Optional = false
+
+Mapping Document Mandatory/Optional = Not present
+
+Overall Result = FAIL
+
+Notes =
+Description Tag not present in RAML file and Mandatory/Optional parameter not present in mapping document
+
+TEST 9 — MAPPING-ONLY FIELD
+
+If:
+
+Mapping path =
+coreRisk.cover[].cover_VehiclePRN
+
+and no exact corresponding RAML path exists:
+
+Expected:
+
+JSON/RAML Field Name = Not Present
+
+JSON/RAML Path = None
+
+Mapping Document Field Name =
+cover_VehiclePRN
+
+Mapping Document Path =
+coreRisk.cover[].cover_VehiclePRN
+
+Overall Result = FAIL
+
+Notes =
+Not present in RAML file
+
+Do NOT silently omit the record.
+
+TEST 10 — RAML-ONLY FIELD
+
+If:
+
+RAML path =
+coreRisk.cover[].cover_vehiclePRN
+
+and no exact Mapping path exists:
+
+Expected:
+
+Mapping Document Field Name =
+Not present
+
+Mapping Document Path =
+None
+
+Overall Result =
+FAIL
+
+Notes =
+Not present in mapping document
+
+Do NOT assume a similarly spelled mapping field is the same record.
+
+TEST 11 — POPULATED BUT DIFFERENT DATATYPE
+
+RAML:
+
+VehiclePRN
+
+Datatype:
+
+string
+
+Mapping:
+
+VehiclePRN
+
+Datatype:
+
+integer
+
+Expected:
+
+Overall Result = FAIL
+
+Notes:
+
+Data Type mismatch
+
+NOT:
+
+Data type missing from mapping document
+
+TEST 12 — EMPTY MAPPING DATATYPE
+
+If Mapping datatype is genuinely blank:
+
+Expected:
+
+Mapping Document Data Type = blank/None
+
+Overall Result = FAIL
+
+Notes:
+
+Data type missing from mapping document
+
+TEST 13 — PASS RECORD MUST NOT RECEIVE INVENTED COMMENT
+
+If:
+
+Tag matches
+Datatype matches
+Mandatory matches
+
+Expected:
+
+Overall Result = PASS
+
+Notes = blank
+
+Do NOT add a warning or correction suggestion.
+
+============================================================ SECTION 46 — MANUAL REPORT REPLICATION PRIORITY
+
+When determining final behavior, use this priority:
+
+PRIORITY 1:
+Explicit manual behavior in this prompt.
+
+PRIORITY 2:
+Exact source values from Compact RAML and MQS Mapping Document.
+
+PRIORITY 3:
+Explicit validation truth tables and deterministic rules.
+
+PRIORITY 4:
+Generic validation logic.
+
+Never allow generic logic to override an explicit manual rule.
+
+Never allow normalization to override an exact source comparison.
+
+Never allow a path match to override a tag mismatch.
+
+Never allow a successful datatype comparison to override a tag mismatch.
+
+Never allow a successful tag comparison to override a datatype mismatch.
+
+Never allow a successful path match to override a missing-record condition.
+
+============================================================ SECTION 47 — FINAL OUTPUT REQUIREMENTS
+
+The final workbook must contain:
+
+ONE sheet:
+
+Validation Results
+
+Exactly 13 columns:
+
+JSON/RAML Field Name
+
+Mapping Document Field Name
+
+JSON/RAML Path
+
+Mapping Document Path
+
+JSON/RAML Data type
+
+Mapping Document Data Type
+
+Case sensitivity
+
+JSON/RAML Mandatory/Optional
+
+Mapping Document Mandatory/Optional
+
+JSON/RAML Version
+
+Mapping Document Version
+
+Overall Result
+
+Notes/Comments
+
+The workbook must contain the COMPLETE detailed field-by-field validation.
+
+Do NOT provide only:
+
+summary
+
+percentage
+
+total count
+
+high-level comparison
+
+The workbook itself must contain every validation record.
+
+After generating the workbook, provide a concise execution summary containing:
+
+RAML business leaf count
+
+Mapping field count
+
+matched path count
+
+RAML-only count
+
+mapping-only count
+
+special-case count
+
+PASS count
+
+FAIL count
+
+output filename
+
+============================================================ SECTION 48 — ABSOLUTE PROHIBITIONS
+
+NEVER:
+
+Compare actual RAML property name directly to Mapping field name when manual behavior requires RAML description/tag.
+
+Normalize field/tag capitalization.
+
+Treat camelCase and PascalCase as equal.
+
+Treat number and double as equivalent.
+
+Change source datatype values in output.
+
+Use Pre-Comp Mandatory/Optional.
+
+Add .items to array paths.
+
+Remove [] from array paths.
+
+Alphabetically sort the report.
+
+Merge duplicate names at different paths.
+
+Deduplicate identical paths without checking occurrence.
+
+Treat missing Mapping Mandatory/Optional as Optional.
+
+Treat missing RAML description/tag as a valid description.
+
+Ignore explicit manual special cases.
+
+Create duplicate generic rows for special cases.
+
+Use version mismatch as an automatic failure.
+
+Invent Mapping values.
+
+Invent RAML values.
+
+Use fuzzy matching.
+
+Use semantic similarity to make two source values equal.
+
+Use row number as the primary matching key.
+
+Assume a successful path match means PASS.
+
+Produce PASS when an applicable validation check failed.
+
+Produce generic failure notes.
+
+Silently drop unmatched RAML records.
+
+Silently drop unmatched Mapping records.
+
+Add extra output columns.
+
+Change the required 13-column order.
+
+Produce a summary instead of the detailed report.
+
+Finish validation before numerical reconciliation is complete.
+
+============================================================ SECTION 49 — FINAL COMPLETION CONDITION
+
+Do NOT consider the task complete merely because an Excel file was generated.
+
+The task is complete ONLY when:
+
+All RAML business leaves were extracted.
+
+All Mapping business fields were extracted.
+
+All explicit special cases were identified.
+
+All normal records were matched using exact full paths.
+
+All unmatched RAML records were accounted for.
+
+All unmatched Mapping records were accounted for.
+
+All matched records were independently validated.
+
+Field/tag comparison was performed exactly and case-sensitively.
+
+Datatype comparison used only approved normalization.
+
+Mandatory/Optional comparison used the correct Mapping column.
+
+Special cases were applied exactly once.
+
+Every FAIL has an appropriate manual-style note.
+
+Every PASS is genuinely PASS under the manual rules.
+
+Source values were not modified.
+
+No records were silently lost.
+
+Numerical reconciliation passed.
+
+Final row count equals PASS + FAIL.
+
+Exactly 13 output columns exist.
+
+Output ordering follows the established manual behavior.
+
+Final workbook formatting is professional and readable.
+
+The final workbook must be a MANUAL-STYLE VALIDATION REPORT,
+not a generic schema comparison.
+
+The objective is maximum reproducibility, deterministic behavior,
+complete source coverage, and exact manual-style validation.
